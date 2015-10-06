@@ -44,7 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ItemData\AppliedAttributeJson.cs" />
+    <Compile Include="ItemData\CapabilitiesJson.cs" />
+    <Compile Include="ItemData\ItemDataJson.cs" />
+    <Compile Include="ItemData\ItemDataResultJson.cs" />
     <Compile Include="ItemData\ItemJson.cs" />
+    <Compile Include="ItemData\QualitiesListJson.cs" />
+    <Compile Include="ItemData\QualitiesNameListJson.cs" />
+    <Compile Include="ItemData\StyleJson.cs" />
     <Compile Include="ItemQuality.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PriceData.cs" />

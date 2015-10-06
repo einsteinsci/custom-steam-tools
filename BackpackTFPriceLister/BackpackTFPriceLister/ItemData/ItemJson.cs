@@ -8,82 +8,94 @@ using Newtonsoft.Json;
 
 namespace BackpackTFPriceLister.ItemData
 {
-	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class ItemJson
 	{
 		// Localized (or Unlocalized) name
-		[JsonProperty]
 		public string name
 		{ get; set; }
 
 		// Item ID
-		[JsonProperty]
 		public int defindex
 		{ get; set; }
-
-		[JsonProperty]
+		
+		// Unlocalized Item "Type"
 		public string item_class
 		{ get; set; }
 
 		// Localized Item "Type"
-		[JsonProperty]
 		public string item_type_name
 		{ get; set; }
 
 		// Localized name
-		[JsonProperty]
 		public string item_name
 		{ get; set; }
 
+		public string item_description
+		{ get; set; }
+
 		// Prepend "The"
-		[JsonProperty]
 		public bool proper_name
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string item_slot
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string model_player
 		{ get; set; }
 
 		// default quality
-		[JsonProperty]
 		public int item_quality
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string image_inventory
 		{ get; set; }
 
 		// min level
-		[JsonProperty]
 		public int min_ilevel
 		{ get; set; }
 
 		// max level
-		[JsonProperty]
 		public int max_ilevel
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string image_url
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string image_url_large
 		{ get; set; }
 
-		[JsonProperty]
+		public string drop_type
+		{ get; set; }
+		
 		public string item_set
 		{ get; set; }
-
-		[JsonProperty]
+		
 		public string craft_class
 		{ get; set; }
-
+		
 		public string craft_material_type
 		{ get; set; }
+
+		public CapabilitiesJson capabilities
+		{ get; set; }
+
+		public List<StyleJson> styles
+		{ get; set; }
+
+		public List<string> used_by_classes
+		{ get; set; }
+
+		public List<AppliedAttributeJson> attributes
+		{ get; set; }
+
+		public string Subtext
+		{
+			get
+			{
+				// Level 3 Chin
+				return "Level " + max_ilevel.ToString() + " " + item_type_name;
+			}
+		}
 	}
 }
