@@ -13,10 +13,5 @@ namespace BackpackTFPriceLister.ItemData
 		[JsonProperty]
 		public TF2DataResultJson result
 		{ get; set; }
-
-		public override string ToString()
-		{
-			return result.ToString();
-		}
 	}
 }

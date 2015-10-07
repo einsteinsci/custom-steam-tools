@@ -42,7 +42,14 @@ namespace BackpackTFPriceLister.ItemData
 
 		public override string ToString()
 		{
-			return "#" + defindex + ": " + attribute_class;
+			if (description_string == null)
+			{
+				return "#" + defindex + ": " + attribute_class;
+			}
+
+			string exampleDesc = description_string.Replace("%s1", "X");
+
+			return "#" + defindex + ": " + exampleDesc + " (" + attribute_class + ")";
 		}
 	}
 

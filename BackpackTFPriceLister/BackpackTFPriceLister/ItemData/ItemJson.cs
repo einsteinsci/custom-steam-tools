@@ -121,7 +121,7 @@ namespace BackpackTFPriceLister.ItemData
 
 		public override string ToString()
 		{
-			return "#" + defindex + ": " + name;
+			return "#" + defindex + ": " + (proper_name ? "The " + item_name : item_name);
 		}
 	}
 }
