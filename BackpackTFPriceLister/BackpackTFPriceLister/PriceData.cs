@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BackpackTFPriceLister.ItemData;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,6 +30,9 @@ namespace BackpackTFPriceLister
 		public static string BpTfCache
 		{ get; private set; }
 		public static string ItemCache
+		{ get; private set; }
+
+		public static TF2DataJson ItemData
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -117,6 +122,15 @@ namespace BackpackTFPriceLister
 
 			File.WriteAllText(CacheLocation + ItemDataFilename, tf2Cache);
 			Logger.Log("Saved TF2 item cache.");
+		}
+
+		public static TF2DataJson ParseItemsJson()
+		{
+			Logger.Log("Parsing JSON data...");
+			ItemData = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
+			Logger.Log("Parse complete.");
+
+			return ItemData;
 		}
 	}
 }

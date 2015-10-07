@@ -15,5 +15,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public List<StrangeLevelJson> levels
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return name;
+		}
 	}
 }

@@ -39,6 +39,11 @@ namespace BackpackTFPriceLister.ItemData
 
 		public bool stored_as_integer
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "#" + defindex + ": " + attribute_class;
+		}
 	}
 
 	public static class AttributeEffectTypes

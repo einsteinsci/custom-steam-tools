@@ -15,5 +15,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public List<SpellStringJson> strings
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return table_name + ": " + strings.Count.ToString() + " spell strings";
+		}
 	}
 }

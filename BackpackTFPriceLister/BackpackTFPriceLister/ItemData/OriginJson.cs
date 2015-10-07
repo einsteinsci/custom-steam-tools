@@ -26,5 +26,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public OriginJson() : this(0, "Timed Drop")
 		{ }
+
+		public override string ToString()
+		{
+			return "#" + origin + ": " + name;
+		}
 	}
 }

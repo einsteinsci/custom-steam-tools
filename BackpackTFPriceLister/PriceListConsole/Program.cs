@@ -7,6 +7,7 @@ using BackpackTFPriceLister;
 using System.Windows.Forms;
 using System.IO;
 using System.Net;
+using BackpackTFPriceLister.ItemData;
 
 namespace BackpackTFConsole
 {
@@ -19,8 +20,10 @@ namespace BackpackTFConsole
 			PriceData.Initialize(true);
 			Logger.Event += DebugLog;
 
-			PriceData.LoadData(true, false);
+			PriceData.LoadData(true, true);
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
+
+			TF2DataJson data = PriceData.ParseItemsJson();
 
 			Console.ReadKey();
 		}

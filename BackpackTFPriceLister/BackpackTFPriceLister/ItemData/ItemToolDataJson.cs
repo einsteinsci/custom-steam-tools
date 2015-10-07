@@ -15,6 +15,11 @@ namespace BackpackTFPriceLister.ItemData
 
 		public ItemToolUsageCapabilitiesJson usage_capabilities
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return type + " (" + usage_capabilities.ToString() + ")";
+		}
 	}
 
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
@@ -22,5 +27,10 @@ namespace BackpackTFPriceLister.ItemData
 	{
 		public bool decodable
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "decodable: " + decodable.ToString();
+		}
 	}
 }

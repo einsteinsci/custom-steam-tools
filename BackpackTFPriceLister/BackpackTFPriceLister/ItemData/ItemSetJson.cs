@@ -24,5 +24,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public List<AppliedAttributeJson> attributes
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return name + " [" + item_set + "]";
+		}
 	}
 }

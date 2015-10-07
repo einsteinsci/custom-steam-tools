@@ -18,5 +18,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public string level_data
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "#" + type + ": " + type_name + " (" + level_data + ")";
+		}
 	}
 }

@@ -76,5 +76,10 @@ namespace BackpackTFPriceLister.ItemData
 			collectors = "Collector's";
 			paintkitweapon = "Decorated Weapon";
 		}
+
+		public override string ToString()
+		{
+			return "Quality Names List";
+		}
 	}
 }

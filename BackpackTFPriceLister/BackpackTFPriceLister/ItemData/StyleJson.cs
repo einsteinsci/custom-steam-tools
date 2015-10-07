@@ -18,5 +18,10 @@ namespace BackpackTFPriceLister.ItemData
 		{
 			name = _name;
 		}
+
+		public override string ToString()
+		{
+			return name;
+		}
 	}
 }

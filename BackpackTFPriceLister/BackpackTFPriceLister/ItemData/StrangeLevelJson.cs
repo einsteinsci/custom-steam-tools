@@ -18,5 +18,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public string name
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "#" + level + ": " + name + " (" + required_score + " count)";
+		}
 	}
 }

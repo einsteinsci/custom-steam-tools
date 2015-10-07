@@ -77,5 +77,10 @@ namespace BackpackTFPriceLister.ItemData
 			collectors = 14;
 			paintkitweapon = 15;
 		}
+
+		public override string ToString()
+		{
+			return "Quality ID List";
+		}
 	}
 }

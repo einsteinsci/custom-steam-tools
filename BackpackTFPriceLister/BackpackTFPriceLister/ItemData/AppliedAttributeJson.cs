@@ -19,14 +19,12 @@ namespace BackpackTFPriceLister.ItemData
         { get; set; }
 
 		[JsonProperty]
-		public int value
+		public double value
 		{ get; set; }
 
-		public AppliedAttributeJson(string _name, string _class, int val)
+		public override string ToString()
 		{
-			name = _name;
-			@class = _class;
-			value = val;
+			return @class + ": " + value.ToString();
 		}
 	}
 }

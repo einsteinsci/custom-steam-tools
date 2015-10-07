@@ -118,5 +118,10 @@ namespace BackpackTFPriceLister.ItemData
 				return "Level " + max_ilevel.ToString() + " " + item_type_name;
 			}
 		}
+
+		public override string ToString()
+		{
+			return "#" + defindex + ": " + name;
+		}
 	}
 }

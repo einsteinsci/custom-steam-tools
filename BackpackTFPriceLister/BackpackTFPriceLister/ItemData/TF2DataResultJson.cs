@@ -48,5 +48,10 @@ namespace BackpackTFPriceLister.ItemData
 
 		public List<SpellStringLookupJson> string_lookups
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "TF2 Item Data Results";
+		}
 	}
 }
