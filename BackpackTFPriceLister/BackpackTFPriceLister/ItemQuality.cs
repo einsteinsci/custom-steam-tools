@@ -8,16 +8,16 @@ namespace BackpackTFPriceLister
 {
 	public static class ItemQuality
 	{
-		public static int NORMAL = 0; // stock
-		public static int GENUINE = 1;
-		public static int VINTAGE = 3;
-		public static int UNUSUAL = 5;
-		public static int UNIQUE = 6;
-		public static int COMMUNITY = 7;
-		public static int VALVE = 8;
-		public static int SELFMADE = 9;
-		public static int STRANGE = 11;
-		public static int HAUNTED = 13;
-		public static int COLLECTORS = 14;
+		public const int NORMAL = 0; // stock
+		public const int GENUINE = 1;
+		public const int VINTAGE = 3;
+		public const int UNUSUAL = 5;
+		public const int UNIQUE = 6;
+		public const int COMMUNITY = 7;
+		public const int VALVE = 8;
+		public const int SELFMADE = 9;
+		public const int STRANGE = 11;
+		public const int HAUNTED = 13;
+		public const int COLLECTORS = 14;
 	}
 }

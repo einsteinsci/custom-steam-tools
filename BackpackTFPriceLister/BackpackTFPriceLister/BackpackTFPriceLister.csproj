@@ -45,8 +45,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ItemData\AppliedAttributeJson.cs" />
+    <Compile Include="ItemData\SpellStringJson.cs" />
+    <Compile Include="ItemData\SpellStringLookupJson.cs" />
+    <Compile Include="ItemData\UnusualEffectJson.cs" />
+    <Compile Include="ItemData\AttributeDescriptionFormats.cs" />
     <Compile Include="ItemData\AttributeJson.cs" />
     <Compile Include="ItemData\CapabilitiesJson.cs" />
+    <Compile Include="ItemData\ItemPerClassLoadoutSlotJson.cs" />
+    <Compile Include="ItemData\ItemSetJson.cs" />
+    <Compile Include="ItemData\ItemSlots.cs" />
+    <Compile Include="ItemData\ItemToolDataJson.cs" />
+    <Compile Include="ItemData\StrangeLevelingSystemJson.cs" />
+    <Compile Include="ItemData\StrangeLevelJson.cs" />
+    <Compile Include="ItemData\StrangePartJson.cs" />
     <Compile Include="ItemData\TF2DataJson.cs" />
     <Compile Include="ItemData\TF2DataResultJson.cs" />
     <Compile Include="ItemData\ItemJson.cs" />

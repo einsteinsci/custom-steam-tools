@@ -29,5 +29,24 @@ namespace BackpackTFPriceLister.ItemData
 		// HERE IT IS
 		public List<ItemJson> items
 		{ get; set; }
+
+		public List<AttributeJson> attributes
+		{ get; set; }
+
+		public List<ItemSetJson> item_sets
+		{ get; set; }
+
+		// AKA Unusual FX
+		public List<UnusualEffectJson> attribute_controlled_attached_particles
+		{ get; set; }
+
+		public List<StrangeLevelingSystemJson> item_levels
+		{ get; set; }
+
+		public List<StrangePartJson> kill_eater_score_types
+		{ get; set; }
+
+		public List<SpellStringLookupJson> string_lookups
+		{ get; set; }
 	}
 }

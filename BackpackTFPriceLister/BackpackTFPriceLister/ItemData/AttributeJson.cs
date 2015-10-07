@@ -19,6 +19,12 @@ namespace BackpackTFPriceLister.ItemData
 		public string attribute_class
 		{ get; set; }
 
+		public double minvalue
+		{ get; set; }
+
+		public double maxvalue
+		{ get; set; }
+
 		public string description_string
 		{ get; set; }
 
@@ -30,5 +36,15 @@ namespace BackpackTFPriceLister.ItemData
 
 		public bool hidden
 		{ get; set; }
+
+		public bool stored_as_integer
+		{ get; set; }
+	}
+
+	public static class AttributeEffectTypes
+	{
+		public const string POSITIVE = "positive";
+		public const string NEUTRAL = "neutral";
+		public const string NEGATIVE = "negative";
 	}
 }
