@@ -5,23 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class StrangePartJson
+	public class SpellStringLookupJson
 	{
-		public int type
+		public string table_name
 		{ get; set; }
 
-		public string type_name
-		{ get; set; }
-
-		public string level_data
+		public List<SpellStringJson> strings
 		{ get; set; }
 
 		public override string ToString()
 		{
-			return "#" + type + ": " + type_name + " (" + level_data + ")";
+			return table_name + ": " + strings.Count.ToString() + " spell strings";
 		}
 	}
 }

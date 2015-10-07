@@ -5,23 +5,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class StrangeLevelJson
+	public class ItemSetJson
 	{
-		public int level
-		{ get; set; }
-
-		public int required_score
+		public string item_set
 		{ get; set; }
 
 		public string name
 		{ get; set; }
 
+		public string store_bundle
+		{ get; set; }
+
+		public List<string> items
+		{ get; set; }
+
+		public List<AppliedAttributeJson> attributes
+		{ get; set; }
+
 		public override string ToString()
 		{
-			return "#" + level + ": " + name + " (" + required_score + " count)";
+			return name + " [" + item_set + "]";
 		}
 	}
 }

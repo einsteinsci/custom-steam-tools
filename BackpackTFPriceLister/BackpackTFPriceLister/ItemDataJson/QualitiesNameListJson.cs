@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class QualitiesNameListJson

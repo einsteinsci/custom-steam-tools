@@ -5,26 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class AppliedAttributeJson
+	public class StyleJson
 	{
 		[JsonProperty]
 		public string name
 		{ get; set; }
 
-		[JsonProperty]
-		public string @class
-        { get; set; }
-
-		[JsonProperty]
-		public double value
-		{ get; set; }
+		public StyleJson(string _name)
+		{
+			name = _name;
+		}
 
 		public override string ToString()
 		{
-			return @class + ": " + value.ToString();
+			return name;
 		}
 	}
 }

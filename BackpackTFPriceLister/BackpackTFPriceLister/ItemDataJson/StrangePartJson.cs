@@ -5,20 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class StrangeLevelingSystemJson
+	public class StrangePartJson
 	{
-		public string name
+		public int type
 		{ get; set; }
 
-		public List<StrangeLevelJson> levels
+		public string type_name
+		{ get; set; }
+
+		public string level_data
 		{ get; set; }
 
 		public override string ToString()
 		{
-			return name;
+			return "#" + type + ": " + type_name + " (" + level_data + ")";
 		}
 	}
 }

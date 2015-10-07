@@ -7,7 +7,7 @@ using BackpackTFPriceLister;
 using System.Windows.Forms;
 using System.IO;
 using System.Net;
-using BackpackTFPriceLister.ItemData;
+using BackpackTFPriceLister.ItemDataJson;
 
 namespace BackpackTFConsole
 {
