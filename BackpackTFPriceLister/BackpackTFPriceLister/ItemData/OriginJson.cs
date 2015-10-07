@@ -8,10 +8,23 @@ using System.Threading.Tasks;
 namespace BackpackTFPriceLister.ItemData
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class ItemDataJson
+	public class OriginJson
 	{
 		[JsonProperty]
-		public ItemDataResultJson result
+		public int origin
 		{ get; set; }
+
+		[JsonProperty]
+		public string name
+		{ get; set; }
+
+		public OriginJson(int id, string _name)
+		{
+			origin = id;
+			name = _name;
+		}
+
+		public OriginJson() : this(0, "Timed Drop")
+		{ }
 	}
 }

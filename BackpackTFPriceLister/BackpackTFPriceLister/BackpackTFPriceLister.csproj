@@ -45,10 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ItemData\AppliedAttributeJson.cs" />
+    <Compile Include="ItemData\AttributeJson.cs" />
     <Compile Include="ItemData\CapabilitiesJson.cs" />
-    <Compile Include="ItemData\ItemDataJson.cs" />
-    <Compile Include="ItemData\ItemDataResultJson.cs" />
+    <Compile Include="ItemData\TF2DataJson.cs" />
+    <Compile Include="ItemData\TF2DataResultJson.cs" />
     <Compile Include="ItemData\ItemJson.cs" />
+    <Compile Include="ItemData\OriginJson.cs" />
     <Compile Include="ItemData\QualitiesListJson.cs" />
     <Compile Include="ItemData\QualitiesNameListJson.cs" />
     <Compile Include="ItemData\StyleJson.cs" />

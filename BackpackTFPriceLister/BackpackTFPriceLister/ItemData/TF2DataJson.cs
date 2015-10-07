@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister.ItemData
 {
-	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class ItemDataResultJson
+	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+	public class TF2DataJson
 	{
-		// should always be 1
-		public int status
-		{ get; set; }
-
-		public string items_game_url
+		[JsonProperty]
+		public TF2DataResultJson result
 		{ get; set; }
 	}
 }

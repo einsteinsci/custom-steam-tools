@@ -61,6 +61,20 @@ namespace BackpackTFPriceLister.ItemData
 		public QualitiesNameListJson()
 		{
 			Normal = "Normal";
+			rarity1 = "Genuine";
+			rarity2 = "rarity2";
+			vintage = "Vintage";
+			rarity4 = "Unusual";
+			Unique = "Unique";
+			community = "Community";
+			developer = "Valve";
+			selfmade = "Self-Made";
+			customized = "Customized";
+			strange = "Strange";
+			completed = "Completed";
+			haunted = "Haunted";
+			collectors = "Collector's";
+			paintkitweapon = "Decorated Weapon";
 		}
 	}
 }
