@@ -36,5 +36,18 @@ namespace BackpackTFPriceLister
 
 		public TF2Data(TF2DataJson json) : this(json.result)
 		{ }
+
+		public Item GetItem(int id)
+		{
+			foreach (Item i in Items)
+			{
+				if (i.ID == id)
+				{
+					return i;
+				}
+			}
+
+			return null;
+		}
 	}
 }

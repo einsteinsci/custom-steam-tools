@@ -11,10 +11,15 @@ namespace BackpackTFPriceLister.PriceDataJson
 	public class ItemPriceJson
 	{
 		public List<int> defindex
-		{ get; private set; }
+		{ get; set; }
 
 		// qualities = key
 		public Dictionary<string, TradabilityJson> prices
-		{ get; private set; }
+		{ get; set; }
+
+		public override string ToString()
+		{
+			return "ID x" + (defindex?.Count ?? 0).ToString();
+		}
 	}
 }

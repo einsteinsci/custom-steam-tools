@@ -71,6 +71,9 @@
     <Compile Include="ItemDataJson\StyleJson.cs" />
     <Compile Include="ItemQualities.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="ItemPricing.cs" />
+    <Compile Include="Price.cs" />
+    <Compile Include="PriceData.cs" />
     <Compile Include="PriceDataJson\CraftibilityJson.cs" />
     <Compile Include="PriceDataJson\QualityPriceDataJson.cs" />
     <Compile Include="PriceDataJson\TradabilityJson.cs" />

@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister
 {
-	 public static class PriceLister
+	// the "main" class in this DLL
+	public static class PriceLister
     {
 		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
 		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
@@ -38,7 +39,9 @@ namespace BackpackTFPriceLister
 		public static TF2Data ItemData
 		{ get; private set; }
 
-		public static BPTFPriceDataJson PriceDataRaw
+		public static BpTfPriceDataJson PriceDataRaw
+		{ get; private set; }
+		public static BpTfPriceData PriceData
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -140,7 +143,7 @@ namespace BackpackTFPriceLister
 			return ItemDataRaw;
 		}
 
-		public static TF2Data TranslateData()
+		public static TF2Data TranslateItemsData()
 		{
 			if (ItemDataRaw == null)
 			{
@@ -152,7 +155,7 @@ namespace BackpackTFPriceLister
 			return ItemData;
 		}
 
-		public static BPTFPriceDataJson ParsePricesJson()
+		public static BpTfPriceDataJson ParsePricesJson()
 		{
 			if (BpTfCache == null)
 			{
@@ -160,10 +163,29 @@ namespace BackpackTFPriceLister
 			}
 
 			Logger.Log("Parsing backpack.tf JSON data...");
-			PriceDataRaw = JsonConvert.DeserializeObject<BPTFPriceDataJson>(BpTfCache);
+			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(BpTfCache);
 			Logger.Log("  Parse complete.");
 
+			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
+				.prices["6"].Tradable.Craftable["0"].value;
+
 			return PriceDataRaw;
+		}
+
+		public static BpTfPriceData TranslatePricingData()
+		{
+			if (PriceDataRaw == null)
+			{
+				ParsePricesJson();
+			}
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+
+			PriceData = new BpTfPriceData(PriceDataRaw, ItemData);
+
+			return PriceData;
 		}
 	}
 }

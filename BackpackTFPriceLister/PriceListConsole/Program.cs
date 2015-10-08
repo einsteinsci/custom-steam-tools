@@ -27,9 +27,10 @@ namespace BackpackTFConsole
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
 
 			PriceLister.ParseItemsJson();
-			TF2Data tf2 = PriceLister.TranslateData();
+			TF2Data tf2 = PriceLister.TranslateItemsData();
 
-			BPTFPriceDataJson price = PriceLister.ParsePricesJson();
+			PriceLister.ParsePricesJson();
+			BpTfPriceData price = PriceLister.TranslatePricingData();
 
 			Console.ReadKey();
 		}

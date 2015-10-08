@@ -28,5 +28,18 @@ namespace BackpackTFPriceLister.PriceDataJson
 
 		public Dictionary<string, ItemPriceJson> items
 		{ get; set; }
+		
+		public ItemPriceJson GetDataFromID(int defindex)
+		{
+			foreach (ItemPriceJson ipj in items.Values)
+			{
+				if (ipj.defindex.FirstOrDefault() == defindex)
+				{
+					return ipj;
+				}
+			}
+
+			return null;
+		}
 	}
 }

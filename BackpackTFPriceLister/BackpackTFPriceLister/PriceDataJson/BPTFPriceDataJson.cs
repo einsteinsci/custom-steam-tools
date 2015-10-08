@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace BackpackTFPriceLister.PriceDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class BPTFPriceDataJson
+	public class BpTfPriceDataJson
 	{
 		public BPTFPriceDataResponseJson response
 		{ get; set; }
