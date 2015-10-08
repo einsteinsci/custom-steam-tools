@@ -13,6 +13,8 @@ namespace BackpackTFPriceLister.PriceDataJson
 		public List<int> defindex
 		{ get; private set; }
 
-		public Dictionary<string, TradabilityJson>
+		// qualities = key
+		public Dictionary<string, TradabilityJson> prices
+		{ get; private set; }
 	}
 }

@@ -9,31 +9,12 @@ using System.IO;
 using System.Net;
 using BackpackTFPriceLister.ItemDataJson;
 using Newtonsoft.Json;
+using BackpackTFPriceLister.PriceDataJson;
 
 namespace BackpackTFConsole
 {
 	public class Program
 	{
-		[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-		public class Test
-		{
-			public int number
-			{ get; set; }
-
-			public Dictionary<string, Thing> stuff
-			{ get; set; }
-		}
-
-		[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-		public class Thing
-		{
-			public int value
-			{ get; set; }
-
-			public string name
-			{ get; set; }
-		}
-
 		[STAThread]
 		public static void Main(string[] args)
 		{
@@ -42,11 +23,13 @@ namespace BackpackTFConsole
 			PriceLister.Initialize(true);
 			Logger.Event += DebugLog;
 
-			PriceLister.LoadData(true, true);
+			PriceLister.LoadData(true, false);
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
 
 			PriceLister.ParseItemsJson();
-			TF2Data data = PriceLister.TranslateData();
+			TF2Data tf2 = PriceLister.TranslateData();
+
+			BPTFPriceDataJson price = PriceLister.ParsePricesJson();
 
 			Console.ReadKey();
 		}

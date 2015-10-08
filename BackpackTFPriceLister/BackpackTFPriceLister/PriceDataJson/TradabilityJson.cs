@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister.PriceDataJson
 {
-	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
+	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class TradabilityJson
 	{
+		[JsonProperty]
 		public CraftibilityJson Tradable
 		{ get; set; }
 

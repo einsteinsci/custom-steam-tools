@@ -1,4 +1,5 @@
 ﻿using BackpackTFPriceLister.ItemDataJson;
+using BackpackTFPriceLister.PriceDataJson;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,9 @@ namespace BackpackTFPriceLister
 		public static TF2DataJson ItemDataRaw
 		{ get; private set; }
 		public static TF2Data ItemData
+		{ get; private set; }
+
+		public static BPTFPriceDataJson PriceDataRaw
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -81,7 +85,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("An error occurred reading the bp.tf cache: " + e.Message);
+					Logger.Log("  An error occurred reading the bp.tf cache: " + e.Message);
 					return;
 				}
 			}
@@ -91,10 +95,10 @@ namespace BackpackTFPriceLister
 				WebClient client = new WebClient();
 				BpTfCache = client.DownloadString(BpTfUrl);
 				BpTfCache = BpTfCache.Replace("    ", "\t");
-				Logger.Log("Download complete.");
+				Logger.Log("  Download complete.");
 
 				File.WriteAllText(CacheLocation + BpTfFilename, BpTfCache);
-				Logger.Log("Saved bp.tf cache.");
+				Logger.Log("  Saved bp.tf cache.");
 
 			}
 
@@ -107,7 +111,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("An error occurred reading the TF2 item cache: " + e.Message);
+					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message);
 				}
 			}
 			else
@@ -115,10 +119,10 @@ namespace BackpackTFPriceLister
 				Logger.Log("Downloading data from Steam...");
 				WebClient client = new WebClient();
 				ItemCache = client.DownloadString(SteamUrl);
-				Logger.Log("Download complete.");
+				Logger.Log("  Download complete.");
 
 				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
-				Logger.Log("Saved TF2 item cache.");
+				Logger.Log("  Saved TF2 item cache.");
 			}
 		}
 
@@ -129,9 +133,9 @@ namespace BackpackTFPriceLister
 				LoadData();
 			}
 
-			Logger.Log("Parsing JSON data...");
+			Logger.Log("Parsing TF2 JSON data...");
 			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
-			Logger.Log("Parse complete.");
+			Logger.Log("  Parse complete.");
 
 			return ItemDataRaw;
 		}
@@ -146,6 +150,20 @@ namespace BackpackTFPriceLister
 			ItemData = new TF2Data(ItemDataRaw);
 
 			return ItemData;
+		}
+
+		public static BPTFPriceDataJson ParsePricesJson()
+		{
+			if (BpTfCache == null)
+			{
+				LoadData();
+			}
+
+			Logger.Log("Parsing backpack.tf JSON data...");
+			PriceDataRaw = JsonConvert.DeserializeObject<BPTFPriceDataJson>(BpTfCache);
+			Logger.Log("  Parse complete.");
+
+			return PriceDataRaw;
 		}
 	}
 }
