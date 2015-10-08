@@ -10,7 +10,7 @@ namespace BackpackTFPriceLister.PriceDataJson
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class ItemPriceJson
 	{
-		public List<int> defindex
+		public List<long> defindex
 		{ get; set; }
 
 		// qualities = key

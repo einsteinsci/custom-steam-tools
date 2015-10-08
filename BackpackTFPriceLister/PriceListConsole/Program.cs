@@ -21,16 +21,19 @@ namespace BackpackTFConsole
 			Console.Title = "Backpack.tf Console";
 			Console.ForegroundColor = ConsoleColor.White;
 			PriceLister.Initialize(true);
-			Logger.Event += DebugLog;
+			Logger.Logging += DebugLog;
+			Logger.Prompting = DebugPrompt;
 
-			PriceLister.LoadData(true, true);
-			//Logger.Log("\n" + PriceData.ItemCache, false, true);
+			PriceLister.AutoSetup();
 
-			PriceLister.ParseItemsJson();
-			TF2Data tf2 = PriceLister.TranslateItemsData();
+			string input = "";
+			while (input != "exit")
+			{
+				Console.WriteLine();
+				input = DebugPrompt(null, new PromptEventArgs("> "));
 
-			PriceLister.ParsePricesJson();
-			BpTfPriceData price = PriceLister.TranslatePricingData();
+				PriceLister.RunCommand(input);
+			}
 
 			Console.ReadKey();
 		}
@@ -60,6 +63,30 @@ namespace BackpackTFConsole
 			{
 				Console.WriteLine(e.Message);
 			}
+		}
+
+		private static string DebugPrompt(object sender, PromptEventArgs e)
+		{
+			if (sender != null)
+			{
+				Console.ForegroundColor = ConsoleColor.Cyan;
+				Console.Write("<" + sender.GetType().ToString() + ">: ");
+			}
+
+			Console.ForegroundColor = ConsoleColor.Green;
+			if (e.NewlineAfterPrompt)
+			{
+				Console.WriteLine(e.Prompt);
+			}
+			else
+			{
+				Console.Write(e.Prompt);
+			}
+
+			string res = Console.ReadLine();
+			Console.ForegroundColor = ConsoleColor.White;
+
+			return res;
 		}
 	}
 }

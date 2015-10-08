@@ -187,5 +187,33 @@ namespace BackpackTFPriceLister
 
 			return PriceData;
 		}
+
+		public static void AutoSetup()
+		{
+			Initialize(false);
+			LoadData(true, true);
+			ParseItemsJson();
+			TranslateItemsData();
+			ParsePricesJson();
+			TranslatePricingData();
+		}
+
+		public static void RunCommand(string cmdName, params string[] args)
+		{
+			CommandHandler.RunCommand(cmdName, args);
+		}
+		public static void RunCommand(string cmdAndArgs)
+		{
+			string[] split = cmdAndArgs.Split(' ');
+			string name = split[0];
+
+			string[] args = new string[split.Length - 1];
+			for (int i = 1; i < split.Length; i++)
+			{
+				args[i - 1] = split[i];
+			}
+
+			RunCommand(name, args);
+		}
 	}
 }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="ItemAttribute.cs" />
     <Compile Include="ItemSet.cs" />
     <Compile Include="PlayerClasses.cs" />

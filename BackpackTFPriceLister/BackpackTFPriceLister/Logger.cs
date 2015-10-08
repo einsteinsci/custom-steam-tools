@@ -26,19 +26,52 @@ namespace BackpackTFPriceLister
 		}
 	}
 
+	public delegate string PromptEvent(object sender, PromptEventArgs e);
+	public class PromptEventArgs : EventArgs
+	{
+		public string Prompt
+		{ get; private set; }
+
+		public bool NewlineAfterPrompt
+		{ get; private set; }
+
+		public PromptEventArgs(string prompt, bool newline = false)
+		{
+			Prompt = prompt;
+			NewlineAfterPrompt = newline;
+		}
+	}
+
 	public static class Logger
 	{
-		public static LogEvent Event
+		public static event LogEvent Logging;
+
+		public static PromptEvent Prompting
 		{ get; set; }
 
 		public static void Log(string message, bool error = false, bool debug = false, object sender = null)
 		{
-			if (Event == null)
+			if (Logging == null)
 			{
 				return;
 			}
 
-			Event(sender, new LogEventArgs(message, error, debug));
+			Logging(sender, new LogEventArgs(message, error, debug));
+		}
+
+		public static void AddLine()
+		{
+			Log("");
+		}
+
+		public static string GetInput(string prompt, bool newlineAfterPrompt = false, object sender = null)
+		{
+			if (Prompting == null)
+			{
+				return null;
+			}
+
+			return Prompting(sender, new PromptEventArgs(prompt, newlineAfterPrompt));
 		}
 	}
 }

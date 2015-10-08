@@ -15,7 +15,7 @@ namespace BackpackTFPriceLister
 		public string Name
 		{ get; set; }
 
-		public int ID
+		public long ID
 		{ get; set; }
 
 		public string Description
@@ -96,7 +96,7 @@ namespace BackpackTFPriceLister
 
 		public override int GetHashCode()
 		{
-			return ID;
+			return ID.GetHashCode();
 		}
 	}
 }

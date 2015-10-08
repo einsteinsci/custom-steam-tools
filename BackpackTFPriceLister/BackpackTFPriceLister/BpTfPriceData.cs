@@ -36,6 +36,20 @@ namespace BackpackTFPriceLister
 			return null;
 		}
 
+		public List<ItemPricing> GetAllPriceData(Item item)
+		{
+			List<ItemPricing> res = new List<ItemPricing>();
+			foreach (ItemPricing p in Prices)
+			{
+				if (p.Item == item)
+				{
+					res.Add(p);
+				}
+			}
+
+			return res;
+		}
+
 		public BpTfPriceData(BpTfPriceDataJson json, TF2Data db)
 		{
 			Prices = new List<ItemPricing>();
@@ -45,7 +59,8 @@ namespace BackpackTFPriceLister
 				Item item = db.GetItem(ipj.defindex.FirstOrDefault());
 				if (item == null)
 				{
-					Logger.Log("Could not find item with ID " + ipj.defindex.FirstOrDefault().ToString(), true, false, this);
+					long n = ipj.defindex.FirstOrDefault();
+					Logger.Log("Could not find item with ID " + n.ToString(), true, n == -2, this);
 				}
 
 				foreach (KeyValuePair<string, TradabilityJson> kvp1 in ipj.prices)
