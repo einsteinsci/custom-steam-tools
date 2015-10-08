@@ -7,20 +7,30 @@ using BackpackTFPriceLister;
 using System.Windows.Forms;
 using System.IO;
 using System.Net;
+using BackpackTFPriceLister.ItemDataJson;
+using Newtonsoft.Json;
+using BackpackTFPriceLister.PriceDataJson;
 
 namespace BackpackTFConsole
 {
-	class Program
+	public class Program
 	{
 		[STAThread]
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
+			Console.Title = "Backpack.tf Console";
 			Console.ForegroundColor = ConsoleColor.White;
-			PriceData.Initialize(true);
+			PriceLister.Initialize(true);
 			Logger.Event += DebugLog;
 
-			PriceData.LoadData(true, true);
+			PriceLister.LoadData(true, true);
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
+
+			PriceLister.ParseItemsJson();
+			TF2Data tf2 = PriceLister.TranslateItemsData();
+
+			PriceLister.ParsePricesJson();
+			BpTfPriceData price = PriceLister.TranslatePricingData();
 
 			Console.ReadKey();
 		}

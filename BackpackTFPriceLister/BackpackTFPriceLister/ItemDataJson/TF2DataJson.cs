@@ -5,18 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class StyleJson
+	public class TF2DataJson
 	{
 		[JsonProperty]
-		public string name
+		public TF2DataResultJson result
 		{ get; set; }
-
-		public StyleJson(string _name)
-		{
-			name = _name;
-		}
 	}
 }

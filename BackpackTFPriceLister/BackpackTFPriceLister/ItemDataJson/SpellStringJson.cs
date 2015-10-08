@@ -5,16 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class ItemDataResultJson
+	public class SpellStringJson
 	{
-		// should always be 1
-		public int status
+		public int index
 		{ get; set; }
 
-		public string items_game_url
+		public string @string
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return "#" + index + ": " + @string;
+		}
 	}
 }

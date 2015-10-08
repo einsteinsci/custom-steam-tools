@@ -5,27 +5,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class CapabilitiesJson
 	{
-		public bool paintable
+		public bool can_craft_mark
 		{ get; set; }
 
 		public bool nameable
 		{ get; set; }
 
-		public bool can_craft_if_purchased
+		public bool can_gift_wrap
 		{ get; set; }
 
-		public bool can_gift_wrap
+		public bool paintable
 		{ get; set; }
 
 		public bool can_craft_count
 		{ get; set; }
 
-		public bool can_craft_mark
+		// obsolete?
+		public bool decodable
+		{ get; set; }
+
+		public bool usable
+		{ get; set; }
+
+		public bool usable_gc
+		{ get; set; }
+
+		public bool usable_out_of_game
+		{ get; set; }
+
+		// Undocumented on API Page: https://wiki.teamfortress.com/wiki/WebAPI/GetSchema
+
+		public bool can_craft_if_purchased
 		{ get; set; }
 
 		public bool can_be_restored

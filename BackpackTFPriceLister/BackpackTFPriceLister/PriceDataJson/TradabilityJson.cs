@@ -5,13 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.PriceDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class ItemDataJson
+	public class TradabilityJson
 	{
 		[JsonProperty]
-		public ItemDataResultJson result
+		public CraftibilityJson Tradable
+		{ get; set; }
+
+		[JsonProperty("Non-Tradable")]
+		public CraftibilityJson NonTradable
 		{ get; set; }
 	}
 }

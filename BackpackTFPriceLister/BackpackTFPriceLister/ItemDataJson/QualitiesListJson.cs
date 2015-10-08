@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.ItemData
+namespace BackpackTFPriceLister.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class QualitiesListJson
@@ -76,6 +76,11 @@ namespace BackpackTFPriceLister.ItemData
 			haunted = 13;
 			collectors = 14;
 			paintkitweapon = 15;
+		}
+
+		public override string ToString()
+		{
+			return "Quality ID List";
 		}
 	}
 }
