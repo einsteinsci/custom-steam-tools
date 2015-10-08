@@ -25,5 +25,8 @@ namespace BackpackTFPriceLister.PriceDataJson
 
 		public int usd_currency_index
 		{ get; set; }
+
+		public Dictionary<string, ItemPriceJson> items
+		{ get; set; }
 	}
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister
 {
-	 public static class PriceData
+	 public static class PriceLister
     {
 		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
 		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
@@ -90,6 +90,7 @@ namespace BackpackTFPriceLister
 				Logger.Log("Downloading data from backpack.tf...");
 				WebClient client = new WebClient();
 				BpTfCache = client.DownloadString(BpTfUrl);
+				BpTfCache = BpTfCache.Replace("    ", "\t");
 				Logger.Log("Download complete.");
 
 				File.WriteAllText(CacheLocation + BpTfFilename, BpTfCache);

@@ -71,10 +71,14 @@
     <Compile Include="ItemDataJson\StyleJson.cs" />
     <Compile Include="ItemQualities.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="PriceData.cs" />
+    <Compile Include="PriceDataJson\CraftibilityJson.cs" />
+    <Compile Include="PriceDataJson\QualityPriceDataJson.cs" />
+    <Compile Include="PriceDataJson\TradabilityJson.cs" />
+    <Compile Include="PriceDataJson\TypeIndexPricingJson.cs" />
+    <Compile Include="PriceLister.cs" />
     <Compile Include="PriceDataJson\BPTFPriceDataJson.cs" />
     <Compile Include="PriceDataJson\BPTFPriceDataResponseJson.cs" />
-    <Compile Include="PriceDataJson\PriceIndexJson.cs" />
+    <Compile Include="PriceDataJson\ItemPriceJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StrangePart.cs" />
     <Compile Include="TF2Data.cs" />
