@@ -32,7 +32,9 @@ namespace BackpackTFPriceLister
 		public static string ItemCache
 		{ get; private set; }
 
-		public static TF2DataJson ItemData
+		public static TF2DataJson ItemDataRaw
+		{ get; private set; }
+		public static TF2Data ItemData
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -85,10 +87,14 @@ namespace BackpackTFPriceLister
 			}
 			else
 			{
-				Logger.Log("Connecting to backpack.tf...");
+				Logger.Log("Downloading data from backpack.tf...");
 				WebClient client = new WebClient();
 				BpTfCache = client.DownloadString(BpTfUrl);
 				Logger.Log("Download complete.");
+
+				File.WriteAllText(CacheLocation + BpTfFilename, BpTfCache);
+				Logger.Log("Saved bp.tf cache.");
+
 			}
 
 			if (steamOffline)
@@ -105,30 +111,38 @@ namespace BackpackTFPriceLister
 			}
 			else
 			{
-				Logger.Log("Connecting to Steam...");
+				Logger.Log("Downloading data from Steam...");
 				WebClient client = new WebClient();
 				ItemCache = client.DownloadString(SteamUrl);
 				Logger.Log("Download complete.");
+
+				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
+				Logger.Log("Saved TF2 item cache.");
 			}
-
-			Logger.Log("Caching data...");
-			WriteCache(BpTfCache, ItemCache);
-		}
-
-		private static void WriteCache(string bptfCache, string tf2Cache)
-		{
-			File.WriteAllText(CacheLocation + BpTfFilename, bptfCache);
-			Logger.Log("Saved bp.tf cache.");
-
-			File.WriteAllText(CacheLocation + ItemDataFilename, tf2Cache);
-			Logger.Log("Saved TF2 item cache.");
 		}
 
 		public static TF2DataJson ParseItemsJson()
 		{
+			if (ItemCache == null)
+			{
+				LoadData();
+			}
+
 			Logger.Log("Parsing JSON data...");
-			ItemData = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
+			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
 			Logger.Log("Parse complete.");
+
+			return ItemDataRaw;
+		}
+
+		public static TF2Data TranslateData()
+		{
+			if (ItemDataRaw == null)
+			{
+				ParseItemsJson();
+			}
+
+			ItemData = new TF2Data(ItemDataRaw);
 
 			return ItemData;
 		}

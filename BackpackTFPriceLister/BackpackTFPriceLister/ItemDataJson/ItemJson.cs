@@ -23,7 +23,7 @@ namespace BackpackTFPriceLister.ItemDataJson
 			public const string HALLOWEEN = "halloween";
 		}
 
-		// Localized (or Unlocalized) name
+		// Unlocalized name
 		public string name
 		{ get; set; }
 

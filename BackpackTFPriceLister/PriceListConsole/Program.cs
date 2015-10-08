@@ -16,6 +16,7 @@ namespace BackpackTFConsole
 		[STAThread]
 		static void Main(string[] args)
 		{
+			Console.Title = "Backpack.tf Console";
 			Console.ForegroundColor = ConsoleColor.White;
 			PriceData.Initialize(true);
 			Logger.Event += DebugLog;
@@ -23,7 +24,8 @@ namespace BackpackTFConsole
 			PriceData.LoadData(true, true);
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
 
-			TF2DataJson data = PriceData.ParseItemsJson();
+			PriceData.ParseItemsJson();
+			TF2Data data = PriceData.TranslateData();
 
 			Console.ReadKey();
 		}

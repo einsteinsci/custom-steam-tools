@@ -10,12 +10,15 @@ namespace BackpackTFPriceLister.ItemDataJson
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class AttributeJson
 	{
+		// Localized name
 		public string name
 		{ get; set; }
 
+		// Attribute ID
 		public int defindex
 		{ get; set; }
 
+		// Unlocalized name
 		public string attribute_class
 		{ get; set; }
 
@@ -25,12 +28,14 @@ namespace BackpackTFPriceLister.ItemDataJson
 		public double maxvalue
 		{ get; set; }
 
+		// Format string for description
 		public string description_string
 		{ get; set; }
 
 		public string description_format
 		{ get; set; }
 
+		// Positive or negative (or neutral)
 		public string effect_type
 		{ get; set; }
 
@@ -49,7 +54,7 @@ namespace BackpackTFPriceLister.ItemDataJson
 
 			string exampleDesc = description_string.Replace("%s1", "X");
 
-			return "#" + defindex + ": " + exampleDesc + " (" + attribute_class + ")";
+			return "#" + defindex + ": " + exampleDesc + " [" + attribute_class + "]";
 		}
 	}
 
@@ -58,5 +63,34 @@ namespace BackpackTFPriceLister.ItemDataJson
 		public const string POSITIVE = "positive";
 		public const string NEUTRAL = "neutral";
 		public const string NEGATIVE = "negative";
+
+		public static AttributeEffectType Parse(string aet)
+		{
+			if (aet == POSITIVE)
+			{
+				return AttributeEffectType.Positive;
+			}
+			if (aet == NEUTRAL)
+			{
+				return AttributeEffectType.Neutral;
+			}
+
+			return AttributeEffectType.Negative;
+		}
+
+		public static string GetEffectType(this AttributeEffectType t)
+		{
+			switch (t)
+			{
+				case AttributeEffectType.Negative:
+					return NEGATIVE;
+				case AttributeEffectType.Neutral:
+					return NEUTRAL;
+				case AttributeEffectType.Positive:
+					return POSITIVE;
+				default:
+					return "ERR";
+			}
+		}
 	}
 }
