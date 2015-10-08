@@ -19,7 +19,7 @@ namespace BackpackTFConsole
 			PriceData.Initialize(true);
 			Logger.Event += DebugLog;
 
-			PriceData.LoadData(true, false);
+			PriceData.LoadData(true, true);
 			//Logger.Log("\n" + PriceData.ItemCache, false, true);
 
 			Console.ReadKey();
