@@ -44,6 +44,36 @@ namespace BackpackTFPriceLister
 
 		public bool IsChemistrySet => ChemistrySetQuality != null;
 
+		public string CompiledTitleName
+		{
+			get
+			{
+				string res = Item.ImproperName;
+				if (Quality.ToReadableString() != "")
+				{
+					res = Quality.ToReadableString() + " " + res;
+				}
+
+				if (!Tradable)
+				{
+					res = "Non-Tradable " + res;
+				}
+				else if (!Craftable)
+				{
+					res = "Non-Craftable " + res;
+				}
+
+				
+				if ((Quality == Quality.Unique || Quality == Quality.Stock) && 
+					Craftable && Tradable && Item.IsProper)
+				{
+					res = "The " + res;
+				}
+
+				return res;
+			}
+		}
+
 		public ItemPricing(Item item, Quality quality, string currency, 
 			double price, double priceHigh, string priceIndex = "0", bool craftable = true, bool tradable = true)
 		{
@@ -82,14 +112,17 @@ namespace BackpackTFPriceLister
 				return "n/a";
 			}
 
-			if (PriceHigh != PriceLow)
+			if (PriceHigh != PriceLow && PriceHigh.MatchesUnit(PriceLow))
 			{
 				return PriceLow.ToStringUnitless() + " - " + PriceHigh.ToString();
 			}
-			else
+
+			if (PriceHigh != PriceLow)
 			{
-				return "~" + PriceLow.ToString();
+				return PriceLow.ToString() + " - " + PriceHigh.ToString();
 			}
+
+			return "~" + PriceLow.ToString();
 		}
 
 		public override string ToString()

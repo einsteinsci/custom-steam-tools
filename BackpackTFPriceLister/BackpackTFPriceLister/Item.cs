@@ -15,6 +15,12 @@ namespace BackpackTFPriceLister
 		public string Name
 		{ get; set; }
 
+		public string ImproperName
+		{ get; set; }
+
+		public bool IsProper
+		{ get; set; }
+
 		public long ID
 		{ get; set; }
 
@@ -64,6 +70,8 @@ namespace BackpackTFPriceLister
 		{
 			UnlocalizedName = json.name;
 			Name = (json.proper_name ? "The " : "") + json.item_name;
+			ImproperName = json.item_name;
+			IsProper = json.proper_name;
 			ID = json.defindex;
 			Description = json.item_description;
 			Type = json.item_type_name;

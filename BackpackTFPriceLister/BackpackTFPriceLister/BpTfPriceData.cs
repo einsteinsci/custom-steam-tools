@@ -56,11 +56,17 @@ namespace BackpackTFPriceLister
 
 			foreach (ItemPriceJson ipj in json.response.items.Values)
 			{
+				// Skip "Random Craft Hat". It's not a real item.
+				if (ipj.defindex.FirstOrDefault() == -2)
+				{
+					continue;
+				}
+
 				Item item = db.GetItem(ipj.defindex.FirstOrDefault());
 				if (item == null)
 				{
 					long n = ipj.defindex.FirstOrDefault();
-					Logger.Log("Could not find item with ID " + n.ToString(), true, n == -2, this);
+					Logger.Log("Could not find item with ID " + n.ToString(), MessageType.Error);
 				}
 
 				foreach (KeyValuePair<string, TradabilityJson> kvp1 in ipj.prices)

@@ -27,52 +27,42 @@ namespace BackpackTFConsole
 			PriceLister.AutoSetup();
 
 			string input = "";
-			while (input != "exit")
+			while (input.ToLower() != "exit")
 			{
 				Console.WriteLine();
-				input = DebugPrompt(null, new PromptEventArgs("> "));
+				input = DebugPrompt(null, new PromptEventArgs("bp.tf Console> "));
 
-				PriceLister.RunCommand(input);
+				if (input.ToLower() != "exit")
+				{
+					PriceLister.RunCommand(input);
+				}
 			}
-
-			Console.ReadKey();
 		}
 
 		private static void DebugLog(object sender, LogEventArgs e)
 		{
-			if (sender != null)
+			switch (e.Type)
 			{
-				Console.ForegroundColor = ConsoleColor.Cyan;
-				Console.Write("<" + sender.GetType().ToString() + ">: ");
-				Console.ForegroundColor = ConsoleColor.White;
+				case MessageType.Normal:
+					Console.ForegroundColor = ConsoleColor.Gray;
+					break;
+				case MessageType.Debug:
+					Console.ForegroundColor = ConsoleColor.DarkGray;
+					break;
+				case MessageType.Error:
+					Console.ForegroundColor = ConsoleColor.Red;
+					break;
+				case MessageType.Emphasis:
+					Console.ForegroundColor = ConsoleColor.White;
+					break;
 			}
 
-			if (e.Debug)
-			{
-				Console.ForegroundColor = ConsoleColor.Gray;
-				Console.WriteLine(e.Message);
-				Console.ForegroundColor = ConsoleColor.White;
-			}
-			else if (e.Error)
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine(e.Message);
-				Console.ForegroundColor = ConsoleColor.White;
-			}
-			else
-			{
-				Console.WriteLine(e.Message);
-			}
+			Console.WriteLine(e.Message);
+			Console.ForegroundColor = ConsoleColor.Gray;
 		}
 
 		private static string DebugPrompt(object sender, PromptEventArgs e)
 		{
-			if (sender != null)
-			{
-				Console.ForegroundColor = ConsoleColor.Cyan;
-				Console.Write("<" + sender.GetType().ToString() + ">: ");
-			}
-
 			Console.ForegroundColor = ConsoleColor.Green;
 			if (e.NewlineAfterPrompt)
 			{

@@ -18,10 +18,17 @@ namespace BackpackTFPriceLister
 
 			_commands.Add("pc", PriceCheck);
 			_commands.Add("pricecheck", PriceCheck);
+			_commands.Add("refresh", ForceRefresh);
 		}
 
 		public static void RunCommand(string command, params string[] args)
 		{
+			if (!_commands.Keys.Contains(command.ToLower()))
+			{
+				Logger.Log("Command not found.", MessageType.Error);
+				return;
+			}
+
 			_commands[command.ToLower()](args); // funky syntax
 		}
 
@@ -29,7 +36,7 @@ namespace BackpackTFPriceLister
 		{
 			if (args.Length == 0)
 			{
-				Logger.Log("No item specified", true);
+				Logger.Log("No item specified", MessageType.Error);
 			}
 
 			string itemName = "";
@@ -42,25 +49,34 @@ namespace BackpackTFPriceLister
 			bool isNum = int.TryParse(itemName, out id);
 
 			Item item = null;
-			foreach (Item i in PriceLister.ItemData.Items)
+
+			// shortcut
+			if (itemName.ToLower() == "key")
 			{
-				if (isNum)
+				item = PriceLister.ItemData.GetItem(5021);
+			}
+			else
+			{
+				foreach (Item i in PriceLister.ItemData.Items)
 				{
-					if (i.ID == id)
+					if (isNum)
 					{
-						item = i;
-						break;
+						if (i.ID == id)
+						{
+							item = i;
+							break;
+						}
+						continue;
 					}
-					continue;
-				}
-				else
-				{
-					if (i.Name.ToLower() == itemName.ToLower())
+					else
 					{
-						item = i;
-						break;
+						if (i.Name.ToLower() == itemName.ToLower())
+						{
+							item = i;
+							break;
+						}
+						continue;
 					}
-					continue;
 				}
 			}
 
@@ -75,19 +91,25 @@ namespace BackpackTFPriceLister
 					if (i.Name.ToLower().Contains(itemName.ToLower()))
 					{
 						possibleItems.Add(i);
-						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name);
+						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, MessageType.Emphasis);
 					}
 				}
 
 				if (possibleItems.Count == 0)
 				{
-					Logger.Log("No items found matching '" + itemName + "'", true);
+					Logger.Log("No items found matching '" + itemName + "'", MessageType.Error);
 					return;
 				}
 
 				while (item == null)
 				{
 					string sint = Logger.GetInput("Enter selection > ");
+					if (sint.ToLower() == "esc")
+					{
+						Logger.Log("Canceled.");
+						return;
+					}
+
 					int n = -1;
 
 					bool worked = int.TryParse(sint, out n);
@@ -97,26 +119,26 @@ namespace BackpackTFPriceLister
 					}
 					else
 					{
-						Logger.Log("Invalid choice: " + sint, true);
+						Logger.Log("Invalid choice: " + sint, MessageType.Error);
 					}
 				}
 			}
 			#endregion
 
 			Logger.AddLine();
-			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")");
+			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", MessageType.Emphasis);
 
 			List<ItemPricing> itemPricings = PriceLister.PriceData.GetAllPriceData(item);
 
 			if (itemPricings.Count == 0)
 			{
-				Logger.Log("  No price data found for " + item.Name, true);
+				Logger.Log("  No price data found for " + item.Name, MessageType.Error);
 				return;
 			}
 
 			if (itemPricings.All((p) => !p.Tradable)) // none are tradable
 			{
-				Logger.Log("  Item not tradable.", true);
+				Logger.Log("  Item not tradable.", MessageType.Error);
 				return;
 			}
 
@@ -148,30 +170,23 @@ namespace BackpackTFPriceLister
 			bool takeInput = false;
 			foreach (ItemPricing p in others)
 			{
-				string informalName = p.Item.Name;
-				if (p.Quality.ToReadableString() != "")
-				{
-					informalName = p.Quality.ToReadableString() + " " + informalName;
-				}
-
-				Logger.Log(informalName + ": " + p.PriceString());
-			}
-			if (unusuals.Count > 0)
-			{
-				Logger.Log("Enter 'U' to list unusuals.");
-				takeInput = true;
+				Logger.Log("  " + p.CompiledTitleName + ": " + p.PriceString());
 			}
 			if (uniques.Count <= 2)
 			{
 				foreach (ItemPricing p in uniques)
 				{
-					string informal = p.Craftable ? p.Item.Name : "Non-Craftable " + p.Item.Name;
-					Logger.Log(informal + ": " + p.PriceString());
+					Logger.Log("  " + p.CompiledTitleName + ": " + p.PriceString());
 				}
+			}
+			if (unusuals.Count > 0)
+			{
+				Logger.Log("  Enter 'U' to list unusuals.", MessageType.Emphasis);
+				takeInput = true;
 			}
 			else
 			{
-				Logger.Log("Enter an ID for crate/strangifier information.");
+				Logger.Log("  Enter an ID for crate/strangifier information.", MessageType.Emphasis);
 				takeInput = true;
 			}
 
@@ -180,13 +195,19 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			string input = Logger.GetInput("> ");
-			if (input.ToLower() == "u")
+			string input = Logger.GetInput("  Press Enter to continue> ");
+
+			if (input.ToLower() == "esc")
+			{
+				Logger.Log("Canceled.");
+				return;
+			}
+			else if (input.ToLower() == "u")
 			{
 				foreach (ItemPricing p in unusuals)
 				{
 					UnusualEffect fx = PriceLister.ItemData.Unusuals.First((ue) => ue.ID == p.PriceIndex);
-					Logger.Log(fx.Name + "(#" + fx.ID + "): " + p.PriceString());
+					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.PriceString());
 				}
 			}
 			else
@@ -197,13 +218,18 @@ namespace BackpackTFPriceLister
 					ItemPricing p = uniques.FirstOrDefault((_p) => _p.PriceIndex == pid);
 					if (p == null)
 					{
-						Logger.Log("No " + item.Name + " found with PriceIndex " + pid.ToString(), true);
+						Logger.Log("  No " + item.Name + " found with PriceIndex " + pid.ToString(), MessageType.Error);
 						return;
 					}
 
-					Logger.Log(item.Name + " #" + pid.ToString() + ": " + p.PriceString());
+					Logger.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.PriceString());
 				}
 			}
+		}
+
+		public static void ForceRefresh(params string[] args)
+		{
+			PriceLister.AutoSetup(true, true);
 		}
 	}
 }

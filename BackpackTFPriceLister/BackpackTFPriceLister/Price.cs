@@ -118,5 +118,10 @@ namespace BackpackTFPriceLister
 		{
 			return a.TotalRefined != b.TotalRefined;
 		}
+
+		public bool MatchesUnit(Price other)
+		{
+			return (other.Keys > 0) == (Keys > 0);
+		}
 	}
 }

@@ -188,10 +188,10 @@ namespace BackpackTFPriceLister
 			return PriceData;
 		}
 
-		public static void AutoSetup()
+		public static void AutoSetup(bool fancy = false, bool force = true)
 		{
-			Initialize(false);
-			LoadData(true, true);
+			Initialize(fancy);
+			LoadData(!force, !force);
 			ParseItemsJson();
 			TranslateItemsData();
 			ParsePricesJson();
