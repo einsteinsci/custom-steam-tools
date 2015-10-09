@@ -19,6 +19,7 @@ namespace BackpackTFPriceLister
 			_commands.Add("pc", PriceCheck);
 			_commands.Add("pricecheck", PriceCheck);
 			_commands.Add("refresh", ForceRefresh);
+			_commands.Add("range", GetItemsInPriceRange);
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -32,6 +33,7 @@ namespace BackpackTFPriceLister
 			_commands[command.ToLower()](args); // funky syntax
 		}
 
+		// pc {itemname | itemID | searchQuery}
 		public static void PriceCheck(params string[] args)
 		{
 			if (args.Length == 0)
@@ -170,13 +172,13 @@ namespace BackpackTFPriceLister
 			bool takeInput = false;
 			foreach (ItemPricing p in others)
 			{
-				Logger.Log("  " + p.CompiledTitleName + ": " + p.PriceString());
+				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 			}
 			if (uniques.Count <= 2)
 			{
 				foreach (ItemPricing p in uniques)
 				{
-					Logger.Log("  " + p.CompiledTitleName + ": " + p.PriceString());
+					Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 				}
 			}
 			if (unusuals.Count > 0)
@@ -207,7 +209,7 @@ namespace BackpackTFPriceLister
 				foreach (ItemPricing p in unusuals)
 				{
 					UnusualEffect fx = PriceLister.ItemData.Unusuals.First((ue) => ue.ID == p.PriceIndex);
-					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.PriceString());
+					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString());
 				}
 			}
 			else
@@ -222,14 +224,126 @@ namespace BackpackTFPriceLister
 						return;
 					}
 
-					Logger.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.PriceString());
+					Logger.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.GetPriceString());
 				}
 			}
 		}
 
+		// refresh
 		public static void ForceRefresh(params string[] args)
 		{
 			PriceLister.AutoSetup(true, true);
+		}
+
+		// range priceMin priceMax [filters...]
+		public static void GetItemsInPriceRange(params string[] args)
+		{
+			if (args.Length < 2)
+			{
+				Logger.Log("Missing arguments: priceMin, priceMax", MessageType.Error);
+				return;
+			}
+
+			string sMin = args[0].ToLower();
+			string sMax = args[1].ToLower();
+
+			bool kMin = sMin.EndsWith("k");
+			bool kMax = sMax.EndsWith("k");
+
+			sMin = sMin.TrimEnd('k');
+			sMax = sMax.TrimEnd('k');
+
+			double dMin = -1, dMax = -1;
+			if (!double.TryParse(sMin, out dMin))
+			{
+				Logger.Log("Argument invalid: " + args[0], MessageType.Error);
+				return;
+			}
+			if (!double.TryParse(sMax, out dMax))
+			{
+				Logger.Log("Argument invalid: " + args[1], MessageType.Error);
+				return;
+			}
+
+			Price min = kMin ? new Price(dMin, 0) : new Price(0, dMin);
+			Price max = kMax ? new Price(dMax, 0) : new Price(0, dMax);
+
+			List<string> sfilters = new List<string>();
+			for (int i = 2; i < args.Length; i++)
+			{
+				sfilters.Add(args[i]);
+			}
+
+			List<ItemSlotPlain> allowedSlots = new List<ItemSlotPlain>();
+			List<Quality> allowedQualities = new List<Quality>();
+			foreach (string s in sfilters)
+			{
+				ItemSlotPlain buf = ItemSlots.Plain.Parse(s);
+				
+				if (buf != ItemSlotPlain.Unused)
+				{
+					allowedSlots.Add(buf);
+				}
+				else
+				{
+					allowedQualities.Add(ItemQualities.Parse(s));
+				}
+			}
+
+			bool filterSlot = allowedSlots.Count != 0;
+			bool filterQuality = allowedQualities.Count != 0;
+
+			if (filterSlot || filterQuality)
+			{
+				string res = "Filters: ";
+				foreach (ItemSlotPlain s in allowedSlots)
+				{
+					res += s.ToString() + " ";
+				}
+				foreach (Quality q in allowedQualities)
+				{
+					res += q.ToReadableString() + " ";
+				}
+
+				Logger.Log(res, MessageType.Emphasis);
+			}
+
+			List<ItemPricing> results = new List<ItemPricing>();
+			foreach (ItemPricing p in PriceLister.PriceData.Prices)
+			{
+				if (!p.Tradable)
+				{
+					continue;
+				}
+
+				if (filterSlot && !allowedSlots.Contains(p.Item.PlainSlot))
+				{
+					continue;
+				}
+
+				if (filterQuality && !allowedQualities.Contains(p.Quality))
+				{
+					continue;
+				}
+
+				if (p.PriceHigh <= max && p.PriceLow >= min)
+				{
+					results.Add(p);
+				}
+			}
+
+			Logger.Log("Items in price range " + min.ToString() + " to " + max.ToString() + ": ", MessageType.Emphasis);
+			foreach (ItemPricing p in results)
+			{
+				if (p.Quality == Quality.Unusual)
+				{
+					UnusualEffect fx = PriceLister.ItemData.Unusuals.First((u) => u.ID == p.PriceIndex);
+					Logger.Log("  " + p.CompiledTitleName + " (" + fx.Name + "): " + p.GetPriceString());
+					continue;
+				}
+
+				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
+			}
 		}
 	}
 }

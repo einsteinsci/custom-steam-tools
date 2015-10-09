@@ -105,7 +105,7 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		public string PriceString()
+		public string GetPriceString()
 		{
 			if (!Tradable)
 			{
@@ -127,7 +127,7 @@ namespace BackpackTFPriceLister
 
 		public override string ToString()
 		{
-			string res = Item.Name + " [" + PriceIndex.ToString() + "]: " + PriceString();
+			string res = Item.Name + " [" + PriceIndex.ToString() + "]: " + GetPriceString();
 			if (Quality.ToReadableString() != "")
 			{
 				res = Quality.ToReadableString() + " " + res;

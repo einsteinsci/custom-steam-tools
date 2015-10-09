@@ -54,5 +54,19 @@ namespace BackpackTFPriceLister
 
 			return q.ToString();
 		}
+
+		public static Quality Parse(string s)
+		{
+			for (int i = 0; i <= 14; i++)
+			{
+				Quality q = (Quality)i;
+				if (q.ToReadableString().ToLower() == s || q.ToString().ToLower() == s)
+				{
+					return q;
+				}
+			}
+
+			return Quality.Unique;
+		}
 	}
 }

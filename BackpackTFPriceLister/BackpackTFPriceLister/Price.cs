@@ -105,6 +105,17 @@ namespace BackpackTFPriceLister
 			return Keys > 0 ? (TotalKeys.ToString() + " keys") : (TotalRefined.ToString() + " ref");
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is Price)
+			{
+				Price other = (Price)obj;
+				return other.TotalRefined == TotalRefined;
+			}
+
+			return false;
+		}
+
 		public string ToStringUnitless()
 		{
 			return Keys > 0 ? TotalKeys.ToString() : TotalRefined.ToString();
@@ -117,6 +128,36 @@ namespace BackpackTFPriceLister
 		public static bool operator!=(Price a, Price b)
 		{
 			return a.TotalRefined != b.TotalRefined;
+		}
+
+		public static bool operator>(Price a, Price b)
+		{
+			return a.TotalRefined > b.TotalRefined;
+		}
+
+		public static bool operator<(Price a, Price b)
+		{
+			return a.TotalRefined < b.TotalRefined;
+		}
+
+		public static bool operator>=(Price a, Price b)
+		{
+			return a.TotalRefined >= b.TotalRefined;
+		}
+
+		public static bool operator<=(Price a, Price b)
+		{
+			return a.TotalRefined <= b.TotalRefined;
+		}
+
+		public static Price operator+(Price a, Price b)
+		{
+			return new Price(0, a.TotalRefined + b.TotalRefined);
+		}
+
+		public static Price operator-(Price a, Price b)
+		{
+			return new Price(0, a.TotalRefined - b.TotalRefined);
 		}
 
 		public bool MatchesUnit(Price other)

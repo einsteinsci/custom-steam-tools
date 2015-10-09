@@ -42,11 +42,56 @@ namespace BackpackTFPriceLister
 		public const string ACTION = "action";
 		public const string TAUNT = "taunt";
 
+		public static class Plain
+		{
+			public const string WEAPON = "weapon";
+			public const string HAT = "cosmetic";
+			public const string ACTION = "action";
+			public const string TAUNT = "taunt";
+			public const string UNUSED = "unused";
+
+			public static ItemSlotPlain Parse(string s)
+			{
+				if (s == null)
+				{
+					return ItemSlotPlain.Unused;
+				}
+
+				string sl = s.ToLower();
+
+				if (sl == WEAPON)
+				{
+					return ItemSlotPlain.Weapon;
+				}
+				if (sl == HAT || sl == "hat")
+				{
+					return ItemSlotPlain.Cosmetic;
+				}
+				if (sl == ACTION)
+				{
+					return ItemSlotPlain.Action;
+				}
+				if (sl == TAUNT)
+				{
+					return ItemSlotPlain.Taunt;
+				}
+
+				return ItemSlotPlain.Unused;
+			}
+		}
+
 		public const string UNUSED_BUILDING = "building";
 		public const string UNUSED_GRENADE = "grenade";
 
-		public static ItemSlot Parse(string sl)
+		public static ItemSlot Parse(string s)
 		{
+			if (s == null)
+			{
+				return ItemSlot._Grenade;
+			}
+
+			string sl = s.ToLower();
+
 			if (sl == WEAP_PRIMARY)
 			{
 				return ItemSlot.Primary;
