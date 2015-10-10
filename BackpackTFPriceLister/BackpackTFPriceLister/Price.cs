@@ -13,12 +13,20 @@ namespace BackpackTFPriceLister
 		public const string CURRENCY_CASH = "usd";
 
 		public const int KEY_DEFINDEX = 5021;
+
+		public const int SCRAP_DEFINDEX = 5000;
+		public const int REC_DEFINDEX = 5001;
 		public const int REF_DEFINDEX = 5002;
 
 		public const double KEY_STOREPRICE_USD = 2.49;
 
 		public static Price OneKey => new Price(1, 0);
 		public static Price OneRef => new Price(0, 1);
+		public static Price Zero => new Price(0, 0);
+
+		public static Item RefinedMetal => PriceLister.ItemData.GetItem(REF_DEFINDEX);
+		public static Item ReclaimedMetal => PriceLister.ItemData.GetItem(REC_DEFINDEX);
+		public static Item ScrapMetal => PriceLister.ItemData.GetItem(SCRAP_DEFINDEX);
 
 		public static double RefinedPerKey
 		{
@@ -102,7 +110,7 @@ namespace BackpackTFPriceLister
 
 		public override string ToString()
 		{
-			return Keys > 0 ? (TotalKeys.ToString() + " keys") : (TotalRefined.ToString() + " ref");
+			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString() + " ref");
 		}
 
 		public override bool Equals(object obj)

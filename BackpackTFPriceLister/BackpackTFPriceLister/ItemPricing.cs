@@ -9,8 +9,10 @@ namespace BackpackTFPriceLister
 {
 	public class ItemPricing
 	{
-		public Item Item
+		public List<Item> Items
 		{ get; set; }
+
+		public Item Item => Items.FirstOrDefault();
 
 		public Quality Quality
 		{ get; set; }
@@ -20,6 +22,9 @@ namespace BackpackTFPriceLister
 
 		// Data means nothing if this is false
 		public bool Tradable
+		{ get; set; }
+
+		public bool Australium
 		{ get; set; }
 
 		// 0 for almost everything except unusuals and a few other things.
@@ -49,6 +54,12 @@ namespace BackpackTFPriceLister
 			get
 			{
 				string res = Item.ImproperName;
+
+				if (Australium)
+				{
+					res = "Australium " + res;
+				}
+
 				if (Quality.ToReadableString() != "")
 				{
 					res = Quality.ToReadableString() + " " + res;
@@ -62,7 +73,6 @@ namespace BackpackTFPriceLister
 				{
 					res = "Non-Craftable " + res;
 				}
-
 				
 				if ((Quality == Quality.Unique || Quality == Quality.Stock) && 
 					Craftable && Tradable && Item.IsProper)
@@ -74,13 +84,15 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		public ItemPricing(Item item, Quality quality, string currency, 
-			double price, double priceHigh, string priceIndex = "0", bool craftable = true, bool tradable = true)
+		public ItemPricing(List<Item> items, Quality quality, string currency, 
+			double price, double priceHigh, string priceIndex = "0", 
+			bool craftable = true, bool tradable = true, bool australium = false)
 		{
-			this.Item = item;
+			Items = items;
 			Quality = quality;
 			Craftable = craftable;
 			Tradable = tradable;
+			Australium = australium;
 			
 			// hyphen in middle
 			if (!priceIndex.StartsWith("-") && priceIndex.Contains("-"))
@@ -95,6 +107,7 @@ namespace BackpackTFPriceLister
 			}
 
 			PriceLow = new Price(price, currency);
+
 			if (priceHigh == 0)
 			{
 				PriceHigh = PriceLow;
@@ -128,6 +141,11 @@ namespace BackpackTFPriceLister
 		public override string ToString()
 		{
 			string res = Item.Name + " [" + PriceIndex.ToString() + "]: " + GetPriceString();
+			if (Australium)
+			{
+				res = "Australium " + res;
+			}
+
 			if (Quality.ToReadableString() != "")
 			{
 				res = Quality.ToReadableString() + " " + res;

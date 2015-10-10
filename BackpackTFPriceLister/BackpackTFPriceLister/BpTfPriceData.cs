@@ -13,24 +13,38 @@ namespace BackpackTFPriceLister
 		{ get; private set; }
 
 		public ItemPricing GetPriceData(Item item, Quality quality = Quality.Unique, int? priceIndex = null, 
-			bool? craftable = null, bool? tradable = true)
+			bool? craftable = null, bool? tradable = true, bool? australium = false)
 		{
-			// Don't ask...
-			foreach (ItemPricing p in Prices)
+			List<ItemPricing> pricings = GetAllPriceData(item);
+
+			foreach (ItemPricing p in GetAllPriceData(item))
 			{
-				if (p.Item == item && p.Quality == quality)
+				if (quality != p.Quality)
 				{
-					if (priceIndex == null || priceIndex.Value == p.PriceIndex)
-					{
-						if (craftable == null || craftable.Value == p.Craftable)
-						{
-							if (tradable == null || tradable.Value == p.Tradable)
-							{
-								return p;
-							}
-						}
-					}
+					continue;
 				}
+
+				if (priceIndex != null && p.PriceIndex != priceIndex)
+				{
+					continue;
+				}
+
+				if (craftable != null && p.Craftable != craftable)
+				{
+					continue;
+				}
+
+				if (tradable != null && p.Tradable != tradable)
+				{
+					continue;
+				}
+
+				if (australium != null && p.Australium != australium)
+				{
+					continue;
+				}
+
+				return p;
 			}
 
 			return null;
@@ -41,7 +55,7 @@ namespace BackpackTFPriceLister
 			List<ItemPricing> res = new List<ItemPricing>();
 			foreach (ItemPricing p in Prices)
 			{
-				if (p.Item == item)
+				if (p.Items.Exists((i) => i.ID == item.ID))
 				{
 					res.Add(p);
 				}
@@ -54,20 +68,38 @@ namespace BackpackTFPriceLister
 		{
 			Prices = new List<ItemPricing>();
 
-			foreach (ItemPriceJson ipj in json.response.items.Values)
+			foreach (KeyValuePair<string, ItemPriceJson> kvp0 in json.response.items)
 			{
+				ItemPriceJson ipj = kvp0.Value;
+
 				// Skip "Random Craft Hat". It's not a real item.
 				if (ipj.defindex.FirstOrDefault() == -2)
 				{
 					continue;
 				}
 
-				Item item = db.GetItem(ipj.defindex.FirstOrDefault());
-				if (item == null)
+				List<Item> items = new List<Item>();
+				foreach (long l in ipj.defindex)
 				{
-					long n = ipj.defindex.FirstOrDefault();
-					Logger.Log("Could not find item with ID " + n.ToString(), MessageType.Error);
+					Item i = db.GetItem(l);
+					if (i != null)
+					{
+						items.Add(i);
+					}
 				}
+
+				if (items.Count == 0)
+				{
+					string s_ids = "[ ";
+					foreach (long l in ipj.defindex)
+					{
+						s_ids += l.ToString() + " ";
+					}
+					s_ids += "]";
+					Logger.Log("Could not find item with any ID among " + s_ids, MessageType.Error);
+				}
+
+				bool australium = kvp0.Key.StartsWith("Australium ");
 
 				foreach (KeyValuePair<string, TradabilityJson> kvp1 in ipj.prices)
 				{
@@ -85,7 +117,8 @@ namespace BackpackTFPriceLister
 								TypeIndexPricingJson pricing = kvp2.Value;
 								string priceIndex = kvp2.Key;
 
-								Prices.Add(new ItemPricing(item, quality, pricing.currency, pricing.value, pricing.value_high, priceIndex, true, true));
+								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
+									pricing.value_high, priceIndex, true, true, australium));
 							}
 						}
 						if (cfj.NonCraftable != null)
@@ -95,7 +128,8 @@ namespace BackpackTFPriceLister
 								TypeIndexPricingJson pricing = kvp2.Value;
 								string priceIndex = kvp2.Key;
 
-								Prices.Add(new ItemPricing(item, quality, pricing.currency, pricing.value, pricing.value_high, priceIndex, false, true));
+								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
+									pricing.value_high, priceIndex, false, true, australium));
 							}
 						}
 					}
@@ -111,7 +145,8 @@ namespace BackpackTFPriceLister
 								TypeIndexPricingJson pricing = kvp2.Value;
 								string priceIndex = kvp2.Key;
 
-								Prices.Add(new ItemPricing(item, quality, pricing.currency, pricing.value, pricing.value_high, priceIndex, true, false));
+								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
+									pricing.value_high, priceIndex, true, false, australium));
 							}
 						}
 						if (cfj.NonCraftable != null)
@@ -121,7 +156,8 @@ namespace BackpackTFPriceLister
 								TypeIndexPricingJson pricing = kvp2.Value;
 								string priceIndex = kvp2.Key;
 
-								Prices.Add(new ItemPricing(item, quality, pricing.currency, pricing.value, pricing.value_high, priceIndex, false, false));
+								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
+									pricing.value_high, priceIndex, false, false, australium));
 							}
 						}
 					}

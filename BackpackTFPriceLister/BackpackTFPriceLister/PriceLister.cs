@@ -1,4 +1,5 @@
-﻿using BackpackTFPriceLister.ItemDataJson;
+﻿using BackpackTFPriceLister.BackpackDataJson;
+using BackpackTFPriceLister.ItemDataJson;
 using BackpackTFPriceLister.PriceDataJson;
 using Newtonsoft.Json;
 using System;
@@ -17,21 +18,30 @@ namespace BackpackTFPriceLister
 		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
 		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
 		public const string TF2_APP_ID = "440";
+		public const string SEALEDINTERFACE_STEAMID = "76561198111510726";
 
-		public static string BpTfUrl
+		public static string PriceDataUrl
 		{ get; set; }
-		public static string SteamUrl
+		public static string ItemDataUrl
 		{ get; set; }
-		public static string BpTfFilename
+		public static string BackpackDataUrl
+		{ get; set; }
+
+		public static string PriceDataFilename
 		{ get; set; }
 		public static string ItemDataFilename
 		{ get; set; }
+		public static string BackpackDataFilename
+		{ get; set; }
+
 		public static string CacheLocation
 		{ get; set; }
 
-		public static string BpTfCache
+		public static string PricesCache
 		{ get; private set; }
 		public static string ItemCache
+		{ get; private set; }
+		public static string BackpackCache
 		{ get; private set; }
 
 		public static TF2DataJson ItemDataRaw
@@ -44,25 +54,35 @@ namespace BackpackTFPriceLister
 		public static BpTfPriceData PriceData
 		{ get; private set; }
 
+		public static TF2BackpackJson BackpackDataRaw
+		{ get; private set; }
+		public static TF2BackpackData BackpackData
+		{ get; private set; }
+
 		public static void Initialize(bool fancyJson)
 		{
 			string _cachelocation = Environment.GetEnvironmentVariable("TEMP") + "\\BACKPACK.TF-PRICELIST\\";
 			string _bptffilename = "bptf-pricedata.json";
 			string _itemfilename = "tf2-itemdata.json";
-			Initialize(_cachelocation, _bptffilename, _itemfilename, fancyJson);
+			string _bpdatafilename = "steam-backpackdata-sealedinterface.json";
+			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, fancyJson);
 		}
 		
-		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, bool fancyJson)
+		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
+			string backpackFilename, bool fancyJson)
 		{
-			BpTfUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + BPTF_API_KEY;
+			PriceDataUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + BPTF_API_KEY;
 
 			if (fancyJson)
 			{
-				BpTfUrl += "&format=pretty";
+				PriceDataUrl += "&format=pretty";
 			}
 
-			SteamUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
+			ItemDataUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
 				"/GetSchema/v0001/?key=" + STEAM_API_KEY + "&language=en_US";
+
+			BackpackDataUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID +
+				"/GetPlayerItems/v0001/?key=" + STEAM_API_KEY + "&steamid=" + SEALEDINTERFACE_STEAMID;
 
 			if (!Directory.Exists(cacheLocation))
 			{
@@ -71,20 +91,47 @@ namespace BackpackTFPriceLister
 			}
 
 			CacheLocation = cacheLocation;
-			BpTfFilename = bptfFilename;
+			PriceDataFilename = bptfFilename;
 			ItemDataFilename = itemFilename;
+			BackpackDataFilename = backpackFilename;
 		}
 
 		public static void LoadData(bool bptfOffline = false, bool steamOffline = false)
 		{
-			DateTime lastAccess = File.GetLastWriteTime(CacheLocation + BpTfFilename);
+			DateTime lastAccessPrices = File.GetLastWriteTime(CacheLocation + PriceDataFilename);
+			DateTime lastAccessItem = File.GetLastWriteTime(CacheLocation + ItemDataFilename);
 
-			if (DateTime.Now.Subtract(lastAccess).TotalMinutes <= 5.00 || bptfOffline)
+			bool backpackOffline = bptfOffline || DateTime.Now.Subtract(lastAccessPrices).TotalMinutes <= 5.00;
+			bool itemsOffline = steamOffline || DateTime.Now.Subtract(lastAccessItem).TotalMinutes <= 5.00;
+
+			// backpack.tf
+			bool priceDlFailed = false;
+			if (!backpackOffline)
+			{
+				Logger.Log("Downloading data from backpack.tf...");
+				WebClient client = new WebClient();
+				try
+				{
+					PricesCache = client.DownloadString(PriceDataUrl);
+					PricesCache = PricesCache.Replace("    ", "\t");
+					Logger.Log("  Download complete.");
+
+					File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache);
+					Logger.Log("  Saved bp.tf cache.");
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					priceDlFailed = true;
+				}
+			}
+
+			if (backpackOffline || priceDlFailed)
 			{
 				Logger.Log("Retrieving bp.tf cache...");
 				try
 				{
-					BpTfCache = File.ReadAllText(CacheLocation + BpTfFilename);
+					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename);
 				}
 				catch (Exception e)
 				{
@@ -92,20 +139,43 @@ namespace BackpackTFPriceLister
 					return;
 				}
 			}
-			else
+
+			// Steam
+			bool itemDlFailed = false, backpackDlFailed = false;
+			if (!itemsOffline)
 			{
-				Logger.Log("Downloading data from backpack.tf...");
+				Logger.Log("Downloading TF2 data from Steam...");
 				WebClient client = new WebClient();
-				BpTfCache = client.DownloadString(BpTfUrl);
-				BpTfCache = BpTfCache.Replace("    ", "\t");
-				Logger.Log("  Download complete.");
+				try
+				{
+					ItemCache = client.DownloadString(ItemDataUrl);
+					Logger.Log("  Download complete.");
 
-				File.WriteAllText(CacheLocation + BpTfFilename, BpTfCache);
-				Logger.Log("  Saved bp.tf cache.");
+					File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
+					Logger.Log("  Saved TF2 item cache.");
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					itemDlFailed = true;
+				}
 
+				Logger.Log("Downloading backpack data from Steam...");
+				try
+				{
+					BackpackCache = client.DownloadString(BackpackDataUrl);
+					Logger.Log("  Download complete.");
+
+					File.WriteAllText(CacheLocation + BackpackDataFilename, BackpackCache);
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					backpackDlFailed = true;
+				}
 			}
 
-			if (steamOffline)
+			if (itemsOffline || itemDlFailed)
 			{
 				Logger.Log("Retrieving TF2 item cache...");
 				try
@@ -114,18 +184,21 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message);
+					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message, MessageType.Error);
 				}
 			}
-			else
-			{
-				Logger.Log("Downloading data from Steam...");
-				WebClient client = new WebClient();
-				ItemCache = client.DownloadString(SteamUrl);
-				Logger.Log("  Download complete.");
 
-				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
-				Logger.Log("  Saved TF2 item cache.");
+			if (itemsOffline || backpackDlFailed)
+			{
+				Logger.Log("Retrieving backpack data cache...");
+				try
+				{
+					BackpackCache = File.ReadAllText(CacheLocation + BackpackDataFilename);
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  An error occurred reading the steam backpack cache: " + e.Message, MessageType.Error);
+				}
 			}
 		}
 
@@ -134,9 +207,15 @@ namespace BackpackTFPriceLister
 			if (ItemCache == null)
 			{
 				LoadData();
+
+				if (PricesCache == null)
+				{
+					Logger.Log("  Could not parse item data as it was never loaded.", MessageType.Error);
+					return null;
+				}
 			}
 
-			Logger.Log("Parsing TF2 JSON data...");
+			Logger.Log("Parsing TF2 item data...");
 			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
 			Logger.Log("  Parse complete.");
 
@@ -157,13 +236,19 @@ namespace BackpackTFPriceLister
 
 		public static BpTfPriceDataJson ParsePricesJson()
 		{
-			if (BpTfCache == null)
+			if (PricesCache == null)
 			{
 				LoadData();
+
+				if (PricesCache == null)
+				{
+					Logger.Log("  Could not parse price data as it was never loaded.", MessageType.Error);
+					return null;
+				}
 			}
 
-			Logger.Log("Parsing backpack.tf JSON data...");
-			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(BpTfCache);
+			Logger.Log("Parsing backpack.tf price data...");
+			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
 			Logger.Log("  Parse complete.");
 
 			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
@@ -188,14 +273,55 @@ namespace BackpackTFPriceLister
 			return PriceData;
 		}
 
+		public static TF2BackpackJson ParseBackpackJson()
+		{
+			if (BackpackCache == null)
+			{
+				LoadData();
+
+				if (BackpackCache == null)
+				{
+					Logger.Log("  Could not parse backpack data as it was never loaded.", MessageType.Error);
+					return null;
+				}
+			}
+
+			Logger.Log("Parsing steam backpack data for 'sealed interface'...");
+			BackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCache);
+			Logger.Log("  Parse complete.");
+
+			return BackpackDataRaw;
+		}
+
+		public static TF2BackpackData TranslateBackpackData()
+		{
+			if (BackpackDataRaw == null)
+			{
+				ParseBackpackJson();
+			}
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+
+			BackpackData = new TF2BackpackData(BackpackDataRaw, ItemData);
+
+			return BackpackData;
+		}
+
 		public static void AutoSetup(bool fancy = false, bool force = true)
 		{
 			Initialize(fancy);
 			LoadData(!force, !force);
+
 			ParseItemsJson();
 			TranslateItemsData();
+
 			ParsePricesJson();
 			TranslatePricingData();
+
+			ParseBackpackJson();
+			TranslateBackpackData();
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)

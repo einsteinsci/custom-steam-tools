@@ -17,7 +17,7 @@ namespace BackpackTFPriceLister
 		PDA2,
 		Action,
 		Taunt,
-		_Building,
+		Sapper,
 		_Grenade,
 	}
 
@@ -80,7 +80,7 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		public const string UNUSED_BUILDING = "building";
+		public const string SAPPER = "building";
 		public const string UNUSED_GRENADE = "grenade";
 
 		public static ItemSlot Parse(string s)
@@ -128,9 +128,9 @@ namespace BackpackTFPriceLister
 			{
 				return ItemSlot.Taunt;
 			}
-			if (sl == UNUSED_BUILDING)
+			if (sl == SAPPER)
 			{
-				return ItemSlot._Building;
+				return ItemSlot.Sapper;
 			}
 
 			return ItemSlot._Grenade;
@@ -158,8 +158,8 @@ namespace BackpackTFPriceLister
 					return ACTION;
 				case ItemSlot.Taunt:
 					return TAUNT;
-				case ItemSlot._Building:
-					return UNUSED_BUILDING;
+				case ItemSlot.Sapper:
+					return SAPPER;
 				case ItemSlot._Grenade:
 					return UNUSED_GRENADE;
 				default:
@@ -170,7 +170,7 @@ namespace BackpackTFPriceLister
 		public static ItemSlotPlain GetPlain(this ItemSlot slot)
 		{
 			if (slot == ItemSlot.Primary || slot == ItemSlot.Secondary || slot == ItemSlot.Melee ||
-				slot == ItemSlot.PDA1 || slot == ItemSlot.PDA2)
+				slot == ItemSlot.PDA1 || slot == ItemSlot.PDA2 || slot == ItemSlot.Sapper)
 			{
 				return ItemSlotPlain.Weapon;
 			}

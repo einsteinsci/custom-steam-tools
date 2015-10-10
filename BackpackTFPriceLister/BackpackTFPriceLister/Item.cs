@@ -87,6 +87,44 @@ namespace BackpackTFPriceLister
 			Attributes = json.attributes?.ConvertAll((aas) => attsRef.First((ia) => ia.Name == aas.name)) ?? new List<ItemAttribute>();
 		}
 
+		public string GetSubtext()
+		{
+			if (MinLevel == MaxLevel)
+			{
+				return "Level " + MinLevel.ToString() + " " + Type;
+			}
+
+			return "Level " + MinLevel.ToString() + "-" + MaxLevel.ToString() + " " + Type;
+		}
+
+		public bool IsCurrency()
+		{
+			return ID == Price.REF_DEFINDEX || ID == Price.REC_DEFINDEX || 
+				ID == Price.SCRAP_DEFINDEX || ID == Price.KEY_DEFINDEX;
+		}
+
+		public Price GetCurrencyPrice()
+		{
+			if (!IsCurrency())
+			{
+				throw new ArgumentException("Item must be currency.");
+			}
+
+			switch (ID)
+			{
+				case Price.REF_DEFINDEX:
+					return Price.OneRef;
+				case Price.REC_DEFINDEX:
+					return new Price(0, 0.33);
+				case Price.SCRAP_DEFINDEX:
+					return new Price(0, 0.11);
+				case Price.KEY_DEFINDEX:
+					return Price.OneKey;
+			}
+
+			return Price.Zero;
+		}
+
 		public override string ToString()
 		{
 			return Name;

@@ -20,11 +20,10 @@ namespace BackpackTFConsole
 		{
 			Console.Title = "Backpack.tf Console";
 			Console.ForegroundColor = ConsoleColor.White;
-			PriceLister.Initialize(true);
 			Logger.Logging += DebugLog;
 			Logger.Prompting = DebugPrompt;
 
-			PriceLister.AutoSetup();
+			PriceLister.AutoSetup(true, true);
 
 			string input = "";
 			while (input.ToLower() != "exit")

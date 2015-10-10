@@ -20,6 +20,8 @@ namespace BackpackTFPriceLister
 			_commands.Add("pricecheck", PriceCheck);
 			_commands.Add("refresh", ForceRefresh);
 			_commands.Add("range", GetItemsInPriceRange);
+			_commands.Add("bp", BackpackCheck);
+			_commands.Add("backpack", BackpackCheck);
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -34,6 +36,7 @@ namespace BackpackTFPriceLister
 		}
 
 		// pc {itemname | itemID | searchQuery}
+		// pricecheck ...
 		public static void PriceCheck(params string[] args)
 		{
 			if (args.Length == 0)
@@ -344,6 +347,60 @@ namespace BackpackTFPriceLister
 
 				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 			}
+		}
+
+		// bp
+		// backpack ...
+		public static void BackpackCheck(params string[] args)
+		{
+			Logger.Log("Backpack for 'sealed interface' (" + 
+				PriceLister.BackpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+
+			Price lowNetWorth = Price.Zero;
+			Price highNetWorth = Price.Zero;
+
+			Price totalPure = Price.Zero;
+
+			foreach (ItemInstance item in PriceLister.BackpackData.Items)
+			{
+				ItemPricing pricing = item.GetPrice();
+
+				if (!item.Tradable)
+				{
+					Logger.Log("  " + item.ToFullString() + ": Not Tradable", MessageType.Debug);
+					continue;
+				}
+				else if (pricing == null)
+				{
+					Logger.Log("  " + item.ToFullString() + ": Unknown", MessageType.Error);
+					continue;
+				}
+				else if (item.Item.IsCurrency())
+				{
+					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString());
+					totalPure += item.Item.GetCurrencyPrice();
+				}
+				else
+				{
+					Logger.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), 
+						item.Item.PlainSlot != ItemSlotPlain.Weapon || item.Quality != Quality.Unique ? 
+						MessageType.Emphasis : MessageType.Normal);
+				}
+
+				lowNetWorth += pricing.PriceLow;
+				highNetWorth += pricing.PriceHigh;
+			}
+
+			if (lowNetWorth == highNetWorth)
+			{
+				Logger.Log("Net worth: " + lowNetWorth.ToString(), MessageType.Emphasis);
+			}
+			else
+			{
+				Logger.Log("Net worth: " + lowNetWorth.ToString() + " - " + highNetWorth.ToString());
+			}
+
+			Logger.Log("Total pure: " + totalPure.ToString());
 		}
 	}
 }

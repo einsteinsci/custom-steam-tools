@@ -16,6 +16,9 @@ namespace BackpackTFPriceLister
 
 	public class ItemAttribute
 	{
+		public const int UNUSUAL_ID = 134;
+		public const int CRATESERIES_ID = 187;
+
 		public string Name
 		{ get; set; }
 

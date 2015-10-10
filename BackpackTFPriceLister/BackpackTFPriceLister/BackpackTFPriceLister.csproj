@@ -44,8 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppliedInstanceAttribute.cs" />
+    <Compile Include="TF2BackpackData.cs" />
+    <Compile Include="BackpackDataJson\AppliedItemInstanceAttributeJson.cs" />
+    <Compile Include="BackpackDataJson\EquipInfoJson.cs" />
+    <Compile Include="BackpackDataJson\ItemInstanceJson.cs" />
+    <Compile Include="BackpackDataJson\TF2BackpackJson.cs" />
+    <Compile Include="BackpackDataJson\TF2BackpackResultJson.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="ItemAttribute.cs" />
+    <Compile Include="ItemInstance.cs" />
     <Compile Include="ItemSet.cs" />
     <Compile Include="PlayerClasses.cs" />
     <Compile Include="Item.cs" />
