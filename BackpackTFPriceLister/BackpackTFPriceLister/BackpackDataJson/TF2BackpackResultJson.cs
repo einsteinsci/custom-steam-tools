@@ -16,6 +16,14 @@ namespace BackpackTFPriceLister.BackpackDataJson
 			public const int INVALID_STEAMID = 8;
 			public const int BACKPACK_PRIVATE = 15;
 			public const int NO_SUCH_STEAMID = 18;
+
+			public static Dictionary<int, string> ErrorMessages => new Dictionary<int, string>()
+			{
+				{ 1, "Success" },
+				{ 8, "Invalid Steam ID" },
+				{ 15, "Backpack is private" },
+				{ 18, "No such Steam ID" }
+			};
 		}
 
 		public int status

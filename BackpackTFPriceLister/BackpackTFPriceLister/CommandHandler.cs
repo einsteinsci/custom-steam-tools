@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BackpackTFPriceLister.BackpackDataJson;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -349,19 +351,41 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		// bp
+		// bp [steamid64]
 		// backpack ...
 		public static void BackpackCheck(params string[] args)
 		{
-			Logger.Log("Backpack for 'sealed interface' (" + 
-				PriceLister.BackpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+			TF2BackpackData backpackData = null;
+			if (args.Length == 0)
+			{
+				backpackData = PriceLister.MyBackpackData;
+
+				Logger.Log("Backpack for 'sealed interface' (" + 
+					PriceLister.MyBackpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+			}
+			else
+			{
+				string id = args[0];
+				if (!PriceLister.BackpackData.ContainsKey(id))
+				{
+					if (!PriceLister.LoadOtherBackpack(id))
+					{
+						return;
+					}
+				}
+
+				backpackData = PriceLister.BackpackData[id];
+
+				Logger.Log("Backpack for user #" + id + " (" +
+					backpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+			}
 
 			Price lowNetWorth = Price.Zero;
 			Price highNetWorth = Price.Zero;
 
 			Price totalPure = Price.Zero;
 
-			foreach (ItemInstance item in PriceLister.BackpackData.Items)
+			foreach (ItemInstance item in backpackData.Items)
 			{
 				ItemPricing pricing = item.GetPrice();
 

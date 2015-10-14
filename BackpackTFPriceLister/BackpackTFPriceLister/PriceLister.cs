@@ -24,7 +24,7 @@ namespace BackpackTFPriceLister
 		{ get; set; }
 		public static string ItemDataUrl
 		{ get; set; }
-		public static string BackpackDataUrl
+		public static string MyBackpackDataUrl
 		{ get; set; }
 
 		public static string PriceDataFilename
@@ -41,7 +41,9 @@ namespace BackpackTFPriceLister
 		{ get; private set; }
 		public static string ItemCache
 		{ get; private set; }
-		public static string BackpackCache
+		public static string MyBackpackCache
+		{ get; private set; }
+		public static Dictionary<string, string> BackpackCaches
 		{ get; private set; }
 
 		public static TF2DataJson ItemDataRaw
@@ -54,9 +56,14 @@ namespace BackpackTFPriceLister
 		public static BpTfPriceData PriceData
 		{ get; private set; }
 
-		public static TF2BackpackJson BackpackDataRaw
+		public static TF2BackpackJson MyBackpackDataRaw
 		{ get; private set; }
-		public static TF2BackpackData BackpackData
+		public static TF2BackpackData MyBackpackData
+		{ get; private set; }
+
+		public static Dictionary<string, TF2BackpackJson> BackpackDataRaw
+		{ get; private set; }
+		public static Dictionary<string, TF2BackpackData> BackpackData
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -66,6 +73,10 @@ namespace BackpackTFPriceLister
 			string _itemfilename = "tf2-itemdata.json";
 			string _bpdatafilename = "steam-backpackdata-sealedinterface.json";
 			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, fancyJson);
+
+			BackpackCaches = new Dictionary<string, string>();
+			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
+			BackpackData = new Dictionary<string, TF2BackpackData>();
 		}
 		
 		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
@@ -81,8 +92,7 @@ namespace BackpackTFPriceLister
 			ItemDataUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
 				"/GetSchema/v0001/?key=" + STEAM_API_KEY + "&language=en_US";
 
-			BackpackDataUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID +
-				"/GetPlayerItems/v0001/?key=" + STEAM_API_KEY + "&steamid=" + SEALEDINTERFACE_STEAMID;
+			MyBackpackDataUrl = GetBackbackUrl(SEALEDINTERFACE_STEAMID);
 
 			if (!Directory.Exists(cacheLocation))
 			{
@@ -94,6 +104,12 @@ namespace BackpackTFPriceLister
 			PriceDataFilename = bptfFilename;
 			ItemDataFilename = itemFilename;
 			BackpackDataFilename = backpackFilename;
+		}
+
+		public static string GetBackbackUrl(string steamID64)
+		{
+			return "http://api.steampowered.com/IEconItems_" + TF2_APP_ID +
+				"/GetPlayerItems/v0001/?key=" + STEAM_API_KEY + "&steamid=" + steamID64;
 		}
 
 		public static void LoadData(bool bptfOffline = false, bool steamOffline = false)
@@ -163,10 +179,10 @@ namespace BackpackTFPriceLister
 				Logger.Log("Downloading backpack data from Steam...");
 				try
 				{
-					BackpackCache = client.DownloadString(BackpackDataUrl);
+					MyBackpackCache = client.DownloadString(MyBackpackDataUrl);
 					Logger.Log("  Download complete.");
 
-					File.WriteAllText(CacheLocation + BackpackDataFilename, BackpackCache);
+					File.WriteAllText(CacheLocation + BackpackDataFilename, MyBackpackCache);
 				}
 				catch (Exception e)
 				{
@@ -193,13 +209,50 @@ namespace BackpackTFPriceLister
 				Logger.Log("Retrieving backpack data cache...");
 				try
 				{
-					BackpackCache = File.ReadAllText(CacheLocation + BackpackDataFilename);
+					MyBackpackCache = File.ReadAllText(CacheLocation + BackpackDataFilename);
 				}
 				catch (Exception e)
 				{
 					Logger.Log("  An error occurred reading the steam backpack cache: " + e.Message, MessageType.Error);
 				}
 			}
+		}
+
+		public static bool LoadOtherBackpack(string steamID64)
+		{
+			Logger.Log("Downloading backpack data for user #" + steamID64 + " from Steam...", MessageType.Debug);
+			try
+			{
+				WebClient client = new WebClient();
+				string result = client.DownloadString(GetBackbackUrl(steamID64));
+				BackpackCaches.Add(steamID64, result);
+			}
+			catch (Exception e)
+			{
+				Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+				return false;
+			}
+			Logger.Log("  Download complete.", MessageType.Debug);
+
+			Logger.Log("  Parsing backpack data...", MessageType.Debug);
+			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);
+			BackpackDataRaw.Add(steamID64, json);
+
+			if (json.result.status != TF2BackpackResultJson.Status.SUCCESS)
+			{
+				Logger.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], MessageType.Error);
+				return false;
+			}
+
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+			TF2BackpackData data = new TF2BackpackData(json, ItemData);
+			BackpackData.Add(steamID64, data);
+			Logger.Log("  Parse complete.");
+
+			return true;
 		}
 
 		public static TF2DataJson ParseItemsJson()
@@ -275,11 +328,11 @@ namespace BackpackTFPriceLister
 
 		public static TF2BackpackJson ParseBackpackJson()
 		{
-			if (BackpackCache == null)
+			if (MyBackpackCache == null)
 			{
 				LoadData();
 
-				if (BackpackCache == null)
+				if (MyBackpackCache == null)
 				{
 					Logger.Log("  Could not parse backpack data as it was never loaded.", MessageType.Error);
 					return null;
@@ -287,15 +340,15 @@ namespace BackpackTFPriceLister
 			}
 
 			Logger.Log("Parsing steam backpack data for 'sealed interface'...");
-			BackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCache);
+			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
 			Logger.Log("  Parse complete.");
 
-			return BackpackDataRaw;
+			return MyBackpackDataRaw;
 		}
 
 		public static TF2BackpackData TranslateBackpackData()
 		{
-			if (BackpackDataRaw == null)
+			if (MyBackpackDataRaw == null)
 			{
 				ParseBackpackJson();
 			}
@@ -304,9 +357,9 @@ namespace BackpackTFPriceLister
 				TranslateItemsData();
 			}
 
-			BackpackData = new TF2BackpackData(BackpackDataRaw, ItemData);
+			MyBackpackData = new TF2BackpackData(MyBackpackDataRaw, ItemData);
 
-			return BackpackData;
+			return MyBackpackData;
 		}
 
 		public static void AutoSetup(bool fancy = false, bool force = true)
