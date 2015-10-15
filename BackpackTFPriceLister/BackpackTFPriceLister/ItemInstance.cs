@@ -77,6 +77,20 @@ namespace BackpackTFPriceLister
 			}
 		}
 
+		public ItemInstance(Item item, long instanceID, int level, Quality quality = Quality.Unique, bool craftable = true,
+			string customName = null, string customDesc = null, long? originalInstance = null, bool tradable = true)
+		{
+			Item = item;
+			InstanceID = instanceID;
+			Level = level;
+			Quality = quality;
+			Craftable = craftable;
+			Tradable = tradable;
+			CustomName = customName;
+			CustomDescription = customDesc;
+			OriginalInstanceID = originalInstance.HasValue ? originalInstance.Value : instanceID;
+		}
+
 		public string TitleQuick()
 		{
 			if (CustomName != null)
