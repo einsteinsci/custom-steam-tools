@@ -310,6 +310,31 @@ namespace BackpackTFPriceLister
 			return PriceDataRaw;
 		}
 
+		public static void FixHauntedItems()
+		{
+			if (ItemData == null)
+			{
+				ParseItemsJson();
+			}
+
+			if (PriceData == null)
+			{
+				ParsePricesJson();
+			}
+
+			Logger.Log("Fixing haunted items...");
+			foreach (Item i in ItemData.Items)
+			{
+				List<ItemPricing> prices = PriceData.GetAllPriceData(i);
+
+				if (prices.Exists((p) => p.Quality == Quality.Haunted))
+				{
+					i.HasHauntedVersion = true;
+				}
+			}
+			Logger.Log("  Fix complete.");
+		}
+
 		public static BpTfPriceData TranslatePricingData()
 		{
 			if (PriceDataRaw == null)
@@ -375,6 +400,8 @@ namespace BackpackTFPriceLister
 
 			ParseBackpackJson();
 			TranslateBackpackData();
+
+			FixHauntedItems();
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)

@@ -54,6 +54,9 @@ namespace BackpackTFPriceLister
 		public bool HalloweenOnly
 		{ get; set; }
 
+		public bool? HasHauntedVersion
+		{ get; set; }
+
 		public string ImageURL
 		{ get; set; }
 

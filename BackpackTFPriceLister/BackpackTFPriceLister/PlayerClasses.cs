@@ -80,39 +80,39 @@ namespace BackpackTFPriceLister
 
 		public static PlayerClass Parse(string s)
 		{
-			if (s == SCOUT)
+			if (s.ToLower() == SCOUT.ToLower())
 			{
 				return PlayerClass.Scout;
 			}
-			if (s == SOLDIER)
+			if (s.ToLower() == SOLDIER.ToLower())
 			{
 				return PlayerClass.Soldier;
 			}
-			if (s == PYRO)
+			if (s.ToLower() == PYRO.ToLower())
 			{
 				return PlayerClass.Pyro;
 			}
-			if (s == DEMOMAN)
+			if (s.ToLower() == DEMOMAN.ToLower())
 			{
 				return PlayerClass.Demoman;
 			}
-			if (s == HEAVY)
+			if (s.ToLower() == HEAVY.ToLower())
 			{
 				return PlayerClass.Heavy;
 			}
-			if (s == ENGINEER)
+			if (s.ToLower() == ENGINEER.ToLower())
 			{
 				return PlayerClass.Engineer;
 			}
-			if (s == MEDIC)
+			if (s.ToLower() == MEDIC.ToLower())
 			{
 				return PlayerClass.Medic;
 			}
-			if (s == SNIPER)
+			if (s.ToLower() == SNIPER.ToLower())
 			{
 				return PlayerClass.Sniper;
 			}
-			if (s == SPY)
+			if (s.ToLower() == SPY.ToLower())
 			{
 				return PlayerClass.Spy;
 			}

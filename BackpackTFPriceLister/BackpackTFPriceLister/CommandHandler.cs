@@ -281,13 +281,38 @@ namespace BackpackTFPriceLister
 
 			List<ItemSlotPlain> allowedSlots = new List<ItemSlotPlain>();
 			List<Quality> allowedQualities = new List<Quality>();
+			List<PlayerClass> allowedClasses = new List<PlayerClass>();
+
+			bool onlyCraftable = false;
+			bool onlyHalloween = false;
+			bool noHalloween = false;
+
 			foreach (string s in sfilters)
 			{
-				ItemSlotPlain buf = ItemSlots.Plain.Parse(s);
-				
-				if (buf != ItemSlotPlain.Unused)
+				if (s.ToLower() == "craftable")
 				{
-					allowedSlots.Add(buf);
+					onlyCraftable = true;
+				}
+
+				if (s.ToLower() == "-halloween")
+				{
+					noHalloween = true;
+				}
+				else if (s.ToLower() == "halloween")
+				{
+					onlyHalloween = true;
+				}
+
+				ItemSlotPlain bufs = ItemSlots.Plain.Parse(s);
+				PlayerClass bufc = PlayerClasses.Parse(s);
+				
+				if (bufs != ItemSlotPlain.Unused)
+				{
+					allowedSlots.Add(bufs);
+				}
+				else if (bufc != 0)
+				{
+					allowedClasses.Add(bufc);
 				}
 				else
 				{
@@ -297,8 +322,10 @@ namespace BackpackTFPriceLister
 
 			bool filterSlot = allowedSlots.Count != 0;
 			bool filterQuality = allowedQualities.Count != 0;
+			bool filterClass = allowedClasses.Count != 0;
 
-			if (filterSlot || filterQuality)
+			if (filterSlot || filterQuality || filterClass || 
+				onlyCraftable || onlyHalloween || noHalloween)
 			{
 				string res = "Filters: ";
 				foreach (ItemSlotPlain s in allowedSlots)
@@ -308,6 +335,24 @@ namespace BackpackTFPriceLister
 				foreach (Quality q in allowedQualities)
 				{
 					res += q.ToReadableString() + " ";
+				}
+				foreach (PlayerClass c in allowedClasses)
+				{
+					res += c.ToString() + " ";
+				}
+
+				if (onlyCraftable)
+				{
+					res += "Craftable ";
+				}
+
+				if (onlyHalloween)
+				{
+					res += "Halloween";
+				}
+				else if (noHalloween)
+				{
+					res += "Non-halloween";
 				}
 
 				Logger.Log(res, MessageType.Emphasis);
@@ -321,12 +366,32 @@ namespace BackpackTFPriceLister
 					continue;
 				}
 
+				if (!p.Craftable && onlyCraftable)
+				{
+					continue;
+				}
+
+				if ((!p.Item.HalloweenOnly && p.Item.HasHauntedVersion != true) && onlyHalloween)
+				{
+					continue;
+				}
+
+				if ((p.Item.HalloweenOnly || p.Item.HasHauntedVersion == true) && noHalloween)
+				{
+					continue;
+				}
+
 				if (filterSlot && !allowedSlots.Contains(p.Item.PlainSlot))
 				{
 					continue;
 				}
 
 				if (filterQuality && !allowedQualities.Contains(p.Quality))
+				{
+					continue;
+				}
+
+				if (filterClass && !allowedClasses.Exists((c) => p.Item.ValidClasses.Contains(c)))
 				{
 					continue;
 				}
@@ -349,6 +414,7 @@ namespace BackpackTFPriceLister
 
 				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 			}
+			Logger.Log(results.Count.ToString() + " items found.");
 		}
 
 		// bp [steamid64]
