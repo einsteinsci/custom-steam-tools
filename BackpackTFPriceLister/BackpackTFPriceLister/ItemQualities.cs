@@ -68,5 +68,36 @@ namespace BackpackTFPriceLister
 
 			return Quality.Unique;
 		}
+
+		public static ConsoleColor GetColor(this Quality q)
+		{
+			switch (q)
+			{
+				case Quality.Stock:
+					return ConsoleColor.Gray;
+				case Quality.Genuine:
+					return ConsoleColor.DarkGreen;
+				case Quality.Vintage:
+					return ConsoleColor.Blue;
+				case Quality.Unusual:
+					return ConsoleColor.DarkMagenta;
+				case Quality.Unique:
+					return ConsoleColor.Yellow;
+				case Quality.Community:
+					return ConsoleColor.Magenta;
+				case Quality.Valve:
+					return ConsoleColor.Magenta;
+				case Quality.SelfMade:
+					return ConsoleColor.Magenta;
+				case Quality.Strange:
+					return ConsoleColor.DarkYellow;
+				case Quality.Haunted:
+					return ConsoleColor.Cyan;
+				case Quality.Collectors:
+					return ConsoleColor.Red;
+				default:
+					return ConsoleColor.Magenta;
+			}
+		}
 	}
 }

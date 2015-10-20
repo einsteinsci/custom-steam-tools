@@ -30,7 +30,7 @@ namespace BackpackTFPriceLister
 		{
 			if (!_commands.Keys.Contains(command.ToLower()))
 			{
-				Logger.Log("Command not found.", MessageType.Error);
+				Logger.Log("Command not found.", ConsoleColor.Red);
 				return;
 			}
 
@@ -43,7 +43,7 @@ namespace BackpackTFPriceLister
 		{
 			if (args.Length == 0)
 			{
-				Logger.Log("No item specified", MessageType.Error);
+				Logger.Log("No item specified", ConsoleColor.Red);
 			}
 
 			string itemName = "";
@@ -98,18 +98,24 @@ namespace BackpackTFPriceLister
 					if (i.Name.ToLower().Contains(itemName.ToLower()))
 					{
 						possibleItems.Add(i);
-						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, MessageType.Emphasis);
+						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, ConsoleColor.White);
 					}
 				}
 
 				if (possibleItems.Count == 0)
 				{
-					Logger.Log("No items found matching '" + itemName + "'", MessageType.Error);
+					Logger.Log("No items found matching '" + itemName + "'", ConsoleColor.Red);
 					return;
 				}
 
 				while (item == null)
 				{
+					if (possibleItems.Count == 1)
+					{
+						item = possibleItems.First();
+						break;
+					}
+
 					string sint = Logger.GetInput("Enter selection > ");
 					if (sint.ToLower() == "esc")
 					{
@@ -126,26 +132,26 @@ namespace BackpackTFPriceLister
 					}
 					else
 					{
-						Logger.Log("Invalid choice: " + sint, MessageType.Error);
+						Logger.Log("Invalid choice: " + sint, ConsoleColor.Red);
 					}
 				}
 			}
 			#endregion
 
 			Logger.AddLine();
-			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", MessageType.Emphasis);
+			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", ConsoleColor.White);
 
 			List<ItemPricing> itemPricings = PriceLister.PriceData.GetAllPriceData(item);
 
 			if (itemPricings.Count == 0)
 			{
-				Logger.Log("  No price data found for " + item.Name, MessageType.Error);
+				Logger.Log("  No price data found for " + item.Name, ConsoleColor.Red);
 				return;
 			}
 
 			if (itemPricings.All((p) => !p.Tradable)) // none are tradable
 			{
-				Logger.Log("  Item not tradable.", MessageType.Error);
+				Logger.Log("  Item not tradable.", ConsoleColor.Red);
 				return;
 			}
 
@@ -188,12 +194,12 @@ namespace BackpackTFPriceLister
 			}
 			if (unusuals.Count > 0)
 			{
-				Logger.Log("  Enter 'U' to list unusuals.", MessageType.Emphasis);
+				Logger.Log("  Enter 'U' to list unusuals.", ConsoleColor.White);
 				takeInput = true;
 			}
 			else
 			{
-				Logger.Log("  Enter an ID for crate/strangifier information.", MessageType.Emphasis);
+				Logger.Log("  Enter an ID for crate/strangifier information.", ConsoleColor.White);
 				takeInput = true;
 			}
 
@@ -202,7 +208,7 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			string input = Logger.GetInput("  Press Enter to continue> ");
+			string input = Logger.GetInput("  Press Enter to continue> ", false, true);
 
 			if (input.ToLower() == "esc")
 			{
@@ -225,7 +231,7 @@ namespace BackpackTFPriceLister
 					ItemPricing p = uniques.FirstOrDefault((_p) => _p.PriceIndex == pid);
 					if (p == null)
 					{
-						Logger.Log("  No " + item.Name + " found with PriceIndex " + pid.ToString(), MessageType.Error);
+						Logger.Log("  No " + item.Name + " found with PriceIndex " + pid.ToString(), ConsoleColor.Red);
 						return;
 					}
 
@@ -245,7 +251,7 @@ namespace BackpackTFPriceLister
 		{
 			if (args.Length < 2)
 			{
-				Logger.Log("Missing arguments: priceMin, priceMax", MessageType.Error);
+				Logger.Log("Missing arguments: priceMin, priceMax", ConsoleColor.Red);
 				return;
 			}
 
@@ -261,12 +267,12 @@ namespace BackpackTFPriceLister
 			double dMin = -1, dMax = -1;
 			if (!double.TryParse(sMin, out dMin))
 			{
-				Logger.Log("Argument invalid: " + args[0], MessageType.Error);
+				Logger.Log("Argument invalid: " + args[0], ConsoleColor.Red);
 				return;
 			}
 			if (!double.TryParse(sMax, out dMax))
 			{
-				Logger.Log("Argument invalid: " + args[1], MessageType.Error);
+				Logger.Log("Argument invalid: " + args[1], ConsoleColor.Red);
 				return;
 			}
 
@@ -355,7 +361,7 @@ namespace BackpackTFPriceLister
 					res += "Non-halloween";
 				}
 
-				Logger.Log(res, MessageType.Emphasis);
+				Logger.Log(res, ConsoleColor.White);
 			}
 
 			List<ItemPricing> results = new List<ItemPricing>();
@@ -402,7 +408,7 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			Logger.Log("Items in price range " + min.ToString() + " to " + max.ToString() + ": ", MessageType.Emphasis);
+			Logger.Log("Items in price range " + min.ToString() + " to " + max.ToString() + ": ", ConsoleColor.White);
 			foreach (ItemPricing p in results)
 			{
 				if (p.Quality == Quality.Unusual)
@@ -427,7 +433,7 @@ namespace BackpackTFPriceLister
 				backpackData = PriceLister.MyBackpackData;
 
 				Logger.Log("Backpack for 'sealed interface' (" + 
-					PriceLister.MyBackpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+					PriceLister.MyBackpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 			}
 			else
 			{
@@ -443,7 +449,7 @@ namespace BackpackTFPriceLister
 				backpackData = PriceLister.BackpackData[id];
 
 				Logger.Log("Backpack for user #" + id + " (" +
-					backpackData.SlotCount.ToString() + " slots):", MessageType.Emphasis);
+					backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 			}
 
 			Price lowNetWorth = Price.Zero;
@@ -457,12 +463,12 @@ namespace BackpackTFPriceLister
 
 				if (!item.Tradable)
 				{
-					Logger.Log("  " + item.ToFullString() + ": Not Tradable", MessageType.Debug);
+					Logger.Log("  " + item.ToFullString() + ": Not Tradable", ConsoleColor.DarkGray);
 					continue;
 				}
 				else if (pricing == null)
 				{
-					Logger.Log("  " + item.ToFullString() + ": Unknown", MessageType.Error);
+					Logger.Log("  " + item.ToFullString() + ": Unknown", ConsoleColor.Red);
 					continue;
 				}
 				else if (item.Item.IsCurrency())
@@ -472,9 +478,18 @@ namespace BackpackTFPriceLister
 				}
 				else
 				{
-					Logger.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), 
-						item.Item.PlainSlot != ItemSlotPlain.Weapon || item.Quality != Quality.Unique ? 
-						MessageType.Emphasis : MessageType.Normal);
+					ConsoleColor color = ConsoleColor.Gray;
+					if (item.Item.PlainSlot != ItemSlotPlain.Weapon || 
+						(int)(pricing.PriceLow.TotalRefined * 100.0) != 5) //0.05 ref
+					{
+						color = ConsoleColor.White;
+					}
+					if (item.Quality != Quality.Unique)
+					{
+						color = item.Quality.GetColor();
+					}
+
+					Logger.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), color);
 				}
 
 				lowNetWorth += pricing.PriceLow;
@@ -483,14 +498,14 @@ namespace BackpackTFPriceLister
 
 			if (lowNetWorth == highNetWorth)
 			{
-				Logger.Log("Net worth: " + lowNetWorth.ToString(), MessageType.Emphasis);
+				Logger.Log("Net worth: " + lowNetWorth.ToString(), ConsoleColor.White);
 			}
 			else
 			{
-				Logger.Log("Net worth: " + lowNetWorth.ToString() + " - " + highNetWorth.ToString());
+				Logger.Log("Net worth: " + lowNetWorth.ToString() + " - " + highNetWorth.ToString(), ConsoleColor.White);
 			}
 
-			Logger.Log("Total pure: " + totalPure.ToString());
+			Logger.Log("Total pure: " + totalPure.ToString(), ConsoleColor.White);
 		}
 	}
 }

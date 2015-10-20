@@ -137,7 +137,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 					priceDlFailed = true;
 				}
 			}
@@ -172,7 +172,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 					itemDlFailed = true;
 				}
 
@@ -186,7 +186,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 					backpackDlFailed = true;
 				}
 			}
@@ -200,7 +200,7 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message, MessageType.Error);
+					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
@@ -213,14 +213,14 @@ namespace BackpackTFPriceLister
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the steam backpack cache: " + e.Message, MessageType.Error);
+					Logger.Log("  An error occurred reading the steam backpack cache: " + e.Message, ConsoleColor.Red);
 				}
 			}
 		}
 
 		public static bool LoadOtherBackpack(string steamID64)
 		{
-			Logger.Log("Downloading backpack data for user #" + steamID64 + " from Steam...", MessageType.Debug);
+			Logger.Log("Downloading backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
 			try
 			{
 				WebClient client = new WebClient();
@@ -229,18 +229,18 @@ namespace BackpackTFPriceLister
 			}
 			catch (Exception e)
 			{
-				Logger.Log("  Download failed: " + e.Message, MessageType.Error);
+				Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 				return false;
 			}
-			Logger.Log("  Download complete.", MessageType.Debug);
+			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
-			Logger.Log("  Parsing backpack data...", MessageType.Debug);
+			Logger.Log("  Parsing backpack data...", ConsoleColor.DarkGray);
 			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);
 			BackpackDataRaw.Add(steamID64, json);
 
 			if (json.result.status != TF2BackpackResultJson.Status.SUCCESS)
 			{
-				Logger.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], MessageType.Error);
+				Logger.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], ConsoleColor.Red);
 				return false;
 			}
 
@@ -263,7 +263,7 @@ namespace BackpackTFPriceLister
 
 				if (PricesCache == null)
 				{
-					Logger.Log("  Could not parse item data as it was never loaded.", MessageType.Error);
+					Logger.Log("  Could not parse item data as it was never loaded.", ConsoleColor.Red);
 					return null;
 				}
 			}
@@ -295,7 +295,7 @@ namespace BackpackTFPriceLister
 
 				if (PricesCache == null)
 				{
-					Logger.Log("  Could not parse price data as it was never loaded.", MessageType.Error);
+					Logger.Log("  Could not parse price data as it was never loaded.", ConsoleColor.Red);
 					return null;
 				}
 			}
@@ -359,7 +359,7 @@ namespace BackpackTFPriceLister
 
 				if (MyBackpackCache == null)
 				{
-					Logger.Log("  Could not parse backpack data as it was never loaded.", MessageType.Error);
+					Logger.Log("  Could not parse backpack data as it was never loaded.", ConsoleColor.Red);
 					return null;
 				}
 			}

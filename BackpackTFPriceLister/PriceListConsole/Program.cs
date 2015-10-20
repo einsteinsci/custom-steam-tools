@@ -40,29 +40,31 @@ namespace BackpackTFConsole
 
 		private static void DebugLog(object sender, LogEventArgs e)
 		{
-			switch (e.Type)
+			if (e.Foreground.HasValue)
 			{
-				case MessageType.Normal:
-					Console.ForegroundColor = ConsoleColor.Gray;
-					break;
-				case MessageType.Debug:
-					Console.ForegroundColor = ConsoleColor.DarkGray;
-					break;
-				case MessageType.Error:
-					Console.ForegroundColor = ConsoleColor.Red;
-					break;
-				case MessageType.Emphasis:
-					Console.ForegroundColor = ConsoleColor.White;
-					break;
+				Console.ForegroundColor = e.Foreground.Value;
+			}
+
+			if (e.Background.HasValue)
+			{
+				Console.BackgroundColor = e.Background.Value;
 			}
 
 			Console.WriteLine(e.Message);
-			Console.ForegroundColor = ConsoleColor.Gray;
 		}
 
 		private static string DebugPrompt(object sender, PromptEventArgs e)
 		{
-			Console.ForegroundColor = ConsoleColor.Green;
+			if (e.Foreground.HasValue)
+			{
+				Console.ForegroundColor = e.Foreground.Value;
+			}
+
+			if (e.Background.HasValue)
+			{
+				Console.ForegroundColor = e.Background.Value;
+			}
+
 			if (e.NewlineAfterPrompt)
 			{
 				Console.WriteLine(e.Prompt);
@@ -72,10 +74,7 @@ namespace BackpackTFConsole
 				Console.Write(e.Prompt);
 			}
 
-			string res = Console.ReadLine();
-			Console.ForegroundColor = ConsoleColor.White;
-
-			return res;
+			return Console.ReadLine();
 		}
 	}
 }
