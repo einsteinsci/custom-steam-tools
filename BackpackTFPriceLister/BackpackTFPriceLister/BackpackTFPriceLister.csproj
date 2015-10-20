@@ -51,6 +51,7 @@
     <Compile Include="AppliedInstanceAttribute.cs" />
     <Compile Include="ClassifiedsListing.cs" />
     <Compile Include="ClassifiedsScraper.cs" />
+    <Compile Include="DealFinder.cs" />
     <Compile Include="TF2BackpackData.cs" />
     <Compile Include="BackpackDataJson\AppliedItemInstanceAttributeJson.cs" />
     <Compile Include="BackpackDataJson\EquipInfoJson.cs" />
