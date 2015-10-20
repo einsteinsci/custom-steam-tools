@@ -125,5 +125,15 @@ namespace BackpackTFPriceLister
 
 			return Prompting(sender, new PromptEventArgs(prompt, newlineAfterPrompt, optional, fg, bg));
 		}
+
+		public static void LogComplex(params object[] logLine)
+		{
+			if (LoggingComplex == null)
+			{
+				return;
+			}
+
+			LoggingComplex(null, new LogComplexEventArgs(logLine));
+		}
 	}
 }

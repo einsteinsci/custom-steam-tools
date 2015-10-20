@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net;
 using BackpackTFPriceLister.ItemDataJson;
-using Newtonsoft.Json;
 using BackpackTFPriceLister.PriceDataJson;
 
 namespace BackpackTFConsole
@@ -21,6 +20,7 @@ namespace BackpackTFConsole
 			Console.Title = "Backpack.tf Console";
 			Console.ForegroundColor = ConsoleColor.White;
 			Logger.Logging += DebugLog;
+			Logger.LoggingComplex += DebugLogComplex;
 			Logger.Prompting = DebugPrompt;
 
 			CommandHandler.PreCommand += PreCommand;
@@ -67,6 +67,26 @@ namespace BackpackTFConsole
 			}
 
 			Console.WriteLine(e.Message);
+		}
+
+		private static void DebugLogComplex(object sender, LogComplexEventArgs e)
+		{
+			foreach (object obj in e.Arguments)
+			{
+				if (obj is ConsoleColor)
+				{
+					Console.ForegroundColor = (ConsoleColor)obj;
+					continue;
+				}
+
+				if (obj is string)
+				{
+					Console.Write(obj as string);
+					continue;
+				}
+			}
+
+			Console.WriteLine();
 		}
 
 		private static string DebugPrompt(object sender, PromptEventArgs e)

@@ -10,10 +10,10 @@ namespace BackpackTFPriceLister.BackpackDataJson
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class ItemInstanceJson
 	{
-		public long id
+		public ulong id
 		{ get; set; }
 
-		public long original_id
+		public ulong original_id
 		{ get; set; }
 
 		public long defindex

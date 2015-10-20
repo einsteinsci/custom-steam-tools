@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister
 {
+	public enum OrderType
+	{
+		Buy,
+		Sell
+	}
+
 	public class ClassifiedsListing
 	{
-		public bool IsBuyOrder
+		public OrderType OrderType
 		{ get; set; }
 
 		public ItemInstance ItemInstance
@@ -20,20 +26,24 @@ namespace BackpackTFPriceLister
 		public Price Price
 		{ get; set; }
 
-		public string SteamID64
+		public string SellerSteamID64
+		{ get; set; }
+
+		public string SellerNickname
 		{ get; set; }
 
 		public string OfferURL
 		{ get; set; }
 
-		public ClassifiedsListing(ItemInstance inst, Price price, string steamID, string url,
-			string comment = "", bool buying = false)
+		public ClassifiedsListing(ItemInstance inst, Price price, string steamID, string nickname,
+			string url, string comment = "", OrderType order = OrderType.Sell)
 		{
 			ItemInstance = inst;
 			Price = price;
-			SteamID64 = steamID;
+			SellerSteamID64 = steamID;
+			SellerNickname = nickname;
 			Comment = comment;
-			IsBuyOrder = buying;
+			OrderType = order;
 			OfferURL = url;
 		}
 	}

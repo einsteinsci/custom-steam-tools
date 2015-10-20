@@ -9,10 +9,10 @@ namespace BackpackTFPriceLister
 {
 	public class ItemInstance
 	{
-		public long InstanceID
+		public ulong InstanceID
 		{ get; private set; }
 
-		public long OriginalInstanceID
+		public ulong OriginalInstanceID
 		{ get; private set; }
 
 		public Item Item
@@ -77,8 +77,8 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		public ItemInstance(Item item, long instanceID, int level, Quality quality = Quality.Unique, bool craftable = true,
-			string customName = null, string customDesc = null, long? originalInstance = null, bool tradable = true)
+		public ItemInstance(Item item, ulong instanceID, int level, Quality quality = Quality.Unique, bool craftable = true,
+			string customName = null, string customDesc = null, ulong? originalInstance = null, bool tradable = true)
 		{
 			Item = item;
 			InstanceID = instanceID;

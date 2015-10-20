@@ -114,6 +114,8 @@ namespace BackpackTFPriceLister
 
 		public static void LoadData(bool bptfOffline = false, bool steamOffline = false)
 		{
+			TimeSpan TIMEOUT = TimeSpan.FromSeconds(15);
+
 			DateTime lastAccessPrices = File.GetLastWriteTime(CacheLocation + PriceDataFilename);
 			DateTime lastAccessItem = File.GetLastWriteTime(CacheLocation + ItemDataFilename);
 
@@ -125,20 +127,15 @@ namespace BackpackTFPriceLister
 			if (!backpackOffline)
 			{
 				Logger.Log("Downloading data from backpack.tf...", ConsoleColor.DarkGray);
-				WebClient client = new WebClient();
-				try
+				PricesCache = Util.DownloadString(PriceDataUrl, TIMEOUT);
+				if (PricesCache == null)
 				{
-					PricesCache = client.DownloadString(PriceDataUrl);
-					PricesCache = PricesCache.Replace("    ", "\t");
-					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
-
+					priceDlFailed = true;
+				}
+				else
+				{
 					File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache);
 					Logger.Log("  Saved bp.tf cache.", ConsoleColor.DarkGray);
-				}
-				catch (Exception e)
-				{
-					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
-					priceDlFailed = true;
 				}
 			}
 
@@ -161,33 +158,27 @@ namespace BackpackTFPriceLister
 			if (!itemsOffline)
 			{
 				Logger.Log("Downloading TF2 data from Steam...", ConsoleColor.DarkGray);
-				WebClient client = new WebClient();
-				try
+				ItemCache = Util.DownloadString(ItemDataUrl, TIMEOUT);
+				if (ItemCache == null)
 				{
-					ItemCache = client.DownloadString(ItemDataUrl);
-					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
-
+					itemDlFailed = true;
+				}
+				else
+				{
 					File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
 					Logger.Log("  Saved TF2 item cache.", ConsoleColor.DarkGray);
 				}
-				catch (Exception e)
-				{
-					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
-					itemDlFailed = true;
-				}
 
 				Logger.Log("Downloading backpack data from Steam...", ConsoleColor.DarkGray);
-				try
+				MyBackpackCache = Util.DownloadString(MyBackpackDataUrl, TIMEOUT);
+				if (MyBackpackCache == null)
 				{
-					MyBackpackCache = client.DownloadString(MyBackpackDataUrl);
-					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
-
-					File.WriteAllText(CacheLocation + BackpackDataFilename, MyBackpackCache);
-				}
-				catch (Exception e)
-				{
-					Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 					backpackDlFailed = true;
+				}
+				else
+				{
+					File.WriteAllText(CacheLocation + BackpackDataFilename, MyBackpackCache);
+					Logger.Log("  saved Steam backpack cache.", ConsoleColor.DarkGray);
 				}
 			}
 
@@ -220,19 +211,16 @@ namespace BackpackTFPriceLister
 
 		public static bool LoadOtherBackpack(string steamID64)
 		{
-			Logger.Log("Downloading backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
-			try
+			TimeSpan TIMEOUT = TimeSpan.FromSeconds(45);
+
+			Logger.Log("Requesting backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
+			string result = Util.DownloadString(GetBackbackUrl(steamID64), TIMEOUT);
+			if (result == null)
 			{
-				WebClient client = new WebClient();
-				string result = client.DownloadString(GetBackbackUrl(steamID64));
-				BackpackCaches.Add(steamID64, result);
-			}
-			catch (Exception e)
-			{
-				Logger.Log("  Download failed: " + e.Message, ConsoleColor.Red);
 				return false;
 			}
-			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
+
+			BackpackCaches.Add(steamID64, result);
 
 			Logger.Log("  Parsing backpack data...", ConsoleColor.DarkGray);
 			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);

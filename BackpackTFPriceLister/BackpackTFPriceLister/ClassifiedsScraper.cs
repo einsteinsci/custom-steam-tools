@@ -52,27 +52,29 @@ namespace BackpackTFPriceLister
 					}
 
 					string sellItemName = sellData.Attributes["data-name"].Value; // not really necessary
-					string sellTradable = sellData.Attributes["data-tradable"].Value; // or this
-					string sellCraftable = sellData.Attributes["data-craftable"].Value; // or this
+					string sellTradable = sellData.Attributes["data-tradable"]?.Value; // or this
+					string sellCraftable = sellData.Attributes["data-craftable"]?.Value; // or this
 					string sellQuality = sellData.Attributes["data-quality"].Value; // or even this
-					string sellComment = sellData.Attributes["data-listing-comment"].Value;
+					string sellComment = sellData.Attributes["data-listing-comment"]?.Value;
 					string sellPrice = sellData.Attributes["data-listing-price"].Value;
 					string sellLevel = sellData.Attributes["data-level"].Value;
 					string sellID = sellData.Attributes["data-id"].Value;
 					string sellerSteamID64 = sellData.Attributes["data-listing-steamid"].Value;
-					string sellOfferUrl = sellData.Attributes["data-listing-offers-url"].Value;
-					string sellOriginalID = sellData.Attributes["data-original-id"].Value;
-					string sellCustomName = sellData.Attributes["data-custom-name"].Value;
-					string sellCustomDesc = sellData.Attributes["data-custom-desc"].Value;
+					string sellerNickname = sellData.Attributes["data-listing-name"]?.Value;
+					string sellOfferUrl = sellData.Attributes["data-listing-offers-url"]?.Value;
+					string sellOriginalID = sellData.Attributes["data-original-id"]?.Value;
+					string sellCustomName = sellData.Attributes["data-custom-name"]?.Value;
+					string sellCustomDesc = sellData.Attributes["data-custom-desc"]?.Value;
 
-					long id = long.Parse(sellID); // confusing syntax down here -v
-					long? originalID = sellOriginalID != null ? new long?(long.Parse(sellOriginalID)) : null;
+					ulong id = ulong.Parse(sellID); // really funky syntax down here -v
+					ulong? originalID = sellOriginalID != null ? new ulong?(ulong.Parse(sellOriginalID)) : null;
 					Price price = Price.ParseFancy(sellPrice);
 					int level = int.Parse(sellLevel);
 
 					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
 						sellCustomName, sellCustomDesc, originalID, tradable);
-					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, sellOfferUrl, sellComment, false);
+					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, 
+						sellerNickname, sellOfferUrl, sellComment, OrderType.Sell);
 
 					results.Add(listing);
 				}
@@ -100,27 +102,29 @@ namespace BackpackTFPriceLister
 					}
 
 					string buyItemName = buyData.Attributes["data-name"].Value; // not really necessary
-					string buyTradable = buyData.Attributes["data-tradable"].Value; // or this
-					string buyCraftable = buyData.Attributes["data-craftable"].Value; // or this
+					string buyTradable = buyData.Attributes["data-tradable"]?.Value; // or this
+					string buyCraftable = buyData.Attributes["data-craftable"]?.Value; // or this
 					string buyQuality = buyData.Attributes["data-quality"].Value; // or even this
-					string buyComment = buyData.Attributes["data-listing-comment"].Value;
+					string buyComment = buyData.Attributes["data-listing-comment"]?.Value;
 					string buyPrice = buyData.Attributes["data-listing-price"].Value;
 					string buyLevel = buyData.Attributes["data-level"].Value;
 					string buyID = buyData.Attributes["data-id"].Value;
 					string buyerSteamID64 = buyData.Attributes["data-listing-steamid"].Value;
-					string buyOfferUrl = buyData.Attributes["data-listing-offers-url"].Value;
-					string buyOriginalID = buyData.Attributes["data-original-id"].Value;
-					string buyCustomName = buyData.Attributes["data-custom-name"].Value;
-					string buyCustomDesc = buyData.Attributes["data-custom-desc"].Value;
+					string buyerSteamNickname = buyData.Attributes["data-listing-name"]?.Value;
+					string buyOfferUrl = buyData.Attributes["data-listing-offers-url"]?.Value;
+					string buyOriginalID = buyData.Attributes["data-original-id"]?.Value;
+					string buyCustomName = buyData.Attributes["data-custom-name"]?.Value;
+					string buyCustomDesc = buyData.Attributes["data-custom-desc"]?.Value;
 
-					long id = long.Parse(buyID); // confusing syntax down here -v
-					long? originalID = buyOriginalID != null ? new long?(long.Parse(buyOriginalID)) : null;
+					ulong id = ulong.Parse(buyID); // really funky syntax down here -v
+					ulong? originalID = buyOriginalID != null ? new ulong?(ulong.Parse(buyOriginalID)) : null;
 					Price price = Price.ParseFancy(buyPrice);
 					int level = int.Parse(buyLevel);
 
 					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
 						buyCustomName, buyCustomDesc, originalID, tradable);
-					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyOfferUrl, buyComment, true);
+					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname, 
+						buyOfferUrl, buyComment, OrderType.Buy);
 
 					results.Add(listing);
 				}

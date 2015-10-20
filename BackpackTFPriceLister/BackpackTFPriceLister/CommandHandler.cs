@@ -27,6 +27,8 @@ namespace BackpackTFPriceLister
 			_commands.Add("range", GetItemsInPriceRange);
 			_commands.Add("bp", BackpackCheck);
 			_commands.Add("backpack", BackpackCheck);
+			_commands.Add("sellers", (a) => GetClassifieds(a, OrderType.Sell));
+			_commands.Add("buyers", (a) => GetClassifieds(a, OrderType.Buy));
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -66,92 +68,13 @@ namespace BackpackTFPriceLister
 			{
 				itemName += s + " ";
 			}
-			itemName = itemName.Trim();
-			int id = -1;
-			bool isNum = int.TryParse(itemName, out id);
 
-			Item item = null;
+			Item item = SearchItem(itemName.Trim());
 
-			// shortcut
-			if (itemName.ToLower() == "key")
-			{
-				item = PriceLister.ItemData.GetItem(5021);
-			}
-			else
-			{
-				foreach (Item i in PriceLister.ItemData.Items)
-				{
-					if (isNum)
-					{
-						if (i.ID == id)
-						{
-							item = i;
-							break;
-						}
-						continue;
-					}
-					else
-					{
-						if (i.Name.ToLower() == itemName.ToLower())
-						{
-							item = i;
-							break;
-						}
-						continue;
-					}
-				}
-			}
-
-			#region search
 			if (item == null)
 			{
-				Logger.Log("Searching items...");
-
-				List<Item> possibleItems = new List<Item>();
-				foreach (Item i in PriceLister.ItemData.Items)
-				{
-					if (i.Name.ToLower().Contains(itemName.ToLower()))
-					{
-						possibleItems.Add(i);
-						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, ConsoleColor.White);
-					}
-				}
-
-				if (possibleItems.Count == 0)
-				{
-					Logger.Log("No items found matching '" + itemName + "'", ConsoleColor.Red);
-					return;
-				}
-
-				while (item == null)
-				{
-					if (possibleItems.Count == 1)
-					{
-						item = possibleItems.First();
-						break;
-					}
-
-					string sint = Logger.GetInput("Enter selection > ");
-					if (sint.ToLower() == "esc")
-					{
-						Logger.Log("Canceled.");
-						return;
-					}
-
-					int n = -1;
-
-					bool worked = int.TryParse(sint, out n);
-					if (worked && n > 0 && n <= possibleItems.Count)
-					{
-						item = possibleItems[n - 1];
-					}
-					else
-					{
-						Logger.Log("Invalid choice: " + sint, ConsoleColor.Red);
-					}
-				}
+				return;
 			}
-			#endregion
 
 			Logger.AddLine();
 			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", ConsoleColor.White);
@@ -253,6 +176,163 @@ namespace BackpackTFPriceLister
 					Logger.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.GetPriceString());
 				}
 			}
+		}
+
+		// buyers {itemname | itemID | searchQuery}
+		// sellers {itemname | itemID | searchQuery}
+		public static void GetClassifieds(List<string> args, OrderType orderType)
+		{
+			if (args.Count == 0)
+			{
+				Logger.Log("No item specified.", ConsoleColor.Red);
+				return;
+			}
+
+			string query = string.Join(" ", args);
+			query = query.Trim();
+
+			Item item = SearchItem(query);
+			if (item == null)
+			{
+				return;
+			}
+
+			Logger.Log("Item: " + item.Name, ConsoleColor.White);
+
+			string sQuality = Logger.GetInput("Quality? ");
+			Quality quality = ItemQualities.Parse(sQuality);
+
+			bool? tradable = null;
+			bool? craftable = null;
+			if (quality == Quality.Unique)
+			{
+				while (craftable == null)
+				{
+					string sCr = Logger.GetInput("Craftable? ");
+					try
+					{
+						craftable = Util.ParseAdvancedBool(sCr);
+					}
+					catch (FormatException)
+					{
+						Logger.Log("  Invalid input: " + sCr);
+	                }
+				}
+
+				while (tradable == null)
+				{
+					string sTr = Logger.GetInput("Tradable? ");
+					try
+					{
+						tradable = Util.ParseAdvancedBool(sTr);
+					}
+					catch (FormatException)
+					{
+						Logger.Log("  Invalid input: " + sTr);
+					}
+				}
+			}
+
+			if (tradable == null)
+			{
+				tradable = true;
+			}
+			if (craftable == null)
+			{
+				craftable = true;
+			}
+
+			string searchedItemInfo = quality.ToString() + " " +
+				(tradable.Value ? "" : "Non-Tradable ") +
+				(craftable.Value ? "" : "Non-Craftable ") + item.ImproperName;
+
+            Logger.Log("Getting classifieds for " + searchedItemInfo + "...");
+			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
+				item, quality, craftable.Value, tradable.Value);
+			classifieds.RemoveAll((c) => c.OrderType != orderType);
+
+			if (classifieds == null || classifieds.Count == 0)
+			{
+				Logger.Log("No classifieds found for " + searchedItemInfo, ConsoleColor.Red);
+				return;
+			}
+
+			Price? bestPrice = null;
+			string bestLister = null;
+			foreach (ClassifiedsListing c in classifieds)
+			{
+				object[] logLine = new object[] {
+					ConsoleColor.Gray,
+					c.OrderType == OrderType.Sell ? "[Selling] " : "[Buying]  ",
+					ConsoleColor.White, c.Price.ToString(),
+					ConsoleColor.Gray, " from ",
+					ConsoleColor.White, c.SellerNickname ?? c.SellerSteamID64,
+					ConsoleColor.Gray, c.Comment == null ? "" : ": " + c.Comment.SubstringMax(100)
+				};
+
+				Logger.LogComplex(logLine);
+
+				if (orderType == OrderType.Buy)
+				{
+					if (bestPrice == null || c.Price > bestPrice.Value)
+					{
+						bestPrice = c.Price;
+						bestLister = c.SellerNickname ?? "{ NULL }";
+					}
+				}
+				else
+				{
+					if (bestPrice == null || c.Price < bestPrice.Value)
+					{
+						bestPrice = c.Price;
+						bestLister = c.SellerNickname ?? "{ NULL }";
+					}
+				}
+			}
+
+			List<ItemPricing> relevantPrices = PriceLister.PriceData.GetAllPriceData(item);
+			List<ItemPricing> validPrices = new List<ItemPricing>();
+			foreach (ItemPricing p in relevantPrices)
+			{
+				if (p.Craftable != craftable.Value || p.Tradable != tradable.Value)
+				{
+					continue;
+				}
+
+				if (p.Quality != quality)
+				{
+					continue;
+				}
+
+				validPrices.Add(p);
+			}
+
+			double avg = 0;
+			foreach (ItemPricing p in validPrices)
+			{
+				avg += (p.PriceHigh.TotalRefined + p.PriceLow.TotalRefined) / 2.0;
+			}
+			avg /= (double)validPrices.Count;
+			Price estimate = new Price(0, avg);
+			Logger.Log("Price: " + estimate.ToString());
+
+			Price diff = bestPrice.Value - estimate;
+			bool good = true;
+			if (orderType == OrderType.Buy)
+			{
+				good = diff.TotalRefined > 0;
+			}
+			else
+			{
+				good = diff.TotalRefined < 0;
+				diff = new Price(0, -diff.TotalRefined);
+			}
+
+			ConsoleColor goodbadcolor = good ? ConsoleColor.DarkGreen : ConsoleColor.Red;
+			Logger.LogComplex(ConsoleColor.White, "Best Deal: ",
+				goodbadcolor, bestPrice.ToString(), ConsoleColor.Gray, " from ", 
+				ConsoleColor.White, bestLister,
+				goodbadcolor, " (" + diff.ToString() + (good ? " better)" : " worse)"));
 		}
 
 		// refresh
@@ -526,6 +606,98 @@ namespace BackpackTFPriceLister
 			}
 
 			Logger.Log("Total pure: " + totalPure.ToString(), ConsoleColor.White);
+		}
+
+		// helper function
+		public static Item SearchItem(string query)
+		{
+			int id = -1;
+			bool isNum = int.TryParse(query, out id);
+
+			Item item = null;
+
+			// shortcut
+			if (query.ToLower() == "key")
+			{
+				item = PriceLister.ItemData.GetItem(5021);
+			}
+			else
+			{
+				foreach (Item i in PriceLister.ItemData.Items)
+				{
+					if (isNum)
+					{
+						if (i.ID == id)
+						{
+							item = i;
+							break;
+						}
+						continue;
+					}
+					else
+					{
+						if (i.Name.ToLower() == query.ToLower())
+						{
+							item = i;
+							break;
+						}
+						continue;
+					}
+				}
+			}
+
+			#region search
+			if (item == null)
+			{
+				Logger.Log("Searching items...");
+
+				List<Item> possibleItems = new List<Item>();
+				foreach (Item i in PriceLister.ItemData.Items)
+				{
+					if (i.Name.ToLower().Contains(query.ToLower()))
+					{
+						possibleItems.Add(i);
+						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, ConsoleColor.White);
+					}
+				}
+
+				if (possibleItems.Count == 0)
+				{
+					Logger.Log("No items found matching '" + query + "'", ConsoleColor.Red);
+					return null;
+				}
+
+				while (item == null)
+				{
+					if (possibleItems.Count == 1)
+					{
+						item = possibleItems.First();
+						break;
+					}
+
+					string sint = Logger.GetInput("Enter selection > ");
+					if (sint.ToLower() == "esc")
+					{
+						Logger.Log("Canceled.");
+						return null;
+					}
+
+					int n = -1;
+
+					bool worked = int.TryParse(sint, out n);
+					if (worked && n > 0 && n <= possibleItems.Count)
+					{
+						item = possibleItems[n - 1];
+					}
+					else
+					{
+						Logger.Log("Invalid choice: " + sint, ConsoleColor.Red);
+					}
+				}
+			}
+			#endregion
+
+			return item;
 		}
 	}
 }
