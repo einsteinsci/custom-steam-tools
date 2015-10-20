@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SealedTradeBot", "SealedTradeBot\SealedTradeBot.csproj", "{E687BC2B-DC58-48FB-B41F-77DAD4859EC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamWebAPI", "SteamWebAPI\SteamWebAPI.csproj", "{D846D108-D95B-4488-BA01-E487DA220C17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackpackTFPriceLister", "D:\Git\backpacktf-pricelister\BackpackTFPriceLister\BackpackTFPriceLister\BackpackTFPriceLister.csproj", "{B8611D7A-B36D-4422-8E3F-7FFA2A3A9EF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackpackTFPriceLister", "BackpackTFPriceLister\BackpackTFPriceLister.csproj", "{B8611D7A-B36D-4422-8E3F-7FFA2A3A9EF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,17 +30,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://sealedinterface.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = SealedTradeBot\\SealedTradeBot.csproj
-		SccProjectName1 = SealedTradeBot
-		SccLocalPath1 = SealedTradeBot
-		SccProjectUniqueName2 = SteamWebAPI\\SteamWebAPI.csproj
-		SccProjectName2 = SteamWebAPI
-		SccLocalPath2 = SteamWebAPI
 	EndGlobalSection
 EndGlobal

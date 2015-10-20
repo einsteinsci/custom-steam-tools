@@ -80,10 +80,6 @@
       <Project>{d846d108-d95b-4488-ba01-e487da220c17}</Project>
       <Name>SteamWebAPI</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Git\backpacktf-pricelister\BackpackTFPriceLister\BackpackTFPriceLister\BackpackTFPriceLister.csproj">
-      <Project>{b8611d7a-b36d-4422-8e3f-7ffa2a3a9ef2}</Project>
-      <Name>BackpackTFPriceLister</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
