@@ -124,6 +124,40 @@ namespace BackpackTFPriceLister
 			return false;
 		}
 
+		// for scraping backpack.tf classifieds
+		public static Price ParseFancy(string s)
+		{
+			string buf = s.Replace("keys", "k").Replace("ref", "").Replace(" ", "").Replace("key", "k");
+			string[] split = buf.Split(',');
+
+			string sKeysWithK = null, sRef = null;
+			if (split.Length > 1)
+			{
+				sKeysWithK = split[0];
+				sRef = split[1];
+			}
+			else
+			{
+				if (split[0].EndsWith("k"))
+				{
+					sKeysWithK = split[0];
+					sRef = "0";
+				}
+				else
+				{
+					sKeysWithK = "0k";
+					sRef = split[0];
+				}
+			}
+
+			string sKeys = sKeysWithK.TrimEnd('k');
+
+			double keys = double.Parse(sKeys);
+			double refined = double.Parse(sRef);
+
+			return new Price(keys, refined);
+		}
+
 		public string ToStringUnitless()
 		{
 			return Keys > 0 ? TotalKeys.ToString() : TotalRefined.ToString();
