@@ -124,16 +124,16 @@ namespace BackpackTFPriceLister
 			bool priceDlFailed = false;
 			if (!backpackOffline)
 			{
-				Logger.Log("Downloading data from backpack.tf...");
+				Logger.Log("Downloading data from backpack.tf...", ConsoleColor.DarkGray);
 				WebClient client = new WebClient();
 				try
 				{
 					PricesCache = client.DownloadString(PriceDataUrl);
 					PricesCache = PricesCache.Replace("    ", "\t");
-					Logger.Log("  Download complete.");
+					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
 					File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache);
-					Logger.Log("  Saved bp.tf cache.");
+					Logger.Log("  Saved bp.tf cache.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
@@ -144,14 +144,14 @@ namespace BackpackTFPriceLister
 
 			if (backpackOffline || priceDlFailed)
 			{
-				Logger.Log("Retrieving bp.tf cache...");
+				Logger.Log("Retrieving bp.tf cache...", ConsoleColor.DarkGray);
 				try
 				{
 					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the bp.tf cache: " + e.Message);
+					Logger.Log("  An error occurred reading the bp.tf cache: " + e.Message, ConsoleColor.Red);
 					return;
 				}
 			}
@@ -160,15 +160,15 @@ namespace BackpackTFPriceLister
 			bool itemDlFailed = false, backpackDlFailed = false;
 			if (!itemsOffline)
 			{
-				Logger.Log("Downloading TF2 data from Steam...");
+				Logger.Log("Downloading TF2 data from Steam...", ConsoleColor.DarkGray);
 				WebClient client = new WebClient();
 				try
 				{
 					ItemCache = client.DownloadString(ItemDataUrl);
-					Logger.Log("  Download complete.");
+					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
 					File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
-					Logger.Log("  Saved TF2 item cache.");
+					Logger.Log("  Saved TF2 item cache.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
@@ -176,11 +176,11 @@ namespace BackpackTFPriceLister
 					itemDlFailed = true;
 				}
 
-				Logger.Log("Downloading backpack data from Steam...");
+				Logger.Log("Downloading backpack data from Steam...", ConsoleColor.DarkGray);
 				try
 				{
 					MyBackpackCache = client.DownloadString(MyBackpackDataUrl);
-					Logger.Log("  Download complete.");
+					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
 					File.WriteAllText(CacheLocation + BackpackDataFilename, MyBackpackCache);
 				}
@@ -193,7 +193,7 @@ namespace BackpackTFPriceLister
 
 			if (itemsOffline || itemDlFailed)
 			{
-				Logger.Log("Retrieving TF2 item cache...");
+				Logger.Log("Retrieving TF2 item cache...", ConsoleColor.DarkGray);
 				try
 				{
 					ItemCache = File.ReadAllText(CacheLocation + ItemDataFilename);
@@ -206,7 +206,7 @@ namespace BackpackTFPriceLister
 
 			if (itemsOffline || backpackDlFailed)
 			{
-				Logger.Log("Retrieving backpack data cache...");
+				Logger.Log("Retrieving backpack data cache...", ConsoleColor.DarkGray);
 				try
 				{
 					MyBackpackCache = File.ReadAllText(CacheLocation + BackpackDataFilename);
@@ -250,7 +250,7 @@ namespace BackpackTFPriceLister
 			}
 			TF2BackpackData data = new TF2BackpackData(json, ItemData);
 			BackpackData.Add(steamID64, data);
-			Logger.Log("  Parse complete.");
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return true;
 		}
@@ -268,9 +268,9 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			Logger.Log("Parsing TF2 item data...");
+			Logger.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
 			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
-			Logger.Log("  Parse complete.");
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return ItemDataRaw;
 		}
@@ -300,9 +300,9 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			Logger.Log("Parsing backpack.tf price data...");
+			Logger.Log("Parsing backpack.tf price data...", ConsoleColor.DarkGray);
 			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
-			Logger.Log("  Parse complete.");
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
 				.prices["6"].Tradable.Craftable["0"].value;
@@ -322,7 +322,7 @@ namespace BackpackTFPriceLister
 				ParsePricesJson();
 			}
 
-			Logger.Log("Fixing haunted items...");
+			Logger.Log("Fixing haunted items...", ConsoleColor.DarkGray);
 			foreach (Item i in ItemData.Items)
 			{
 				List<ItemPricing> prices = PriceData.GetAllPriceData(i);
@@ -332,7 +332,7 @@ namespace BackpackTFPriceLister
 					i.HasHauntedVersion = true;
 				}
 			}
-			Logger.Log("  Fix complete.");
+			Logger.Log("  Fix complete.", ConsoleColor.DarkGray);
 		}
 
 		public static BpTfPriceData TranslatePricingData()
@@ -364,9 +364,9 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			Logger.Log("Parsing steam backpack data for 'sealed interface'...");
+			Logger.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
 			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
-			Logger.Log("  Parse complete.");
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return MyBackpackDataRaw;
 		}
@@ -410,6 +410,11 @@ namespace BackpackTFPriceLister
 		}
 		public static void RunCommand(string cmdAndArgs)
 		{
+			if (cmdAndArgs.Trim() == "")
+			{
+				return;
+			}
+
 			string[] split = cmdAndArgs.Split(' ');
 			string name = split[0];
 

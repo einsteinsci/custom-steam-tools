@@ -10,9 +10,12 @@ namespace BackpackTFPriceLister
 {
 	public static class CommandHandler
 	{
-		internal delegate void Command(params string[] args);
+		public delegate void Command(List<string> args);
+		public delegate bool PreCommandHandler(string name, List<string> args);
 
 		static Dictionary<string, Command> _commands;
+
+		public static event PreCommandHandler PreCommand;
 
 		static CommandHandler()
 		{
@@ -28,20 +31,32 @@ namespace BackpackTFPriceLister
 
 		public static void RunCommand(string command, params string[] args)
 		{
+			List<string> largs = args.ToList();
+			if (PreCommand != null)
+			{
+				bool cancel = PreCommand(command, largs);
+
+				if (cancel)
+				{
+					Logger.Log("Command canceled.", ConsoleColor.Yellow);
+					return;
+				}
+			}
+
 			if (!_commands.Keys.Contains(command.ToLower()))
 			{
 				Logger.Log("Command not found.", ConsoleColor.Red);
 				return;
 			}
 
-			_commands[command.ToLower()](args); // funky syntax
+			_commands[command.ToLower()](largs); // funky syntax
 		}
 
 		// pc {itemname | itemID | searchQuery}
 		// pricecheck ...
-		public static void PriceCheck(params string[] args)
+		public static void PriceCheck(List<string> args)
 		{
-			if (args.Length == 0)
+			if (args.Count == 0)
 			{
 				Logger.Log("No item specified", ConsoleColor.Red);
 			}
@@ -241,15 +256,15 @@ namespace BackpackTFPriceLister
 		}
 
 		// refresh
-		public static void ForceRefresh(params string[] args)
+		public static void ForceRefresh(List<string> args)
 		{
 			PriceLister.AutoSetup(true, true);
 		}
 
 		// range priceMin priceMax [filters...]
-		public static void GetItemsInPriceRange(params string[] args)
+		public static void GetItemsInPriceRange(List<string> args)
 		{
-			if (args.Length < 2)
+			if (args.Count < 2)
 			{
 				Logger.Log("Missing arguments: priceMin, priceMax", ConsoleColor.Red);
 				return;
@@ -280,7 +295,7 @@ namespace BackpackTFPriceLister
 			Price max = kMax ? new Price(dMax, 0) : new Price(0, dMax);
 
 			List<string> sfilters = new List<string>();
-			for (int i = 2; i < args.Length; i++)
+			for (int i = 2; i < args.Count; i++)
 			{
 				sfilters.Add(args[i]);
 			}
@@ -425,19 +440,23 @@ namespace BackpackTFPriceLister
 
 		// bp [steamid64]
 		// backpack ...
-		public static void BackpackCheck(params string[] args)
+		public static void BackpackCheck(List<string> args)
 		{
 			TF2BackpackData backpackData = null;
-			if (args.Length == 0)
+
+			if (args.Count == 0)
+			{
+				Logger.Log("No player specified.", ConsoleColor.Red);
+				return;
+			}
+			
+			string id = args[0];
+			if (id == PriceLister.SEALEDINTERFACE_STEAMID)
 			{
 				backpackData = PriceLister.MyBackpackData;
-
-				Logger.Log("Backpack for 'sealed interface' (" + 
-					PriceLister.MyBackpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 			}
 			else
 			{
-				string id = args[0];
 				if (!PriceLister.BackpackData.ContainsKey(id))
 				{
 					if (!PriceLister.LoadOtherBackpack(id))
@@ -447,10 +466,11 @@ namespace BackpackTFPriceLister
 				}
 
 				backpackData = PriceLister.BackpackData[id];
-
-				Logger.Log("Backpack for user #" + id + " (" +
-					backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 			}
+			
+			Logger.Log("Backpack for user " + (id == PriceLister.SEALEDINTERFACE_STEAMID ? 
+				"'sealed interface'" : "#" + id) + " (" +
+				backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 
 			Price lowNetWorth = Price.Zero;
 			Price highNetWorth = Price.Zero;

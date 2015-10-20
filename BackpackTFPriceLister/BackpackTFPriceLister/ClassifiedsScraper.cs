@@ -19,12 +19,12 @@ namespace BackpackTFPriceLister
 			url += "&tradable=" + (tradable ? 1 : 0).ToString();
 			url += "&craftable=" + (craftable ? 1 : 0).ToString();
 
-			Logger.Log("Downloading listings from " + url + "...", MessageType.Debug);
+			Logger.Log("Downloading listings from " + url + "...", ConsoleColor.DarkGray);
 			WebClient client = new WebClient();
 			string html = client.DownloadString(url);
-			Logger.Log("  Download complete.", MessageType.Debug);
+			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
-			Logger.Log("Scraping listings from HTML...", MessageType.Debug);
+			Logger.Log("Scraping listings from HTML...", ConsoleColor.DarkGray);
 			HtmlDocument doc = new HtmlDocument();
 			doc.LoadHtml(html);
 
@@ -36,7 +36,7 @@ namespace BackpackTFPriceLister
 
 			if (sellOrderRoot == null)
 			{
-				Logger.Log("  No sell orders found.", MessageType.Debug);
+				Logger.Log("  No sell orders found.", ConsoleColor.DarkGray);
 			}
 			else
 			{
@@ -76,7 +76,7 @@ namespace BackpackTFPriceLister
 
 					results.Add(listing);
 				}
-				Logger.Log("  Sell order scrape complete.", MessageType.Debug);
+				Logger.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
 			}
 
 			HtmlNode buyOrderRoot = root.Descendants("ul").Where((n) => n.Attributes.Contains("class") &&
@@ -84,7 +84,7 @@ namespace BackpackTFPriceLister
 
 			if (buyOrderRoot == null)
 			{
-				Logger.Log("  No buy orders found.", MessageType.Debug);
+				Logger.Log("  No buy orders found.", ConsoleColor.DarkGray);
 			}
 			else
 			{
@@ -125,7 +125,7 @@ namespace BackpackTFPriceLister
 					results.Add(listing);
 				}
 
-				Logger.Log("  Buy order scrape complete.", MessageType.Debug);
+				Logger.Log("  Buy order scrape complete.", ConsoleColor.DarkGray);
 			}
 
 			return results;

@@ -23,6 +23,8 @@ namespace BackpackTFConsole
 			Logger.Logging += DebugLog;
 			Logger.Prompting = DebugPrompt;
 
+			CommandHandler.PreCommand += PreCommand;
+
 			PriceLister.AutoSetup(true, true);
 
 			string input = "";
@@ -36,6 +38,20 @@ namespace BackpackTFConsole
 					PriceLister.RunCommand(input);
 				}
 			}
+		}
+
+		private static bool PreCommand(string commandName, List<string> args)
+		{
+			if (commandName.ToLower() == "bp")
+			{
+				if (args.Count == 0)
+				{
+					args.Add(PriceLister.SEALEDINTERFACE_STEAMID);
+					return false;
+				}
+			}
+
+			return false;
 		}
 
 		private static void DebugLog(object sender, LogEventArgs e)
