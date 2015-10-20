@@ -31,11 +31,13 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+// Mostly deprecated, replaced by SteamKit2
 namespace SteamWebAPI
 {
 	/// <summary>
 	/// Class allowing you to use the Steam Web API to log in and use Steam Friends functionality.
 	/// </summary>
+	[Obsolete]
 	public class SteamAPISession
 	{
 		private string accessToken;
