@@ -128,6 +128,25 @@ namespace BackpackTFPriceLister
 			return Price.Zero;
 		}
 
+		public bool CanBeAustralium()
+		{
+			if (PriceLister.PriceData == null)
+			{
+				PriceLister.TranslatePricingData();
+			}
+
+			List<ItemPricing> pricings = PriceLister.PriceData.GetAllPriceData(this);
+			foreach (ItemPricing p in pricings)
+			{
+				if (p.Australium)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public override string ToString()
 		{
 			return Name;

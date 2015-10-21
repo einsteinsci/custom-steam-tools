@@ -114,7 +114,7 @@ namespace BackpackTFPriceLister
 
 		public static void LoadData(bool bptfOffline = false, bool steamOffline = false)
 		{
-			TimeSpan TIMEOUT = TimeSpan.FromSeconds(15);
+			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
 
 			DateTime lastAccessPrices = File.GetLastWriteTime(CacheLocation + PriceDataFilename);
 			DateTime lastAccessItem = File.GetLastWriteTime(CacheLocation + ItemDataFilename);
@@ -211,7 +211,7 @@ namespace BackpackTFPriceLister
 
 		public static bool LoadOtherBackpack(string steamID64)
 		{
-			TimeSpan TIMEOUT = TimeSpan.FromSeconds(45);
+			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
 
 			Logger.Log("Requesting backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
 			string result = Util.DownloadString(GetBackbackUrl(steamID64), TIMEOUT);

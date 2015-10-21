@@ -87,6 +87,7 @@ namespace BackpackTFPriceLister
 				try
 				{
 					result = client.DownloadString(url);
+					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 				}
 				catch (WebException e)
 				{
@@ -111,7 +112,6 @@ namespace BackpackTFPriceLister
 					return null;
 				}
 			}
-			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
 			return result;
 		}

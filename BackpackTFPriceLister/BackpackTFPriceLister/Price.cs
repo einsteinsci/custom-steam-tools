@@ -49,79 +49,44 @@ namespace BackpackTFPriceLister
 		}
 		private static double _refinedPerKey = -1;
 
-		public double Keys
+		// this is what is actually stored
+		public double TotalRefined
 		{ get; private set; }
 
-		public double Ref
-		{ get; private set; }
+		public int Keys => (int)TotalKeys;
+		public double Refined => TotalRefined - (Keys * RefinedPerKey);
+		public double TotalKeys => TotalRefined / RefinedPerKey;
 
-		public double TotalKeys => Keys + (Ref / RefinedPerKey);
-		public double TotalRefined => Ref + (Keys * RefinedPerKey);
-		
-		public Price(double keys, double @ref)
+		public Price(int keys, double refined) : this(keys * RefinedPerKey + refined)
+		{ }
+
+		public Price(double refined)
 		{
-			Keys = keys;
-			Ref = @ref;
-
-			Correct();
+			TotalRefined = refined;
 		}
 
-		public Price(double value, string currency)
+		public Price(double amount, string currency)
 		{
-			if (currency == CURRENCY_KEYS)
+			switch (currency)
 			{
-				Keys = value;
-				Ref = 0;
-			}
-			else if (currency == CURRENCY_REF)
-			{
-				Keys = 0;
-				Ref = value;
-				Correct();
-			}
-			else if (currency == CURRENCY_CASH)
-			{
-				Keys = value * KEY_STOREPRICE_USD;
-				Ref = 0;
-				Correct();
-			}
-			else
-			{
-				Keys = 0;
-				Ref = 0;
-			}
-		}
-
-		public void Correct()
-		{
-			if (Keys - (int)Keys != 0)
-			{
-				double dif = Keys - (int)Keys;
-				Ref += dif * RefinedPerKey;
-				Keys = (int)Keys;
-			}
-
-			while (Ref > RefinedPerKey)
-			{
-				Ref -= RefinedPerKey;
-				Keys++;
+				case CURRENCY_CASH:
+					double keys = amount / KEY_STOREPRICE_USD;
+					TotalRefined = keys * RefinedPerKey;
+					break;
+				case CURRENCY_KEYS:
+					TotalRefined = amount * RefinedPerKey;
+					break;
+				case CURRENCY_REF:
+					TotalRefined = amount;
+					break;
+				default:
+					throw new ArgumentException("Invalid currency: " + currency, nameof(currency));
 			}
 		}
 
 		public override string ToString()
 		{
 			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString() + " ref");
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (obj is Price)
-			{
-				Price other = (Price)obj;
-				return other.TotalRefined == TotalRefined;
-			}
-
-			return false;
 		}
 
 		// for scraping backpack.tf classifieds
@@ -155,7 +120,20 @@ namespace BackpackTFPriceLister
 			double keys = double.Parse(sKeys);
 			double refined = double.Parse(sRef);
 
-			return new Price(keys, refined);
+			return new Price(keys * RefinedPerKey + refined);
+		}
+
+		public static Price FromKeys(double keys)
+		{
+			return new Price(keys * RefinedPerKey);
+		}
+		public static Price FromMetal(double refined)
+		{
+			return new Price(refined);
+		}
+		public static Price FromUSD(double usd)
+		{
+			return new Price(usd, CURRENCY_CASH);
 		}
 
 		public string ToStringUnitless()

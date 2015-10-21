@@ -1,5 +1,4 @@
 ﻿using BackpackTFPriceLister.BackpackDataJson;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -202,9 +201,23 @@ namespace BackpackTFPriceLister
 			string sQuality = Logger.GetInput("Quality? ");
 			Quality quality = ItemQualities.Parse(sQuality);
 
+			bool? australium = null;
+			while (australium == null)
+			{
+				string sA = Logger.GetInput("Australium? ");
+				try
+				{
+					australium = Util.ParseAdvancedBool(sA);
+				}
+				catch (FormatException)
+				{
+					Logger.Log("  Invalid input: " + sA);
+				}
+			}
+
 			bool? tradable = null;
 			bool? craftable = null;
-			if (quality == Quality.Unique)
+			if (quality == Quality.Unique && !australium.Value)
 			{
 				while (craftable == null)
 				{
@@ -243,12 +256,13 @@ namespace BackpackTFPriceLister
 			}
 
 			string searchedItemInfo = quality.ToString() + " " +
+				(craftable.Value ? "" : "Non-Craftable ") +
 				(tradable.Value ? "" : "Non-Tradable ") +
-				(craftable.Value ? "" : "Non-Craftable ") + item.ImproperName;
+				(australium.Value ? "Australium " : "") + item.ImproperName;
 
             Logger.Log("Getting classifieds for " + searchedItemInfo + "...");
 			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
-				item, quality, craftable.Value, tradable.Value);
+				item, quality, craftable.Value, tradable.Value, australium.Value);
 			classifieds.RemoveAll((c) => c.OrderType != orderType);
 
 			if (classifieds == null || classifieds.Count == 0)
@@ -300,6 +314,11 @@ namespace BackpackTFPriceLister
 				}
 
 				if (p.Quality != quality)
+				{
+					continue;
+				}
+
+				if (p.Australium != australium.Value)
 				{
 					continue;
 				}
@@ -371,8 +390,8 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			Price min = kMin ? new Price(dMin, 0) : new Price(0, dMin);
-			Price max = kMax ? new Price(dMax, 0) : new Price(0, dMax);
+			Price min = new Price(dMin, kMin ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
+			Price max = new Price(dMax, kMax ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
 
 			List<string> sfilters = new List<string>();
 			for (int i = 2; i < args.Count; i++)

@@ -11,13 +11,14 @@ namespace BackpackTFPriceLister
 	public static class ClassifiedsScraper
 	{
 		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, 
-			bool craftable = true, bool tradable = true)
+			bool craftable = true, bool tradable = true, bool australium = false)
 		{
 			string url = "http://backpack.tf/classifieds?item=";
 			url += item.ImproperName;
 			url += "&quality=" + ((int)quality).ToString();
-			url += "&tradable=" + (tradable ? 1 : 0).ToString();
-			url += "&craftable=" + (craftable ? 1 : 0).ToString();
+			url += "&tradable=" + (tradable ? 1 : -1).ToString();
+			url += "&craftable=" + (craftable ? 1 : -1).ToString();
+			url += "&australium=" + (australium ? 1 : -1).ToString();
 
 			Logger.Log("Downloading listings from " + url + "...", ConsoleColor.DarkGray);
 			WebClient client = new WebClient();
