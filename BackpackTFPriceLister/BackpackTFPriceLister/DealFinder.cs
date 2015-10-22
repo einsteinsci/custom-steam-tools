@@ -159,7 +159,7 @@ namespace BackpackTFPriceLister
 			List<ItemPricing> results = new List<ItemPricing>();
 
 			Logger.Log("Finding valid items in price range...", ConsoleColor.DarkGray);
-			foreach (ItemPricing p in PriceLister.PriceData.Prices) // get ALL the datas!
+			foreach (ItemPricing p in DataManager.PriceData.Prices) // get ALL the datas!
 			{
 				if (p.PriceLow < low || p.PriceHigh > high)
 				{
@@ -200,26 +200,26 @@ namespace BackpackTFPriceLister
 			return results;
 		}
 
-		public static Price? GetMaxPrice(string id = PriceLister.SEALEDINTERFACE_STEAMID)
+		public static Price? GetMaxPrice(string id = DataManager.SEALEDINTERFACE_STEAMID)
 		{
 			Logger.Log("Opening backpack of #" + id + "...", ConsoleColor.DarkGray);
 			TF2BackpackData backpack = null;
-			if (id == PriceLister.SEALEDINTERFACE_STEAMID ||
+			if (id == DataManager.SEALEDINTERFACE_STEAMID ||
 				id == null)
 			{
-				backpack = PriceLister.MyBackpackData;
+				backpack = DataManager.MyBackpackData;
 			}
 			else
 			{
-				if (!PriceLister.BackpackData.ContainsKey(id))
+				if (!DataManager.BackpackData.ContainsKey(id))
 				{
-					if (!PriceLister.LoadOtherBackpack(id))
+					if (!DataManager.LoadOtherBackpack(id))
 					{
 						return null;
 					}
 				}
 
-				backpack = PriceLister.BackpackData[id];
+				backpack = DataManager.BackpackData[id];
 			}
 
 			Price totalPure = Price.Zero;

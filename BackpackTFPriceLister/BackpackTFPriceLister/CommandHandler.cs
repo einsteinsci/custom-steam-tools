@@ -79,7 +79,7 @@ namespace BackpackTFPriceLister
 			Logger.AddLine();
 			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", ConsoleColor.White);
 
-			List<ItemPricing> itemPricings = PriceLister.PriceData.GetAllPriceData(item);
+			List<ItemPricing> itemPricings = DataManager.PriceData.GetAllPriceData(item);
 
 			if (itemPricings.Count == 0)
 			{
@@ -157,7 +157,7 @@ namespace BackpackTFPriceLister
 			{
 				foreach (ItemPricing p in unusuals)
 				{
-					UnusualEffect fx = PriceLister.ItemData.Unusuals.First((ue) => ue.ID == p.PriceIndex);
+					UnusualEffect fx = DataManager.ItemData.Unusuals.First((ue) => ue.ID == p.PriceIndex);
 					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString());
 				}
 			}
@@ -305,7 +305,7 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			List<ItemPricing> relevantPrices = PriceLister.PriceData.GetAllPriceData(item);
+			List<ItemPricing> relevantPrices = DataManager.PriceData.GetAllPriceData(item);
 			List<ItemPricing> validPrices = new List<ItemPricing>();
 			foreach (ItemPricing p in relevantPrices)
 			{
@@ -358,7 +358,7 @@ namespace BackpackTFPriceLister
 		// refresh
 		public static void ForceRefresh(List<string> args)
 		{
-			PriceLister.AutoSetup(true, true);
+			DataManager.AutoSetup(true, true);
 			ClassifiedsScraper.SteamBackpackDown = false;
 		}
 
@@ -481,7 +481,7 @@ namespace BackpackTFPriceLister
 			}
 
 			List<ItemPricing> results = new List<ItemPricing>();
-			foreach (ItemPricing p in PriceLister.PriceData.Prices)
+			foreach (ItemPricing p in DataManager.PriceData.Prices)
 			{
 				if (!p.Tradable)
 				{
@@ -529,7 +529,7 @@ namespace BackpackTFPriceLister
 			{
 				if (p.Quality == Quality.Unusual)
 				{
-					UnusualEffect fx = PriceLister.ItemData.Unusuals.First((u) => u.ID == p.PriceIndex);
+					UnusualEffect fx = DataManager.ItemData.Unusuals.First((u) => u.ID == p.PriceIndex);
 					Logger.Log("  " + p.CompiledTitleName + " (" + fx.Name + "): " + p.GetPriceString());
 					continue;
 				}
@@ -552,24 +552,24 @@ namespace BackpackTFPriceLister
 			}
 			
 			string id = args[0];
-			if (id == PriceLister.SEALEDINTERFACE_STEAMID)
+			if (id == DataManager.SEALEDINTERFACE_STEAMID)
 			{
-				backpackData = PriceLister.MyBackpackData;
+				backpackData = DataManager.MyBackpackData;
 			}
 			else
 			{
-				if (!PriceLister.BackpackData.ContainsKey(id))
+				if (!DataManager.BackpackData.ContainsKey(id))
 				{
-					if (!PriceLister.LoadOtherBackpack(id))
+					if (!DataManager.LoadOtherBackpack(id))
 					{
 						return;
 					}
 				}
 
-				backpackData = PriceLister.BackpackData[id];
+				backpackData = DataManager.BackpackData[id];
 			}
 			
-			Logger.Log("Backpack for user " + (id == PriceLister.SEALEDINTERFACE_STEAMID ? 
+			Logger.Log("Backpack for user " + (id == DataManager.SEALEDINTERFACE_STEAMID ? 
 				"'sealed interface'" : "#" + id) + " (" +
 				backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 
@@ -705,11 +705,11 @@ namespace BackpackTFPriceLister
 			// shortcut
 			if (query.ToLower() == "key")
 			{
-				item = PriceLister.ItemData.GetItem(5021);
+				item = DataManager.ItemData.GetItem(5021);
 			}
 			else
 			{
-				foreach (Item i in PriceLister.ItemData.Items)
+				foreach (Item i in DataManager.ItemData.Items)
 				{
 					if (isNum)
 					{
@@ -738,7 +738,7 @@ namespace BackpackTFPriceLister
 				Logger.Log("Searching items...");
 
 				List<Item> possibleItems = new List<Item>();
-				foreach (Item i in PriceLister.ItemData.Items)
+				foreach (Item i in DataManager.ItemData.Items)
 				{
 					if (i.Name.ToLower().Contains(query.ToLower()))
 					{

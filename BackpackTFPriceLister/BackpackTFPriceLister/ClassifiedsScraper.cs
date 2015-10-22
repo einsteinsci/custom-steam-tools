@@ -177,15 +177,15 @@ namespace BackpackTFPriceLister
 			}
 
 			TF2BackpackData bp = null;
-			if (steamID == PriceLister.SEALEDINTERFACE_STEAMID)
+			if (steamID == DataManager.SEALEDINTERFACE_STEAMID)
 			{
-				bp = PriceLister.MyBackpackData;
+				bp = DataManager.MyBackpackData;
 			}
 			else
 			{
-				if (!PriceLister.BackpackData.ContainsKey(steamID))
+				if (!DataManager.BackpackData.ContainsKey(steamID))
 				{
-					if (!PriceLister.LoadOtherBackpack(steamID))
+					if (!DataManager.LoadOtherBackpack(steamID))
 					{
 						Logger.Log("  Steam API is down. Disabling verify until refresh command.", ConsoleColor.Red);
 						SteamBackpackDown = true;
@@ -193,7 +193,7 @@ namespace BackpackTFPriceLister
 					}
 				}
 
-				bp = PriceLister.BackpackData[steamID];
+				bp = DataManager.BackpackData[steamID];
 			}
 			
 			foreach (ItemInstance i in bp.Items)

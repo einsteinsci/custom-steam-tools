@@ -148,7 +148,7 @@ namespace BackpackTFPriceLister
 				return null;
 			}
 
-			return PriceLister.ItemData.Unusuals.FirstOrDefault((u) => u.ID == att.Value);
+			return DataManager.ItemData.Unusuals.FirstOrDefault((u) => u.ID == att.Value);
 		}
 		public int? GetCrateSeries()
 		{
@@ -188,7 +188,7 @@ namespace BackpackTFPriceLister
 				priceIndex = series.Value;
 			}
 
-			return PriceLister.PriceData.GetPriceData(Item, Quality, priceIndex, Craftable, Tradable);
+			return DataManager.PriceData.GetPriceData(Item, Quality, priceIndex, Craftable, Tradable);
 		}
 
 		public override string ToString()

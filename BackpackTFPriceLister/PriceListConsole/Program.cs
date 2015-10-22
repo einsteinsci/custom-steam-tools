@@ -25,7 +25,7 @@ namespace BackpackTFConsole
 
 			CommandHandler.PreCommand += PreCommand;
 
-			PriceLister.AutoSetup(true, true);
+			DataManager.AutoSetup(true, true);
 
 			string input = "";
 			while (input.ToLower() != "exit")
@@ -35,7 +35,7 @@ namespace BackpackTFConsole
 
 				if (input.ToLower() != "exit")
 				{
-					PriceLister.RunCommand(input);
+					DataManager.RunCommand(input);
 				}
 			}
 		}
@@ -46,7 +46,7 @@ namespace BackpackTFConsole
 			{
 				if (args.Count == 0)
 				{
-					args.Add(PriceLister.SEALEDINTERFACE_STEAMID);
+					args.Add(DataManager.SEALEDINTERFACE_STEAMID);
 					return false;
 				}
 			}
@@ -54,13 +54,13 @@ namespace BackpackTFConsole
 			{
 				if (args.Count == 0)
 				{
-					args.Insert(0, PriceLister.SEALEDINTERFACE_STEAMID);
+					args.Insert(0, DataManager.SEALEDINTERFACE_STEAMID);
 					return false;
 				}
 
 				if (args[0].ToLower() == "me")
 				{
-					args[0] = PriceLister.SEALEDINTERFACE_STEAMID;
+					args[0] = DataManager.SEALEDINTERFACE_STEAMID;
 				}
 			}
 

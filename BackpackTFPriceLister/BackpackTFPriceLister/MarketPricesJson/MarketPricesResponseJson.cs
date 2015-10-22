@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister.MarketDataJson
+namespace BackpackTFPriceLister.MarketPricesJson
 {
-	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class SteamMarketDataJson
+	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
+	public class MarketPricesResponseJson
 	{
 
 	}

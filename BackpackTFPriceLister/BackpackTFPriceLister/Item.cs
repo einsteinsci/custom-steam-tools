@@ -130,12 +130,12 @@ namespace BackpackTFPriceLister
 
 		public bool CanBeAustralium()
 		{
-			if (PriceLister.PriceData == null)
+			if (DataManager.PriceData == null)
 			{
-				PriceLister.TranslatePricingData();
+				DataManager.TranslatePricingData();
 			}
 
-			List<ItemPricing> pricings = PriceLister.PriceData.GetAllPriceData(this);
+			List<ItemPricing> pricings = DataManager.PriceData.GetAllPriceData(this);
 			foreach (ItemPricing p in pricings)
 			{
 				if (p.Australium)

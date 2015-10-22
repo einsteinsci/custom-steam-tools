@@ -9,11 +9,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.MarketDataJson;
 
 namespace BackpackTFPriceLister
 {
 	// the "main" class in this DLL
-	public static class PriceLister
+	public static class DataManager
     {
 		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
 		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
@@ -26,6 +27,8 @@ namespace BackpackTFPriceLister
 		{ get; set; }
 		public static string MyBackpackDataUrl
 		{ get; set; }
+		public static string MarketPricesUrl
+		{ get; set; }
 
 		public static string PriceDataFilename
 		{ get; set; }
@@ -33,6 +36,8 @@ namespace BackpackTFPriceLister
 		{ get; set; }
 		public static string BackpackDataFilename
 		{ get; set; }
+		public static string MarketPricesFilename // Downloaded from an official bp.tf API, not scraped off
+		{ get; set; }								 //   steam community market
 
 		public static string CacheLocation
 		{ get; set; }
@@ -44,6 +49,8 @@ namespace BackpackTFPriceLister
 		public static string MyBackpackCache
 		{ get; private set; }
 		public static Dictionary<string, string> BackpackCaches
+		{ get; private set; }
+		public static string MarketPricesCache
 		{ get; private set; }
 
 		public static TF2DataJson ItemDataRaw
@@ -66,13 +73,19 @@ namespace BackpackTFPriceLister
 		public static Dictionary<string, TF2BackpackData> BackpackData
 		{ get; private set; }
 
+		public static MarketPriceDataJson MarketPricesRaw
+		{ get; private set; }
+		public static MarketPriceData MarketPrices
+		{ get; private set; }
+
 		public static void Initialize(bool fancyJson)
 		{
 			string _cachelocation = Environment.GetEnvironmentVariable("TEMP") + "\\BACKPACK.TF-PRICELIST\\";
 			string _bptffilename = "bptf-pricedata.json";
 			string _itemfilename = "tf2-itemdata.json";
 			string _bpdatafilename = "steam-backpackdata-sealedinterface.json";
-			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, fancyJson);
+			string _marketfilename = "bptf-marketdata.json";
+			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename, fancyJson);
 
 			BackpackCaches = new Dictionary<string, string>();
 			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
@@ -80,7 +93,7 @@ namespace BackpackTFPriceLister
 		}
 		
 		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
-			string backpackFilename, bool fancyJson)
+			string backpackFilename, string marketFilename, bool fancyJson)
 		{
 			PriceDataUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + BPTF_API_KEY;
 
@@ -94,6 +107,13 @@ namespace BackpackTFPriceLister
 
 			MyBackpackDataUrl = GetBackbackUrl(SEALEDINTERFACE_STEAMID);
 
+			MarketPricesUrl = "http://backpack.tf/api/IGetMarketPrices/v1/?key=" + BPTF_API_KEY;
+
+			if (fancyJson)
+			{
+				MarketPricesUrl += "&format=pretty";
+			}
+
 			if (!Directory.Exists(cacheLocation))
 			{
 				Directory.CreateDirectory(cacheLocation);
@@ -104,6 +124,7 @@ namespace BackpackTFPriceLister
 			PriceDataFilename = bptfFilename;
 			ItemDataFilename = itemFilename;
 			BackpackDataFilename = backpackFilename;
+			MarketPricesFilename = marketFilename;
 		}
 
 		public static string GetBackbackUrl(string steamID64)
@@ -119,14 +140,14 @@ namespace BackpackTFPriceLister
 			DateTime lastAccessPrices = File.GetLastWriteTime(CacheLocation + PriceDataFilename);
 			DateTime lastAccessItem = File.GetLastWriteTime(CacheLocation + ItemDataFilename);
 
-			bool backpackOffline = bptfOffline || DateTime.Now.Subtract(lastAccessPrices).TotalMinutes <= 5.00;
-			bool itemsOffline = steamOffline || DateTime.Now.Subtract(lastAccessItem).TotalMinutes <= 5.00;
+			bool backpackOffline = bptfOffline || DateTime.Now.Subtract(lastAccessPrices).TotalMinutes <= 10.00;
+			bool itemsOffline = steamOffline || DateTime.Now.Subtract(lastAccessItem).TotalMinutes <= 10.00;
 
 			// backpack.tf
-			bool priceDlFailed = false;
+			bool priceDlFailed = false, marketDlFailed = false;
 			if (!backpackOffline)
 			{
-				Logger.Log("Downloading data from backpack.tf...", ConsoleColor.DarkGray);
+				Logger.Log("Downloading price data from backpack.tf...", ConsoleColor.DarkGray);
 				PricesCache = Util.DownloadString(PriceDataUrl, TIMEOUT);
 				if (PricesCache == null)
 				{
@@ -135,21 +156,50 @@ namespace BackpackTFPriceLister
 				else
 				{
 					File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache);
-					Logger.Log("  Saved bp.tf cache.", ConsoleColor.DarkGray);
+					Logger.Log("  Saved bp.tf prices cache.", ConsoleColor.DarkGray);
+				}
+
+				Logger.Log("Downloading market data from backpack.tf...", ConsoleColor.DarkGray);
+				MarketPricesCache = Util.DownloadString(MarketPricesUrl, TIMEOUT);
+				if (MarketPricesCache == null)
+				{
+					marketDlFailed = true;
+				}
+				else
+				{
+					File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache);
+					Logger.Log("  Saved market prices cache.", ConsoleColor.DarkGray);
 				}
 			}
 
-			if (backpackOffline || priceDlFailed)
+			if (backpackOffline)
 			{
-				Logger.Log("Retrieving bp.tf cache...", ConsoleColor.DarkGray);
-				try
+				if (priceDlFailed)
 				{
-					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename);
+					Logger.Log("Retrieving bp.tf prices cache...", ConsoleColor.DarkGray);
+					try
+					{
+						PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename);
+					}
+					catch (Exception e)
+					{
+						Logger.Log("  An error occurred reading the bp.tf prices cache: " + e.Message, ConsoleColor.Red);
+						return;
+					}
 				}
-				catch (Exception e)
+
+				if (marketDlFailed)
 				{
-					Logger.Log("  An error occurred reading the bp.tf cache: " + e.Message, ConsoleColor.Red);
-					return;
+					Logger.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
+					try
+					{
+						MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename);
+					}
+					catch (Exception e)
+					{
+						Logger.Log("  An error occurred reading the market prices cache: " + e.Message, ConsoleColor.Red);
+						return;
+					}
 				}
 			}
 

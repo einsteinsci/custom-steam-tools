@@ -53,7 +53,9 @@
     <Compile Include="ClassifiedsScraper.cs" />
     <Compile Include="ItemSale.cs" />
     <Compile Include="DealFinder.cs" />
-    <Compile Include="MarketDataJson\SteamMarketDataJson.cs" />
+    <Compile Include="MarketPriceData.cs" />
+    <Compile Include="MarketPricesJson\MarketPricesJson.cs" />
+    <Compile Include="MarketPricesJson\MarketPricesResponseJson.cs" />
     <Compile Include="TF2BackpackData.cs" />
     <Compile Include="BackpackDataJson\AppliedItemInstanceAttributeJson.cs" />
     <Compile Include="BackpackDataJson\EquipInfoJson.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="PriceDataJson\QualityPriceDataJson.cs" />
     <Compile Include="PriceDataJson\TradabilityJson.cs" />
     <Compile Include="PriceDataJson\TypeIndexPricingJson.cs" />
-    <Compile Include="PriceLister.cs" />
+    <Compile Include="DataManager.cs" />
     <Compile Include="PriceDataJson\BPTFPriceDataJson.cs" />
     <Compile Include="PriceDataJson\BPTFPriceDataResponseJson.cs" />
     <Compile Include="PriceDataJson\ItemPriceJson.cs" />
