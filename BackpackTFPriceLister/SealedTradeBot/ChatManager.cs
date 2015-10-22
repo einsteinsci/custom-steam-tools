@@ -48,7 +48,7 @@ namespace SealedTradeBot
 
 					commandHandlerThread = new Thread(() =>
 					{
-						PriceLister.RunCommand(cmd);
+						DataManager.RunCommand(cmd);
 						if (IsExiting)
 						{
 							BotLogger.LogLine("Exiting...");

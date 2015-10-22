@@ -156,11 +156,6 @@ namespace BackpackTFPriceLister
 					results.Add(listing);
 				}
 
-				if (item.ImproperName.ToLower().Contains("o'war"))
-				{
-					int stuppid = 0;
-				}
-
 				//Logger.Log("  Buy order scrape complete.", ConsoleColor.DarkGray);
 			}
 			#endregion buys

@@ -34,8 +34,8 @@ namespace SealedTradeBot
 				(e.NewlineAfterPrompt ? "\n" : ""), e.Foreground, e.Background);
 
 			Settings.LoadFromFile();
-			PriceLister.AutoSetup(true, true);
-			ItemData = PriceLister.ItemData;
+			DataManager.AutoSetup(true, true);
+			ItemData = DataManager.ItemData;
 
 			Console.WriteLine();
 			List<TradeOffer> openOffers = OfferManager.GetAllOpenOffers();
