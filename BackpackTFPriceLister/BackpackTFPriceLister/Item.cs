@@ -166,5 +166,10 @@ namespace BackpackTFPriceLister
 		{
 			return ID.GetHashCode();
 		}
+
+		public bool IsBotkiller()
+		{
+			return ImproperName.Contains("Botkiller");
+		}
 	}
 }

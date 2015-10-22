@@ -18,6 +18,7 @@ namespace BackpackTFPriceLister
 	{
 		public const int UNUSUAL_ID = 134;
 		public const int CRATESERIES_ID = 187;
+		public const int KILLSTREAK_ID = 2025; // "Killstreak Tier"
 
 		public string Name
 		{ get; set; }

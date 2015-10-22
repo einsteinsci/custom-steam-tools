@@ -57,7 +57,7 @@ namespace BackpackTFPriceLister
 					return ItemSlotPlain.Unused;
 				}
 
-				string sl = s.ToLower();
+				string sl = s.ToLower().TrimEnd('s', 'S');
 
 				if (sl == WEAPON)
 				{

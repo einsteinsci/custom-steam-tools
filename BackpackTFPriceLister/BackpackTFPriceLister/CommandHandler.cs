@@ -28,6 +28,7 @@ namespace BackpackTFPriceLister
 			_commands.Add("backpack", BackpackCheck);
 			_commands.Add("sellers", (a) => GetClassifieds(a, OrderType.Sell));
 			_commands.Add("buyers", (a) => GetClassifieds(a, OrderType.Buy));
+			_commands.Add("deals", GetDeals);
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -262,7 +263,7 @@ namespace BackpackTFPriceLister
 
             Logger.Log("Getting classifieds for " + searchedItemInfo + "...");
 			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
-				item, quality, craftable.Value, tradable.Value, australium.Value);
+				item, quality, true, craftable.Value, tradable.Value, australium.Value);
 			classifieds.RemoveAll((c) => c.OrderType != orderType);
 
 			if (classifieds == null || classifieds.Count == 0)
@@ -280,7 +281,7 @@ namespace BackpackTFPriceLister
 					c.OrderType == OrderType.Sell ? "[Selling] " : "[Buying]  ",
 					ConsoleColor.White, c.Price.ToString(),
 					ConsoleColor.Gray, " from ",
-					ConsoleColor.White, c.SellerNickname ?? c.SellerSteamID64,
+					ConsoleColor.White, c.ListerNickname ?? c.ListerSteamID64,
 					ConsoleColor.Gray, c.Comment == null ? "" : ": " + c.Comment.SubstringMax(100)
 				};
 
@@ -291,7 +292,7 @@ namespace BackpackTFPriceLister
 					if (bestPrice == null || c.Price > bestPrice.Value)
 					{
 						bestPrice = c.Price;
-						bestLister = c.SellerNickname ?? "{ NULL }";
+						bestLister = c.ListerNickname ?? "{ NULL }";
 					}
 				}
 				else
@@ -299,7 +300,7 @@ namespace BackpackTFPriceLister
 					if (bestPrice == null || c.Price < bestPrice.Value)
 					{
 						bestPrice = c.Price;
-						bestLister = c.SellerNickname ?? "{ NULL }";
+						bestLister = c.ListerNickname ?? "{ NULL }";
 					}
 				}
 			}
@@ -358,9 +359,10 @@ namespace BackpackTFPriceLister
 		public static void ForceRefresh(List<string> args)
 		{
 			PriceLister.AutoSetup(true, true);
+			ClassifiedsScraper.SteamBackpackDown = false;
 		}
 
-		// range priceMin priceMax [filters...]
+		// range {priceMin} {priceMax} [filters...]
 		public static void GetItemsInPriceRange(List<string> args)
 		{
 			if (args.Count < 2)
@@ -625,6 +627,71 @@ namespace BackpackTFPriceLister
 			}
 
 			Logger.Log("Total pure: " + totalPure.ToString(), ConsoleColor.White);
+		}
+
+		// deals {steamid64} [filters...]
+		public static void GetDeals(List<string> args)
+		{
+			if (args.Count == 0)
+			{
+				Logger.Log("SteamID is required (64-bit form).", ConsoleColor.Red);
+				return;
+			}
+
+			string steamID = args[0];
+			ulong nothing;
+			if (!ulong.TryParse(steamID, out nothing))
+			{
+				Logger.Log("Invalid SteamID64: " + steamID, ConsoleColor.Red);
+				return;
+			}
+
+			Logger.Log("Searching deals for user #" + steamID + "...", ConsoleColor.White);
+			
+			List<string> filters = new List<string>();
+			for (int i = 1; i < args.Count; i++)
+			{
+				filters.Add(args[i]);
+			}
+
+			#region filters
+			List<object> buf = new List<object>();
+			foreach (string s in filters)
+			{
+				ItemSlotPlain bufs = ItemSlots.Plain.Parse(s);
+				Quality? bufq = ItemQualities.ParseNullable(s);
+				//PlayerClass bufc = PlayerClasses.Parse(s);
+
+				if (bufs != ItemSlotPlain.Unused)
+				{
+					buf.Add(bufs);
+				}
+				//else if (bufc != 0)
+				//{
+				//	allowedClasses.Add(bufc);
+				//}
+				else if (bufq != null)
+				{
+					buf.Add(bufq.Value);
+				}
+				else
+				{
+					buf.Add(s);
+				}
+			}
+
+			object[] filtersRes = buf.ToArray();
+			#endregion filters
+
+			List<ItemSale> res = DealFinder.FindDeals(steamID, filtersRes);
+			res.Sort((a, b) => a.Profit.TotalRefined.CompareTo(b.Profit.TotalRefined));
+
+			Logger.AddLine();
+			Logger.Log(res.Count.ToString() + " deals found:", ConsoleColor.White);
+			foreach (ItemSale sale in res)
+			{
+				Logger.LogComplex(sale.ToComplexOutput("  "));
+			}
 		}
 
 		// helper function

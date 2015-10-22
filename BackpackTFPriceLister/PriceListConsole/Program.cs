@@ -50,6 +50,19 @@ namespace BackpackTFConsole
 					return false;
 				}
 			}
+			if (commandName.ToLower() == "deals")
+			{
+				if (args.Count == 0)
+				{
+					args.Insert(0, PriceLister.SEALEDINTERFACE_STEAMID);
+					return false;
+				}
+
+				if (args[0].ToLower() == "me")
+				{
+					args[0] = PriceLister.SEALEDINTERFACE_STEAMID;
+				}
+			}
 
 			return false;
 		}

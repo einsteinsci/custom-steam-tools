@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace BackpackTFPriceLister
 		Buy,
 		Sell
 	}
-
+	
 	public class ClassifiedsListing
 	{
 		public OrderType OrderType
@@ -26,10 +27,10 @@ namespace BackpackTFPriceLister
 		public Price Price
 		{ get; set; }
 
-		public string SellerSteamID64
+		public string ListerSteamID64
 		{ get; set; }
 
-		public string SellerNickname
+		public string ListerNickname
 		{ get; set; }
 
 		public string OfferURL
@@ -40,11 +41,19 @@ namespace BackpackTFPriceLister
 		{
 			ItemInstance = inst;
 			Price = price;
-			SellerSteamID64 = steamID;
-			SellerNickname = nickname;
+			ListerSteamID64 = steamID;
+			ListerNickname = nickname;
 			Comment = comment;
 			OrderType = order;
 			OfferURL = url;
+		}
+
+		public override string ToString()
+		{
+			string res = "[" + OrderType.ToString().ToUpper() + "] ";
+			res += ItemInstance.ToString() + " @" + Price.ToString() + " from " + (ListerNickname ?? ListerSteamID64);
+
+			return res;
 		}
 	}
 }

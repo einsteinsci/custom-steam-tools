@@ -38,6 +38,8 @@ namespace BackpackTFPriceLister
 		public Price PriceHigh
 		{ get; set; }
 
+		public Price PriceMid => new Price((PriceHigh.TotalRefined + PriceLow.TotalRefined) / 2.0);
+
 		public DateTime LastUpdate
 		{ get; set; }
 
@@ -140,7 +142,41 @@ namespace BackpackTFPriceLister
 
 		public override string ToString()
 		{
-			string res = Item.Name + " [" + PriceIndex.ToString() + "]: " + GetPriceString();
+			string res = Item.Name;
+
+			if (PriceIndex != 0)
+			{
+				res += " [" + PriceIndex.ToString() + "]";
+			}
+
+			res += ": " + GetPriceString();
+			if (Australium)
+			{
+				res = "Australium " + res;
+			}
+
+			if (Quality.ToReadableString() != "")
+			{
+				res = Quality.ToReadableString() + " " + res;
+			}
+
+			if (!Craftable)
+			{
+				res = "Non-Craftable " + res;
+			}
+
+			return res;
+		}
+
+		public string ToUnpricedString()
+		{
+			string res = Item.ImproperName;
+
+			if (PriceIndex != 0)
+			{
+				res += " [" + PriceIndex.ToString() + "]";
+			}
+
 			if (Australium)
 			{
 				res = "Australium " + res;

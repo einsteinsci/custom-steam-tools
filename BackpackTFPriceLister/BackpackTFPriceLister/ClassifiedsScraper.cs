@@ -10,7 +10,10 @@ namespace BackpackTFPriceLister
 {
 	public static class ClassifiedsScraper
 	{
-		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, 
+		public static bool SteamBackpackDown
+		{ get; set; }
+
+		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, bool verifySellers = true,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
 			string url = "http://backpack.tf/classifieds?item=";
@@ -19,19 +22,22 @@ namespace BackpackTFPriceLister
 			url += "&tradable=" + (tradable ? 1 : -1).ToString();
 			url += "&craftable=" + (craftable ? 1 : -1).ToString();
 			url += "&australium=" + (australium ? 1 : -1).ToString();
-
-			Logger.Log("Downloading listings from " + url + "...", ConsoleColor.DarkGray);
+			url += "&killstreak_tier=0";
+			
+			Logger.Log("Downloading listings from " + url.SubstringMax(100) + "...", ConsoleColor.DarkGray);
 			WebClient client = new WebClient();
 			string html = client.DownloadString(url);
-			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
+			//Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
-			Logger.Log("Scraping listings from HTML...", ConsoleColor.DarkGray);
+			Logger.Log("  Scraping listings from HTML...", ConsoleColor.DarkGray);
 			HtmlDocument doc = new HtmlDocument();
 			doc.LoadHtml(html);
 
 			List<ClassifiedsListing> results = new List<ClassifiedsListing>();
 
 			HtmlNode root = doc.DocumentNode;
+
+			#region sells
 			HtmlNode sellOrderRoot = root.Descendants("ul").Where((n) => n.Attributes.Contains("class") && 
 				n.Attributes["class"].Value == "media-list").FirstOrDefault();
 
@@ -77,11 +83,26 @@ namespace BackpackTFPriceLister
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, 
 						sellerNickname, sellOfferUrl, sellComment, OrderType.Sell);
 
+					if (string.IsNullOrWhiteSpace(listing.OfferURL))
+					{
+						continue;
+					}
+
+					if (verifySellers)
+					{
+						if (!UserHasItem(listing.ListerSteamID64, instance))
+						{
+							Logger.Log("  Dead listing. Skipping.", ConsoleColor.DarkGray);
+						}
+					}
+
 					results.Add(listing);
 				}
 				Logger.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
 			}
+			#endregion sells
 
+			#region buys
 			HtmlNode buyOrderRoot = root.Descendants("ul").Where((n) => n.Attributes.Contains("class") &&
 				n.Attributes["class"].Value == "media-list").LastOrDefault();
 
@@ -91,7 +112,7 @@ namespace BackpackTFPriceLister
 			}
 			else
 			{
-				List<HtmlNode> buyOrderBases = sellOrderRoot.Descendants("li").ToList();
+				List<HtmlNode> buyOrderBases = buyOrderRoot.Descendants("li").ToList();
 
 				foreach (HtmlNode bob in buyOrderBases)
 				{
@@ -108,8 +129,8 @@ namespace BackpackTFPriceLister
 					string buyQuality = buyData.Attributes["data-quality"].Value; // or even this
 					string buyComment = buyData.Attributes["data-listing-comment"]?.Value;
 					string buyPrice = buyData.Attributes["data-listing-price"].Value;
-					string buyLevel = buyData.Attributes["data-level"].Value;
-					string buyID = buyData.Attributes["data-id"].Value;
+					string buyLevel = buyData.Attributes["data-level"]?.Value ?? "0";
+					string buyID = buyData.Attributes["data-id"]?.Value ?? "0";
 					string buyerSteamID64 = buyData.Attributes["data-listing-steamid"].Value;
 					string buyerSteamNickname = buyData.Attributes["data-listing-name"]?.Value;
 					string buyOfferUrl = buyData.Attributes["data-listing-offers-url"]?.Value;
@@ -117,8 +138,8 @@ namespace BackpackTFPriceLister
 					string buyCustomName = buyData.Attributes["data-custom-name"]?.Value;
 					string buyCustomDesc = buyData.Attributes["data-custom-desc"]?.Value;
 
-					ulong id = ulong.Parse(buyID); // really funky syntax down here -v
-					ulong? originalID = buyOriginalID != null ? new ulong?(ulong.Parse(buyOriginalID)) : null;
+					ulong id = ulong.Parse(buyID == "" ? "0" : buyID); // really funky syntax down here -v
+					ulong? originalID = buyOriginalID != null ? new ulong?(ulong.Parse(buyOriginalID == "" ? "0" : buyOriginalID)) : null;
 					Price price = Price.ParseFancy(buyPrice);
 					int level = int.Parse(buyLevel);
 
@@ -127,13 +148,90 @@ namespace BackpackTFPriceLister
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname, 
 						buyOfferUrl, buyComment, OrderType.Buy);
 
+					if (string.IsNullOrWhiteSpace(listing.OfferURL))
+					{
+						continue;
+					}
+
 					results.Add(listing);
 				}
 
-				Logger.Log("  Buy order scrape complete.", ConsoleColor.DarkGray);
+				if (item.ImproperName.ToLower().Contains("o'war"))
+				{
+					int stuppid = 0;
+				}
+
+				//Logger.Log("  Buy order scrape complete.", ConsoleColor.DarkGray);
 			}
+			#endregion buys
 
 			return results;
+		}
+
+		public static bool UserHasItem(string steamID, ItemInstance inst)
+		{
+			if (SteamBackpackDown)
+			{
+				Logger.Log("  Steam API is down; skipping verify.", ConsoleColor.DarkGray);
+				return true;
+			}
+
+			TF2BackpackData bp = null;
+			if (steamID == PriceLister.SEALEDINTERFACE_STEAMID)
+			{
+				bp = PriceLister.MyBackpackData;
+			}
+			else
+			{
+				if (!PriceLister.BackpackData.ContainsKey(steamID))
+				{
+					if (!PriceLister.LoadOtherBackpack(steamID))
+					{
+						Logger.Log("  Steam API is down. Disabling verify until refresh command.", ConsoleColor.Red);
+						SteamBackpackDown = true;
+						return true;
+					}
+				}
+
+				bp = PriceLister.BackpackData[steamID];
+			}
+			
+			foreach (ItemInstance i in bp.Items)
+			{
+				// now check a bunch of stuff. If anything fails, off to next item.
+
+				if (!i.Tradable)
+					continue;
+
+				if (i.Item != inst.Item)
+					continue;
+
+				if (i.Quality != inst.Quality)
+					continue;
+
+				if (i.Craftable != inst.Craftable)
+					continue;
+
+				if (i.Level != inst.Level)
+					continue;
+
+				if (i.GetHasKillstreak() != inst.GetHasKillstreak())
+					continue;
+
+				if (i.GetUnusual() != inst.GetUnusual())
+					continue;
+
+				if (i.GetCrateSeries() != inst.GetCrateSeries())
+					continue;
+
+				if (i.CustomName.ToLower() != inst.CustomName.ToLower())
+					continue;
+
+				Logger.Log("  Item verified!", ConsoleColor.DarkGray);
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

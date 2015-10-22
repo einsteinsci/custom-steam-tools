@@ -161,6 +161,17 @@ namespace BackpackTFPriceLister
 			return (int)att.Value;
 		}
 
+		public bool GetHasKillstreak()
+		{
+			AppliedInstanceAttribute att = Attributes.FirstOrDefault((a) => a.ID == ItemAttribute.KILLSTREAK_ID);
+			if (att == null)
+			{
+				return false;
+			}
+
+			return att.Value != 0;
+		}
+
 		public ItemPricing GetPrice()
 		{
 			int? priceIndex = null;

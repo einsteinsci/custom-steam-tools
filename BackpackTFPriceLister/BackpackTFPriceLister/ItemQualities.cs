@@ -57,16 +57,22 @@ namespace BackpackTFPriceLister
 
 		public static Quality Parse(string s)
 		{
+			return ParseNullable(s) ?? Quality.Unique;
+		}
+
+		public static Quality? ParseNullable(string s)
+		{
 			for (int i = 0; i <= 14; i++)
 			{
 				Quality q = (Quality)i;
-				if (q.ToReadableString().ToLower() == s || q.ToString().ToLower() == s)
+				string qs = q.ToReadableString().ToLower();
+				if (qs == s.ToLower() || q.ToString().ToLower() == s || qs.TrimEnd('s', 'S') == s.ToLower())
 				{
 					return q;
 				}
 			}
 
-			return Quality.Unique;
+			return null;
 		}
 
 		public static ConsoleColor GetColor(this Quality q)
