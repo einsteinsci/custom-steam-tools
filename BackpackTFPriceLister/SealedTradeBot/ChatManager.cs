@@ -9,6 +9,7 @@ using SteamKit2;
 
 namespace SealedTradeBot
 {
+    [Obsolete("Unimplemented for now")]
 	public static class ChatManager
 	{
 		static LogEvent currentOutHandler;

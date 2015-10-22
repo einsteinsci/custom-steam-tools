@@ -10,6 +10,7 @@ using SteamKit2;
 
 namespace SealedTradeBot
 {
+    [Obsolete("Use SealedBot instead.")]
 	public static class ClientManager
 	{
 		const string SEALED_STEAMID = "STEAM_0:0:75622499";
@@ -85,7 +86,7 @@ namespace SealedTradeBot
 			BotLogger.LogDebug("Connecting to Steam...");
 
 			// initiate the connection
-			steamClient.Connect();
+			//steamClient.Connect();
 
 			Thread postInitThread = new Thread(PostInit);
 			postInitThread.Start();
@@ -289,7 +290,7 @@ namespace SealedTradeBot
 			BotLogger.LogLine("Logged off of Steam: " + callback.Result);
 		}
 
-		static void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback)
+		static void OnMachineAuth(SteamUser.UpdateMachineAuthCallback e)
 		{
 			BotLogger.LogDebug("Updating sentryfile...");
 
@@ -302,8 +303,8 @@ namespace SealedTradeBot
 			byte[] sentryHash;
 			using (var fs = File.Open("sentry.bin", FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
-				fs.Seek(callback.Offset, SeekOrigin.Begin);
-				fs.Write(callback.Data, 0, callback.BytesToWrite);
+				fs.Seek(e.Offset, SeekOrigin.Begin);
+				fs.Write(e.Data, 0, e.BytesToWrite);
 				fileSize = (int)fs.Length;
 
 				fs.Seek(0, SeekOrigin.Begin);
@@ -316,18 +317,18 @@ namespace SealedTradeBot
 			// inform the steam servers that we're accepting this sentry file
 			UserHandler.SendMachineAuthResponse(new SteamUser.MachineAuthDetails
 			{
-				JobID = callback.JobID,
+				JobID = e.JobID,
 
-				FileName = callback.FileName,
+				FileName = e.FileName,
 
-				BytesWritten = callback.BytesToWrite,
+				BytesWritten = e.BytesToWrite,
 				FileSize = fileSize,
-				Offset = callback.Offset,
+				Offset = e.Offset,
 
 				Result = EResult.OK,
 				LastError = 0,
 
-				OneTimePassword = callback.OneTimePassword,
+				OneTimePassword = e.OneTimePassword,
 
 				SentryFileHash = sentryHash,
 			});

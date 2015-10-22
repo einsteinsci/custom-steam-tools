@@ -37,8 +37,8 @@ namespace SteamWebAPI
 	/// <summary>
 	/// Class allowing you to use the Steam Web API to log in and use Steam Friends functionality.
 	/// </summary>
-	[Obsolete]
-	public class SteamAPISession
+	[Obsolete("Using SteamKit2 now.")]
+    public class SteamAPISession
 	{
 		private string accessToken;
 		private string umqid;

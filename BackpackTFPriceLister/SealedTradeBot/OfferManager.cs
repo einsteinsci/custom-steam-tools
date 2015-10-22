@@ -8,6 +8,7 @@ using static SteamKit2.WebAPI;
 using SteamWebAPI;
 using static SteamWebAPI.SteamAPISession;
 using BackpackTFPriceLister;
+using System.Net;
 
 namespace SealedTradeBot
 {
@@ -43,7 +44,16 @@ namespace SealedTradeBot
 
 				BotLogger.LogDebug("Downloading Trade Offer data...");
 
-				KeyValue response = econService.Call("GetTradeOffers", 1, tradeOffersArgs);
+				KeyValue response = null;
+				try
+				{
+					response = econService.Call("GetTradeOffers", 1, tradeOffersArgs);
+				}
+				catch (WebException e)
+				{
+					BotLogger.LogErr("Could not retrieve GetTradeOffers API: " + e.Message);
+					return;
+				}
 
 				BotLogger.LogDebug("Parsing Data...");
 
@@ -75,6 +85,8 @@ namespace SealedTradeBot
 				}
 
 				BotLogger.LogDebug("Parse Complete.");
+				BotLogger.LogLine();
+
 			}
 		}
 

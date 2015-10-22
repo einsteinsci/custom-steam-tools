@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,6 +64,24 @@ namespace SealedTradeBot
 			Console.WriteLine();
 
 			return new string(pass.Reverse().ToArray());
+		}
+
+		public static object CreateDelegateByParameter(Type parameterType, object target, MethodInfo method)
+		{
+
+			var createDelegate = typeof(Util).GetMethod("CreateDelegate")
+				.MakeGenericMethod(parameterType);
+
+			var del = createDelegate.Invoke(null, new object[] { target, method });
+
+			return del;
+		}
+
+		public static Action<TEvent> CreateDelegate<TEvent>(object target, MethodInfo method)
+		{
+			var del = (Action<TEvent>)Delegate.CreateDelegate(typeof(Action<TEvent>), target, method);
+
+			return del;
 		}
 	}
 }

@@ -19,10 +19,10 @@ namespace SealedTradeBot
 		{ get; private set; }
 
 		public const string BOT_API_KEY = "6EC366E3D20B931D81378B625575CFF3";
-		public const string BOT_STEAMID = "";
-		
 		public const string SEALED_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
-		public const string SEALED_STEAMID = "";
+
+		public static SealedBot Bot
+		{ get; private set; }
 
 		public static void Main(string[] args)
 		{
@@ -33,89 +33,62 @@ namespace SealedTradeBot
 			Logger.Prompting = (sender, e) => BotLogger.GetInput(e.Prompt +
 				(e.NewlineAfterPrompt ? "\n" : ""), e.Foreground, e.Background);
 
+			Settings.LoadFromFile();
 			PriceLister.AutoSetup(true, true);
 			ItemData = PriceLister.ItemData;
 
 			Console.WriteLine();
 			List<TradeOffer> openOffers = OfferManager.GetAllOpenOffers();
+			BotEventManager.Initialize(new CallbackManager(new SteamClient()));
 
-			ClientManager.Run();
+			BotLogger.LogLine(" Log in to Steam");
+            BotLogger.LogLine("  Username: sealedinterfacebot", ConsoleColor.White);
+            string username = "sealedinterfacebot";
+            BotLogger.Log("  Passsword: ", ConsoleColor.White);
+            string password = Util.ReadPassword();
 
-			//Console.ReadKey();
-		}
+            Bot = new SealedBot(username, password);
+			Bot.StartBot();
+            
+			//ClientManager.Run();
+			Settings.SaveToFile();
 
-		private static void WebAPINewsExample()
-		{
-			// in order to interact with the Web APIs, you must first acquire an interface
-			// for a certain API
-			using (dynamic steamNews = WebAPI.GetInterface("ISteamNews"))
+			BotLogger.LogLine("Bot has started");
+
+			while (Bot.IsRunning)
 			{
-				// note the usage of c#'s dynamic feature, which can be used
-				// to make the api a breeze to use
+                Console.ForegroundColor = ConsoleColor.Green;
+				string input = Console.ReadLine();
 
-				// the ISteamNews WebAPI has only 1 function: GetNewsForApp,
-				// so we'll be using that
+                string[] cmdAndArgs = input.Split(' ');
+                if (cmdAndArgs.Length == 0)
+                {
+                    continue;
+                }
 
-				// when making use of dynamic, we call the interface function directly
-				// and pass any parameters as named arguments
-				KeyValue kvNews = steamNews.GetNewsForApp(appid: 440); // get news for tf2
+                if (cmdAndArgs[0].ToLower() == "auth")
+                {
+                    if (cmdAndArgs.Length < 2)
+                    {
+                        BotLogger.LogErr("A code must be provided.");
+                        continue;
+                    }
 
-				// the return of every WebAPI call is a KeyValue class that contains the result data
+                    string auth = cmdAndArgs[1].ToUpper();
+					Bot.SteamGuardCode = auth;
 
-				// for this example we'll iterate the results and display the title
-				foreach (KeyValue news in kvNews["newsitems"]["newsitem"].Children)
+					BotLogger.LogLine("SteamGuard code set.");
+                }
+
+				if (cmdAndArgs[0].ToLower() == "exit")
 				{
-					Console.WriteLine("News: {0}", news["title"].AsString());
-				}
-				Console.WriteLine();
-
-				// for functions with multiple versions, the version can be specified by
-				// adding a number after the function name when calling the API
-
-				kvNews = steamNews.GetNewsForApp2(appid: 570);
-
-				// if a number is not specified, version 1 is assumed by default
-
-				// notice that the output of this version differs from the first version
-				foreach (KeyValue news in kvNews["newsitems"].Children)
-				{
-					Console.WriteLine("News: {0}", news["title"].AsString());
-				}
-				Console.WriteLine();
-
-				// note that the interface functions can throw WebExceptions when the API
-				// is otherwise inaccessible (networking issues, server downtime, etc)
-				// and these should be handled appropriately
-				try
-				{
-					kvNews = steamNews.GetNewsForApp002(appid: 730, maxlength: 100, count: 5);
-				}
-				catch (WebException ex)
-				{
-					Console.WriteLine("Unable to make API request: {0}", ex.Message);
+					BotLogger.LogLine("Exit code called.");
+					Bot.StopBot();
 				}
 			}
 
-			// for WebAPIs that require an API key, the key can be specified in the GetInterface function
-			using (dynamic steamUserAuth = WebAPI.GetInterface("ISteamUserAuth", SEALED_API_KEY))
-			{
-				// as the interface functions are synchronous, it may be beneficial to specify a timeout for calls
-				steamUserAuth.Timeout = (int)TimeSpan.FromSeconds(5).TotalMilliseconds;
-
-				// additionally, if the API you are using requires you to POST or use an SSL connection, you may specify
-				// these settings with the "method" and "secure" reserved parameters
-				//steamUserAuth.AuthenticateUser(someParam: "someValue", method: WebRequestMethods.Http.Post, secure: true);
-			}
-
-			// if you are using a language that does not have dynamic object support, or you otherwise don't wish to use it
-			// you can call interface functions through a Call method
-			using (WebAPI.Interface steamNews = WebAPI.GetInterface("ISteamNews"))
-			{
-				Dictionary<string, string> newsArgs = new Dictionary<string, string>();
-				newsArgs["appid"] = "440";
-
-				KeyValue results = steamNews.Call("GetNewsForApp", /* version */ 1, newsArgs);
-			}
+            BotLogger.LogLine("Bot has exited!", ConsoleColor.Yellow);
+            Console.ReadKey();
 		}
 
 		public static void LoginToSteam()
