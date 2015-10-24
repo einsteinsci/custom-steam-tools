@@ -89,6 +89,8 @@ namespace BackpackTFPriceLister
 			CustomName = customName;
 			CustomDescription = customDesc;
 			OriginalInstanceID = originalInstance.HasValue ? originalInstance.Value : instanceID;
+
+			Attributes = new List<AppliedInstanceAttribute>();
 		}
 
 		public string TitleQuick()

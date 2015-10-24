@@ -45,7 +45,7 @@ namespace BackpackTFPriceLister
 		{ get; private set; }
 
 		public MarketPricing(string hash, MarketPricingJson json, TF2Data lookup) : 
-			this(hash, json.last_updated, json.quantity, json.value, lookup)
+			this(hash, json.last_updated, json.quantity, json.value / 100.0, lookup)
 		{ }
 
 		public MarketPricing(string hash, ulong lastUpdated, int volume, double priceUSD, TF2Data lookup)
@@ -70,17 +70,12 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			Failed = ProcessHash(MarketHash, lookup);
+			Failed = _processHash(MarketHash, lookup);
 		}
 
-		public bool ProcessHash(string hashStart, TF2Data lookup)
+		private bool _processHash(string hashStart, TF2Data lookup)
 		{
 			string hash = hashStart.Trim();
-
-			if (hash.Contains("tective Noir"))
-			{
-				int stuppid = 0;
-			}
 
 			#region qualites
 			bool hasQualitiesLeft = true;

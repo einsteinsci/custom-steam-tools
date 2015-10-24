@@ -29,6 +29,8 @@ namespace BackpackTFPriceLister
 			_commands.Add("sellers", (a) => GetClassifieds(a, OrderType.Sell));
 			_commands.Add("buyers", (a) => GetClassifieds(a, OrderType.Buy));
 			_commands.Add("deals", GetDeals);
+			_commands.Add("skin", PriceSkin);
+			_commands.Add("ks", PriceKillstreak);
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -362,6 +364,96 @@ namespace BackpackTFPriceLister
 			ClassifiedsScraper.SteamBackpackDown = false;
 		}
 
+		// skin {skinname}
+		public static void PriceSkin(List<string> args)
+		{
+			if (args.Count == 0)
+			{
+				Logger.Log("No skin name given.", ConsoleColor.Red);
+				return;
+			}
+
+			string query = string.Join(" ", args);
+
+			Skin skin = null;
+			foreach (Skin s in GunMettleSkins.Skins)
+			{
+				if (s.Name.ToLower() == query.ToLower())
+				{
+					skin = s;
+					break;
+				}
+			}
+
+			#region search
+			if (skin == null)
+			{
+				Logger.Log("Searching skins...");
+
+				List<Skin> possibleSkins = new List<Skin>();
+				foreach (Skin s in GunMettleSkins.Skins)
+				{
+					if (s.Name.ToLower().Contains(query.ToLower()))
+					{
+						possibleSkins.Add(s);
+						Logger.Log("  " + possibleSkins.Count.ToString() + ": " + s.Name, ConsoleColor.White);
+					}
+				}
+
+				if (possibleSkins.Count == 0)
+				{
+					Logger.Log("No skins found matching '" + query + "'.", ConsoleColor.Red);
+					return;
+				}
+
+				while (skin == null)
+				{
+					if (possibleSkins.Count == 1)
+					{
+						skin = possibleSkins.First();
+						break;
+					}
+
+					string sint = Logger.GetInput("Enter Selection >");
+					if (sint.ToLower() == "esc")
+					{
+						Logger.Log("Search Cancelled.");
+						return;
+					}
+
+					int n = -1;
+					bool worked = int.TryParse(sint, out n);
+					if (worked && n > 0 && n <= possibleSkins.Count)
+					{
+						skin = possibleSkins[n];
+					}
+					else
+					{
+						Logger.Log("Invalid choice: " + sint + ". Try again.", ConsoleColor.Red);
+					}
+				}
+			}
+			#endregion search
+
+			List<MarketPricing> prices = new List<MarketPricing>();
+			for (SkinWear w = SkinWear.FactoryNew; w <= SkinWear.BattleScarred; w++)
+			{
+				string hash = skin.GetMarketHash(w);
+				MarketPricing res = DataManager.MarketPrices.GetPricing(hash);
+
+				if (res != null)
+				{
+					prices.Add(res);
+				}
+			}
+
+			Logger.Log("Prices found for '" + skin.Name + "':", ConsoleColor.White);
+			foreach (MarketPricing p in prices)
+			{
+				Logger.Log("  " + p.Wear.Value.ToReadableString() + ": " + p.Price.ToString());
+			}
+		}
+
 		// range {priceMin} {priceMax} [filters...]
 		public static void GetItemsInPriceRange(List<string> args)
 		{
@@ -408,6 +500,7 @@ namespace BackpackTFPriceLister
 			bool onlyCraftable = false;
 			bool onlyHalloween = false;
 			bool noHalloween = false;
+			bool noAllClass = false;
 
 			foreach (string s in sfilters)
 			{
@@ -423,6 +516,10 @@ namespace BackpackTFPriceLister
 				else if (s.ToLower() == "halloween")
 				{
 					onlyHalloween = true;
+				}
+				else if (s.ToLower() == "-allclass")
+				{
+					noAllClass = true;
 				}
 
 				ItemSlotPlain bufs = ItemSlots.Plain.Parse(s);
@@ -447,7 +544,7 @@ namespace BackpackTFPriceLister
 			bool filterClass = allowedClasses.Count != 0;
 
 			if (filterSlot || filterQuality || filterClass || 
-				onlyCraftable || onlyHalloween || noHalloween)
+				onlyCraftable || onlyHalloween || noHalloween || noAllClass)
 			{
 				string res = "Filters: ";
 				foreach (ItemSlotPlain s in allowedSlots)
@@ -457,6 +554,11 @@ namespace BackpackTFPriceLister
 				foreach (Quality q in allowedQualities)
 				{
 					res += q.ToReadableString() + " ";
+				}
+
+				if (noAllClass)
+				{
+					res += "Limited classes: ";
 				}
 				foreach (PlayerClass c in allowedClasses)
 				{
@@ -518,6 +620,8 @@ namespace BackpackTFPriceLister
 					continue;
 				}
 
+				if (filterClass && noAllClass && !p.Item.ValidClasses.IsAllClass())
+
 				if (p.PriceHigh <= max && p.PriceLow >= min)
 				{
 					results.Add(p);
@@ -537,6 +641,86 @@ namespace BackpackTFPriceLister
 				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 			}
 			Logger.Log(results.Count.ToString() + " items found.");
+		}
+
+		// ks {itemname}
+		public static void PriceKillstreak(List<string> args)
+		{
+			if (args.Count == 0)
+			{
+				Logger.Log("No item name provided.", ConsoleColor.Red);
+				return;
+			}
+
+			string query = string.Join(" ", args);
+			Item item = SearchItem(query);
+			if (item == null)
+			{
+				// logging already done
+				return;
+			}
+
+			if (item.PlainSlot != ItemSlotPlain.Weapon)
+			{
+				Logger.Log("Item must be a weapon.", ConsoleColor.Red);
+				return;
+			}
+
+			Logger.Log("Item: " + item.Name, ConsoleColor.White);
+
+			Quality? q = null;
+			while (q == null)
+			{
+				string s = Logger.GetInput("Quality? ");
+				q = ItemQualities.ParseNullable(s);
+
+				if (q == null)
+				{
+					Logger.Log("  Invalid Quality: " + s, ConsoleColor.Red);
+				}
+			}
+
+			KillstreakType ks = KillstreakType.None;
+			while (ks == KillstreakType.None)
+			{
+				string s = Logger.GetInput("Killstreak type (basic/specialized/professional)? ");
+				ks = KillstreakTypes.Parse(s);
+
+				if (ks == KillstreakType.None)
+				{
+					Logger.Log("  Invalid Killstreak type: " + s, ConsoleColor.Red);
+				}
+			}
+
+			List<MarketPricing> pricings = new List<MarketPricing>();
+			foreach (MarketPricing p in DataManager.MarketPrices.Pricings)
+			{
+				if (p.Item != item)
+				{
+					continue;
+				}
+
+				if (p.Quality != q.Value)
+				{
+					continue;
+				}
+
+				if (p.Killstreak != ks)
+				{
+					continue;
+				}
+
+				pricings.Add(p);
+				break;
+			}
+
+			string qstr = q.Value.ToReadableString();
+			Logger.Log("Pricings for " + qstr + (qstr != "" ? " " : "") +
+				ks.ToReadableString() + " " + item.Name + ":", ConsoleColor.White);
+			foreach (MarketPricing p in pricings)
+			{
+				Logger.Log("  " + p.MarketHash + ": " + p.Price.ToString());
+			}
 		}
 
 		// bp [steamid64]
@@ -694,7 +878,7 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		// helper function
+		// >> helper function
 		public static Item SearchItem(string query)
 		{
 			int id = -1;
@@ -702,6 +886,7 @@ namespace BackpackTFPriceLister
 
 			Item item = null;
 
+			#region lookup
 			// shortcut
 			if (query.ToLower() == "key")
 			{
@@ -718,7 +903,6 @@ namespace BackpackTFPriceLister
 							item = i;
 							break;
 						}
-						continue;
 					}
 					else
 					{
@@ -727,10 +911,10 @@ namespace BackpackTFPriceLister
 							item = i;
 							break;
 						}
-						continue;
 					}
 				}
 			}
+			#endregion lookup
 
 			#region search
 			if (item == null)
@@ -749,7 +933,7 @@ namespace BackpackTFPriceLister
 
 				if (possibleItems.Count == 0)
 				{
-					Logger.Log("No items found matching '" + query + "'", ConsoleColor.Red);
+					Logger.Log("No items found matching '" + query + "'.", ConsoleColor.Red);
 					return null;
 				}
 

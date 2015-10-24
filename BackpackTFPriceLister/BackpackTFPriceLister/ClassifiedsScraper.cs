@@ -219,7 +219,11 @@ namespace BackpackTFPriceLister
 				if (i.GetCrateSeries() != inst.GetCrateSeries())
 					continue;
 
-				if (i.CustomName.ToLower() != inst.CustomName.ToLower())
+				if ((i.CustomName == null) != (inst.CustomName == null))
+					continue;
+
+				if (i.CustomName != null && inst.CustomName != null && 
+					i.CustomName.ToLower() != inst.CustomName.ToLower())
 					continue;
 
 				Logger.Log("  Item verified!", ConsoleColor.DarkGray);

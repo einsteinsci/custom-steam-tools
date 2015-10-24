@@ -42,17 +42,19 @@ namespace BackpackTFPriceLister
 				return KillstreakType.None;
 			}
 
-			if (s == "killstreak")
+			if (s == "killstreak" || s == "basic" || s == "ks")
 			{
 				return KillstreakType.Basic;
 			}
 
-			if (s == "specialized killstreak" || s == "specialized")
+			if (s == "specialized killstreak" || s == "specialized" || 
+				s == "spec" || s == "spec ks")
 			{
 				return KillstreakType.Specialized;
 			}
 
-			if (s == "professional killstreak" || s == "professional")
+			if (s == "professional killstreak" || s == "professional" || 
+				s == "prof" || s == "prof ks")
 			{
 				return KillstreakType.Professional;
 			}

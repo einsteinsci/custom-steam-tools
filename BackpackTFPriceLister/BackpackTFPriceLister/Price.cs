@@ -98,7 +98,7 @@ namespace BackpackTFPriceLister
 
 		public override string ToString()
 		{
-			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString() + " ref");
+			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
 		}
 
 		public bool Equals(Price other)

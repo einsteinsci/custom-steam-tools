@@ -119,5 +119,47 @@ namespace BackpackTFPriceLister
 
 			return 0;
 		}
+
+		public static bool IsAllClass(this IEnumerable<PlayerClass> list)
+		{
+			if (!list.Contains(PlayerClass.Scout))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Soldier))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Pyro))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Demoman))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Heavy))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Engineer))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Medic))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Sniper))
+			{
+				return false;
+			}
+			if (!list.Contains(PlayerClass.Spy))
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

@@ -31,5 +31,18 @@ namespace BackpackTFPriceLister
 				}
 			}
 		}
+
+		public MarketPricing GetPricing(string hash)
+		{
+			foreach (MarketPricing p in Pricings)
+			{
+				if (p.MarketHash.ToLower() == hash.ToLower())
+				{
+					return p;
+				}
+			}
+
+			return null;
+		}
 	}
 }
