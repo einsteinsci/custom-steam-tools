@@ -178,14 +178,14 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			ItemCache = Asciify(ItemCache);
+			ItemCache = Util.Asciify(ItemCache);
 
 			ParseItemsJson();
 			TranslateItemsData();
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(ItemDataFilename, ItemCache, Encoding.UTF8);
+				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache, Encoding.UTF8);
 				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
 			}
 		}
@@ -236,14 +236,14 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			MyBackpackCache = Asciify(MyBackpackCache);
+			MyBackpackCache = Util.Asciify(MyBackpackCache);
 
 			ParseBackpackJson();
 			TranslateBackpackData();
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
+				File.WriteAllText(CacheLocation + MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
 				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
 			}
 		}
@@ -294,14 +294,14 @@ namespace BackpackTFPriceLister
 			}
 
 			PricesCache = PricesCache.Replace("    ", "\t");
-			PricesCache = Asciify(PricesCache);
+			PricesCache = Util.Asciify(PricesCache);
 
 			ParsePricesJson();
 			TranslatePricingData();
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(PriceDataFilename, PricesCache, Encoding.UTF8);
+				File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache, Encoding.UTF8);
 				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
 			}
 		}
@@ -352,14 +352,14 @@ namespace BackpackTFPriceLister
 			}
 
 			MarketPricesCache = MarketPricesCache.Replace("    ", "\t");
-			MarketPricesCache = Asciify(MarketPricesCache);
+			MarketPricesCache = Util.Asciify(MarketPricesCache);
 
 			ParseMarketJson();
 			TranslateMarketPrices();
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
+				File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
 				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
 			}
 		}
@@ -540,16 +540,6 @@ namespace BackpackTFPriceLister
 				}
 			}
 			Logger.Log("  Fix complete.", ConsoleColor.DarkGray);
-		}
-
-		public static string Asciify(string content)
-		{
-			if (content == null)
-			{
-				return "";
-			}
-
-			return content.Replace('é', 'e').Replace('ò', 'o').Replace('ü', 'u').Replace('ä', 'a');
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)

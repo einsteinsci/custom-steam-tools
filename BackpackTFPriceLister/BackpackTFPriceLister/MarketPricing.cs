@@ -52,7 +52,7 @@ namespace BackpackTFPriceLister
 		{
 			Failed = false;
 
-			MarketHash = hash;
+			MarketHash = Util.Asciify(hash);
 			LastUpdated = lastUpdated;
 			Volume = volume;
 			PriceUSD = priceUSD;
@@ -70,14 +70,14 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			Failed = ProcessHash(hash, lookup);
+			Failed = ProcessHash(MarketHash, lookup);
 		}
 
 		public bool ProcessHash(string hashStart, TF2Data lookup)
 		{
 			string hash = hashStart.Trim();
 
-			if (hash == "Haunted Creature’s Grin")
+			if (hash.Contains("tective Noir"))
 			{
 				int stuppid = 0;
 			}

@@ -15,6 +15,12 @@ namespace BackpackTFPriceLister
 		{
 			Pricings = new List<MarketPricing>();
 
+			if (json.response.success == 0)
+			{
+				Logger.Log("Market price data failed: " + json.response.message, ConsoleColor.Red);
+				return;
+			}
+
 			foreach (KeyValuePair<string, MarketPricesJson.MarketPricingJson> kvp in json.response.items)
 			{
 				MarketPricing p = new MarketPricing(kvp.Key, kvp.Value, schema);

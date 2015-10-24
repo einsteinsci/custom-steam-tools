@@ -126,5 +126,15 @@ namespace BackpackTFPriceLister
 
 			return result;
 		}
+
+		public static string Asciify(string content)
+		{
+			if (content == null)
+			{
+				return "";
+			}
+
+			return content.Replace('é', 'e').Replace('ò', 'o').Replace('ü', 'u').Replace('ä', 'a');
+		}
 	}
 }
