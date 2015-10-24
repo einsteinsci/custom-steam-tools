@@ -19,6 +19,7 @@ namespace BackpackTFPriceLister
 		Strange = 11,
 		Haunted = 13,
 		Collectors = 14,
+		Decorated = 15,
 	}
 
 	public static class ItemQualities
@@ -34,10 +35,11 @@ namespace BackpackTFPriceLister
 		public const int STRANGE = 11;
 		public const int HAUNTED = 13;
 		public const int COLLECTORS = 14;
+		public const int DECORATED = 15;
 
 		public static string ToReadableString(this Quality q)
 		{
-			if (q == Quality.Stock || q == Quality.Unique)
+			if (q == Quality.Stock || q == Quality.Unique || q == Quality.Decorated)
 			{
 				return "";
 			}
@@ -62,7 +64,7 @@ namespace BackpackTFPriceLister
 
 		public static Quality? ParseNullable(string s)
 		{
-			for (int i = 0; i <= 14; i++)
+			for (int i = 0; i <= 15; i++)
 			{
 				Quality q = (Quality)i;
 				string qs = q.ToReadableString().ToLower();
@@ -90,17 +92,19 @@ namespace BackpackTFPriceLister
 				case Quality.Unique:
 					return ConsoleColor.Yellow;
 				case Quality.Community:
-					return ConsoleColor.Magenta;
+					return ConsoleColor.Green;
 				case Quality.Valve:
 					return ConsoleColor.Magenta;
 				case Quality.SelfMade:
-					return ConsoleColor.Magenta;
+					return ConsoleColor.Green;
 				case Quality.Strange:
 					return ConsoleColor.DarkYellow;
 				case Quality.Haunted:
 					return ConsoleColor.Cyan;
 				case Quality.Collectors:
 					return ConsoleColor.Red;
+				case Quality.Decorated:
+					return ConsoleColor.DarkCyan;
 				default:
 					return ConsoleColor.Magenta;
 			}

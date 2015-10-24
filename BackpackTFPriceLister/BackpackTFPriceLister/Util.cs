@@ -55,6 +55,16 @@ namespace BackpackTFPriceLister
 
 			return res;
 		}
+		public static string CutOffEnd(this string str, int count)
+		{
+			if (str.Length <= count)
+			{
+				throw new ArgumentOutOfRangeException(
+					"Cannot cut off more characters than are in the string.");
+			}
+
+			return str.Substring(0, str.Length - count);
+		}
 
 		public static async Task<string> DownloadStringAsync(string url)
 		{
@@ -79,6 +89,7 @@ namespace BackpackTFPriceLister
 		public static string DownloadString(string url, TimeSpan timeout)
 		{
 			WebClient client = new WebClient();
+			client.Encoding = Encoding.UTF8;
 
 			bool giveup = false;
 			string result = null;

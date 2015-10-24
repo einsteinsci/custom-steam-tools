@@ -14,14 +14,27 @@ namespace BackpackTFConsole
 {
 	public class Program
 	{
+		public static readonly string logFolder = Environment.GetEnvironmentVariable("TEMP") +
+			"\\BACKPACK.TF-PRICELIST\\logs\\";
+        public static readonly string logFile = logFolder + "log-" + 
+			DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss") + ".txt";
+
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			Console.Title = "Backpack.tf Console";
+			Console.Title = "Trade Helper Console";
 			Console.ForegroundColor = ConsoleColor.White;
+
+			if (!Directory.Exists(logFolder))
+			{
+				Directory.CreateDirectory(logFolder);
+			}
+
 			Logger.Logging += DebugLog;
 			Logger.LoggingComplex += DebugLogComplex;
 			Logger.Prompting = DebugPrompt;
+
+			Logger.Log("Starting program...");
 
 			CommandHandler.PreCommand += PreCommand;
 
@@ -31,7 +44,7 @@ namespace BackpackTFConsole
 			while (input.ToLower() != "exit")
 			{
 				Console.WriteLine();
-				input = DebugPrompt(null, new PromptEventArgs("bp.tf Console> "));
+				input = Logger.GetInput("datamgr> ", false, true);
 
 				if (input.ToLower() != "exit")
 				{
@@ -67,6 +80,11 @@ namespace BackpackTFConsole
 			return false;
 		}
 
+		public static string GetTimeStamp()
+		{
+			return DateTime.Now.ToString("[HH:mm:ss] ");
+		}
+
 		private static void DebugLog(object sender, LogEventArgs e)
 		{
 			if (e.Foreground.HasValue)
@@ -80,6 +98,8 @@ namespace BackpackTFConsole
 			}
 
 			Console.WriteLine(e.Message);
+
+			File.AppendAllLines(logFile, new string[] { GetTimeStamp() + e.Message });
 		}
 
 		private static void DebugLogComplex(object sender, LogComplexEventArgs e)
@@ -100,6 +120,8 @@ namespace BackpackTFConsole
 			}
 
 			Console.WriteLine();
+
+			File.AppendAllLines(logFile, new string[] { GetTimeStamp() + e.Unformatted });
 		}
 
 		private static string DebugPrompt(object sender, PromptEventArgs e)

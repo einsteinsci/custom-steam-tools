@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.MarketDataJson;
+using BackpackTFPriceLister.MarketPricesJson;
 
 namespace BackpackTFPriceLister
 {
@@ -34,7 +34,7 @@ namespace BackpackTFPriceLister
 		{ get; set; }
 		public static string ItemDataFilename
 		{ get; set; }
-		public static string BackpackDataFilename
+		public static string MyBackpackDataFilename
 		{ get; set; }
 		public static string MarketPricesFilename // Downloaded from an official bp.tf API, not scraped off
 		{ get; set; }								 //   steam community market
@@ -123,7 +123,7 @@ namespace BackpackTFPriceLister
 			CacheLocation = cacheLocation;
 			PriceDataFilename = bptfFilename;
 			ItemDataFilename = itemFilename;
-			BackpackDataFilename = backpackFilename;
+			MyBackpackDataFilename = backpackFilename;
 			MarketPricesFilename = marketFilename;
 		}
 
@@ -133,129 +133,234 @@ namespace BackpackTFPriceLister
 				"/GetPlayerItems/v0001/?key=" + STEAM_API_KEY + "&steamid=" + steamID64;
 		}
 
-		public static void LoadData(bool bptfOffline = false, bool steamOffline = false)
+		public static void LoadItemSchema(bool forceOffline)
 		{
-			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
+			bool offline = forceOffline;
 
-			DateTime lastAccessPrices = File.GetLastWriteTime(CacheLocation + PriceDataFilename);
-			DateTime lastAccessItem = File.GetLastWriteTime(CacheLocation + ItemDataFilename);
-
-			bool backpackOffline = bptfOffline || DateTime.Now.Subtract(lastAccessPrices).TotalMinutes <= 10.00;
-			bool itemsOffline = steamOffline || DateTime.Now.Subtract(lastAccessItem).TotalMinutes <= 10.00;
-
-			// backpack.tf
-			bool priceDlFailed = false, marketDlFailed = false;
-			if (!backpackOffline)
+			DateTime lastAccess = new DateTime(Settings.Instance.SteamLastAccess);
+			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
 			{
-				Logger.Log("Downloading price data from backpack.tf...", ConsoleColor.DarkGray);
-				PricesCache = Util.DownloadString(PriceDataUrl, TIMEOUT);
-				if (PricesCache == null)
-				{
-					priceDlFailed = true;
-				}
-				else
-				{
-					File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache);
-					Logger.Log("  Saved bp.tf prices cache.", ConsoleColor.DarkGray);
-				}
-
-				Logger.Log("Downloading market data from backpack.tf...", ConsoleColor.DarkGray);
-				MarketPricesCache = Util.DownloadString(MarketPricesUrl, TIMEOUT);
-				if (MarketPricesCache == null)
-				{
-					marketDlFailed = true;
-				}
-				else
-				{
-					File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache);
-					Logger.Log("  Saved market prices cache.", ConsoleColor.DarkGray);
-				}
+				offline = true;
 			}
 
-			if (backpackOffline)
+			if (!File.Exists(CacheLocation + ItemDataFilename))
 			{
-				if (priceDlFailed)
-				{
-					Logger.Log("Retrieving bp.tf prices cache...", ConsoleColor.DarkGray);
-					try
-					{
-						PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename);
-					}
-					catch (Exception e)
-					{
-						Logger.Log("  An error occurred reading the bp.tf prices cache: " + e.Message, ConsoleColor.Red);
-						return;
-					}
-				}
-
-				if (marketDlFailed)
-				{
-					Logger.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
-					try
-					{
-						MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename);
-					}
-					catch (Exception e)
-					{
-						Logger.Log("  An error occurred reading the market prices cache: " + e.Message, ConsoleColor.Red);
-						return;
-					}
-				}
+				offline = false;
 			}
 
-			// Steam
-			bool itemDlFailed = false, backpackDlFailed = false;
-			if (!itemsOffline)
+			DateTime currentAccess = DateTime.Now;
+			bool failed = false;
+			if (!offline)
 			{
-				Logger.Log("Downloading TF2 data from Steam...", ConsoleColor.DarkGray);
-				ItemCache = Util.DownloadString(ItemDataUrl, TIMEOUT);
-				if (ItemCache == null)
-				{
-					itemDlFailed = true;
-				}
-				else
-				{
-					File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache);
-					Logger.Log("  Saved TF2 item cache.", ConsoleColor.DarkGray);
-				}
-
-				Logger.Log("Downloading backpack data from Steam...", ConsoleColor.DarkGray);
-				MyBackpackCache = Util.DownloadString(MyBackpackDataUrl, TIMEOUT);
-				if (MyBackpackCache == null)
-				{
-					backpackDlFailed = true;
-				}
-				else
-				{
-					File.WriteAllText(CacheLocation + BackpackDataFilename, MyBackpackCache);
-					Logger.Log("  saved Steam backpack cache.", ConsoleColor.DarkGray);
-				}
-			}
-
-			if (itemsOffline || itemDlFailed)
-			{
-				Logger.Log("Retrieving TF2 item cache...", ConsoleColor.DarkGray);
+				Logger.Log("Downloading item schema...", ConsoleColor.DarkGray);
 				try
 				{
-					ItemCache = File.ReadAllText(CacheLocation + ItemDataFilename);
+					ItemCache = Util.DownloadString(ItemDataUrl, Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					Logger.Log("  Download failed.", ConsoleColor.Red);
+					failed = true;
+				}
+			}
+
+			if (ItemCache == null)
+			{
+				Logger.Log("Retrieving item schema cache...", ConsoleColor.DarkGray);
+				try
+				{
+					ItemCache = File.ReadAllText(CacheLocation + ItemDataFilename, Encoding.UTF8);
+					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the TF2 item cache: " + e.Message, ConsoleColor.Red);
+					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
-			if (itemsOffline || backpackDlFailed)
+			ItemCache = Asciify(ItemCache);
+
+			ParseItemsJson();
+			TranslateItemsData();
+
+			if (!failed && !offline) // don't bother writing again if it's the same thing
+			{
+				File.WriteAllText(ItemDataFilename, ItemCache, Encoding.UTF8);
+				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
+			}
+		}
+
+		public static void LoadMyBackpackData(bool forceOffline)
+		{
+			bool offline = forceOffline;
+
+			DateTime lastAccess = new DateTime(Settings.Instance.SteamLastAccess);
+			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
+			{
+				offline = true;
+			}
+
+			if (!File.Exists(CacheLocation + MyBackpackDataFilename))
+			{
+				offline = false;
+			}
+
+			DateTime currentAccess = DateTime.Now;
+			bool failed = false;
+			if (!offline)
+			{
+				Logger.Log("Downloading backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+				try
+				{
+					MyBackpackCache = Util.DownloadString(GetBackbackUrl(SEALEDINTERFACE_STEAMID), 
+						Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					Logger.Log("  Download failed.", ConsoleColor.Red);
+					failed = true;
+				}
+			}
+
+			if (MyBackpackCache == null)
 			{
 				Logger.Log("Retrieving backpack data cache...", ConsoleColor.DarkGray);
 				try
 				{
-					MyBackpackCache = File.ReadAllText(CacheLocation + BackpackDataFilename);
+					MyBackpackCache = File.ReadAllText(CacheLocation + MyBackpackDataFilename, Encoding.UTF8);
+					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  An error occurred reading the steam backpack cache: " + e.Message, ConsoleColor.Red);
+					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
+			}
+
+			MyBackpackCache = Asciify(MyBackpackCache);
+
+			ParseBackpackJson();
+			TranslateBackpackData();
+
+			if (!failed && !offline) // don't bother writing again if it's the same thing
+			{
+				File.WriteAllText(MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
+				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
+			}
+		}
+
+		public static void LoadPriceData(bool forceOffline)
+		{
+			bool offline = forceOffline;
+
+			DateTime lastAccess = new DateTime(Settings.Instance.BpTfLastAccess);
+			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
+			{
+				offline = true;
+			}
+
+			if (!File.Exists(CacheLocation + PriceDataFilename))
+			{
+				offline = false;
+			}
+
+			DateTime currentAccess = DateTime.Now;
+			bool failed = false;
+			if (!offline)
+			{
+				Logger.Log("Downloading price list...", ConsoleColor.DarkGray);
+				try
+				{
+					PricesCache = Util.DownloadString(PriceDataUrl, Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					Logger.Log("  Download failed.", ConsoleColor.Red);
+					failed = true;
+				}
+			}
+
+			if (PricesCache == null)
+			{
+				Logger.Log("Retrieving price list cache...", ConsoleColor.DarkGray);
+				try
+				{
+					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename, Encoding.UTF8);
+					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+				}
+			}
+
+			PricesCache = PricesCache.Replace("    ", "\t");
+			PricesCache = Asciify(PricesCache);
+
+			ParsePricesJson();
+			TranslatePricingData();
+
+			if (!failed && !offline) // don't bother writing again if it's the same thing
+			{
+				File.WriteAllText(PriceDataFilename, PricesCache, Encoding.UTF8);
+				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
+			}
+		}
+
+		public static void LoadMarketData(bool forceOffline)
+		{
+			bool offline = forceOffline;
+
+			DateTime lastAccess = new DateTime(Settings.Instance.BpTfLastAccess);
+			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
+			{
+				offline = true;
+			}
+
+			if (!File.Exists(CacheLocation + MarketPricesFilename))
+			{
+				offline = false;
+			}
+
+			DateTime currentAccess = DateTime.Now;
+			bool failed = false;
+			if (!offline)
+			{
+				Logger.Log("Downloading market price list...", ConsoleColor.DarkGray);
+				try
+				{
+					MarketPricesCache = Util.DownloadString(MarketPricesUrl, Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					Logger.Log("  Download failed.", ConsoleColor.Red);
+					failed = true;
+				}
+			}
+
+			if (MarketPricesCache == null)
+			{
+				Logger.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
+				try
+				{
+					MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename, Encoding.UTF8);
+					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+				}
+				catch (Exception e)
+				{
+					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+				}
+			}
+
+			MarketPricesCache = MarketPricesCache.Replace("    ", "\t");
+			MarketPricesCache = Asciify(MarketPricesCache);
+
+			ParseMarketJson();
+			TranslateMarketPrices();
+
+			if (!failed && !offline) // don't bother writing again if it's the same thing
+			{
+				File.WriteAllText(MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
+				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
 			}
 		}
 
@@ -293,19 +398,10 @@ namespace BackpackTFPriceLister
 			return true;
 		}
 
+		#region JSON stuff
+
 		public static TF2DataJson ParseItemsJson()
 		{
-			if (ItemCache == null)
-			{
-				LoadData();
-
-				if (PricesCache == null)
-				{
-					Logger.Log("  Could not parse item data as it was never loaded.", ConsoleColor.Red);
-					return null;
-				}
-			}
-
 			Logger.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
 			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
 			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
@@ -327,17 +423,6 @@ namespace BackpackTFPriceLister
 
 		public static BpTfPriceDataJson ParsePricesJson()
 		{
-			if (PricesCache == null)
-			{
-				LoadData();
-
-				if (PricesCache == null)
-				{
-					Logger.Log("  Could not parse price data as it was never loaded.", ConsoleColor.Red);
-					return null;
-				}
-			}
-
 			Logger.Log("Parsing backpack.tf price data...", ConsoleColor.DarkGray);
 			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
 			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
@@ -346,6 +431,90 @@ namespace BackpackTFPriceLister
 				.prices["6"].Tradable.Craftable["0"].value;
 
 			return PriceDataRaw;
+		}
+
+		public static BpTfPriceData TranslatePricingData()
+		{
+			if (PriceDataRaw == null)
+			{
+				ParsePricesJson();
+			}
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+
+			PriceData = new BpTfPriceData(PriceDataRaw, ItemData);
+
+			return PriceData;
+		}
+
+		public static TF2BackpackJson ParseBackpackJson()
+		{
+			Logger.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+
+			return MyBackpackDataRaw;
+		}
+
+		public static TF2BackpackData TranslateBackpackData()
+		{
+			if (MyBackpackDataRaw == null)
+			{
+				ParseBackpackJson();
+			}
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+
+			MyBackpackData = new TF2BackpackData(MyBackpackDataRaw, ItemData);
+
+			return MyBackpackData;
+		}
+
+		public static MarketPriceDataJson ParseMarketJson()
+		{
+			Logger.Log("Parsing market price data...", ConsoleColor.DarkGray);
+			MarketPricesRaw = JsonConvert.DeserializeObject<MarketPriceDataJson>(MarketPricesCache);
+			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+
+			return MarketPricesRaw;
+		}
+
+		public static MarketPriceData TranslateMarketPrices()
+		{
+			if (MarketPricesRaw == null)
+			{
+				ParseMarketJson();
+			}
+			if (ItemData == null)
+			{
+				TranslateItemsData();
+			}
+
+			MarketPrices = new MarketPriceData(MarketPricesRaw, ItemData);
+
+			return MarketPrices;
+		}
+
+		#endregion JSON stuff
+
+		public static void AutoSetup(bool fancy = false, bool force = true)
+		{
+			Settings.Load();
+
+			Initialize(fancy);
+
+			LoadItemSchema(!force);
+			LoadMyBackpackData(!force);
+			LoadPriceData(!force);
+			LoadMarketData(!force);
+
+			Settings.Save();
+
+			FixHauntedItems();
 		}
 
 		public static void FixHauntedItems()
@@ -373,73 +542,14 @@ namespace BackpackTFPriceLister
 			Logger.Log("  Fix complete.", ConsoleColor.DarkGray);
 		}
 
-		public static BpTfPriceData TranslatePricingData()
+		public static string Asciify(string content)
 		{
-			if (PriceDataRaw == null)
+			if (content == null)
 			{
-				ParsePricesJson();
-			}
-			if (ItemData == null)
-			{
-				TranslateItemsData();
+				return "";
 			}
 
-			PriceData = new BpTfPriceData(PriceDataRaw, ItemData);
-
-			return PriceData;
-		}
-
-		public static TF2BackpackJson ParseBackpackJson()
-		{
-			if (MyBackpackCache == null)
-			{
-				LoadData();
-
-				if (MyBackpackCache == null)
-				{
-					Logger.Log("  Could not parse backpack data as it was never loaded.", ConsoleColor.Red);
-					return null;
-				}
-			}
-
-			Logger.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
-			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
-
-			return MyBackpackDataRaw;
-		}
-
-		public static TF2BackpackData TranslateBackpackData()
-		{
-			if (MyBackpackDataRaw == null)
-			{
-				ParseBackpackJson();
-			}
-			if (ItemData == null)
-			{
-				TranslateItemsData();
-			}
-
-			MyBackpackData = new TF2BackpackData(MyBackpackDataRaw, ItemData);
-
-			return MyBackpackData;
-		}
-
-		public static void AutoSetup(bool fancy = false, bool force = true)
-		{
-			Initialize(fancy);
-			LoadData(!force, !force);
-
-			ParseItemsJson();
-			TranslateItemsData();
-
-			ParsePricesJson();
-			TranslatePricingData();
-
-			ParseBackpackJson();
-			TranslateBackpackData();
-
-			FixHauntedItems();
+			return content.Replace('é', 'e').Replace('ò', 'o').Replace('ü', 'u').Replace('ä', 'a');
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)

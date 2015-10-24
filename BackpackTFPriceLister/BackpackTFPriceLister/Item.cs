@@ -69,6 +69,8 @@ namespace BackpackTFPriceLister
 		public List<ItemAttribute> Attributes
 		{ get; private set; }
 
+		private ItemJson _jsonSrc;
+
 		public Item(ItemJson json, List<ItemAttribute> attsRef)
 		{
 			UnlocalizedName = json.name;
@@ -88,6 +90,8 @@ namespace BackpackTFPriceLister
 			Styles = json.styles?.ConvertAll((j) => j.name) ?? new List<string>();
 			ValidClasses = json.used_by_classes?.ConvertAll((s) => PlayerClasses.Parse(s)) ?? PlayerClasses.All;
 			Attributes = json.attributes?.ConvertAll((aas) => attsRef.First((ia) => ia.Name == aas.name)) ?? new List<ItemAttribute>();
+
+			_jsonSrc = json;
 		}
 
 		public string GetSubtext()
@@ -170,6 +174,152 @@ namespace BackpackTFPriceLister
 		public bool IsBotkiller()
 		{
 			return ImproperName.Contains("Botkiller");
+		}
+
+		public bool IsSkin()
+		{
+			return DefaultQuality == Quality.Decorated;
+
+			//return UnlocalizedName.StartsWith("concealedkiller_") ||
+			//	UnlocalizedName.StartsWith("craftsmann_") ||
+			//	UnlocalizedName.StartsWith("teufort_") ||
+			//	UnlocalizedName.StartsWith("powerhouse_");
+		}
+
+		public bool IsSupplyCrate()
+		{
+			if (_jsonSrc.attributes == null)
+			{
+				return false;
+			}
+
+			foreach (AppliedAttributeJson aaj in _jsonSrc.attributes)
+			{
+				if (aaj.@class == "supply_crate_series")
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public int? GetSupplyCrateSeries()
+		{
+			if (!IsSupplyCrate())
+			{
+				return null;
+			}
+
+			foreach (AppliedAttributeJson aaj in _jsonSrc.attributes)
+			{
+				if (aaj.@class == "supply_crate_series")
+				{
+					return (int)aaj.value;
+				}
+			}
+
+			return null; // this line of code will never run
+		}
+
+		public bool IsKillstreakKit()
+		{
+			return _jsonSrc?.tool?.type == "killstreakifier";
+		}
+
+		public bool IsStrangifier()
+		{
+			return _jsonSrc?.tool?.type == "strangifier";
+		}
+
+		public long? GetTargetID()
+		{
+			if (IsKillstreakKit())
+			{
+				if (_jsonSrc.attributes != null)
+				{
+					foreach (AppliedAttributeJson aaj in _jsonSrc.attributes)
+					{
+						if (aaj.@class == "tool_target_item")
+						{
+							return (long)aaj.value;
+						}
+					}
+
+					Logger.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+				}
+				else
+				{
+					string targetImpName = UnlocalizedName.Substring(0, UnlocalizedName.IndexOf(" Killstreakifier"));
+
+					foreach (Item i in DataManager.ItemData.Items)
+					{
+						if (i.ImproperName == targetImpName)
+						{
+							return i.ID;
+						}
+					}
+
+					Logger.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+				}
+			}
+			else if (IsStrangifier())
+			{
+				if (ID == 5633) // strange bacon grease
+				{
+					return 264; // frying pan
+				}
+
+				if (_jsonSrc.attributes != null)
+				{
+					foreach (AppliedAttributeJson aaj in _jsonSrc.attributes)
+					{
+						if (aaj.@class == "tool_target_item")
+						{
+							return (long)aaj.value;
+						}
+					}
+
+					Logger.Log("No target found for strangifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+				}
+				else
+				{
+					if (UnlocalizedName == "Strangifier")
+					{
+						return null;
+					}
+
+					string targetImpName = UnlocalizedName.CutOffEnd(" Strangifier".Length);
+
+					foreach (Item i in DataManager.ItemData.Items)
+					{
+						if (i.ImproperName == targetImpName)
+						{
+							return i.ID;
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+
+		public KillstreakType? GetKillstreakKitTier()
+		{
+			if (!IsKillstreakKit())
+			{
+				return null;
+			}
+
+			foreach (AppliedAttributeJson att in _jsonSrc.attributes)
+			{
+				if (att.@class == "killstreak_tier")
+				{
+					return (KillstreakType)((int)att.value);
+				}
+			}
+
+			return null;
 		}
 	}
 }

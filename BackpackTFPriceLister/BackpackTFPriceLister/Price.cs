@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackpackTFPriceLister
 {
-	public struct Price
+	public struct Price : IEquatable<Price>
 	{
 		public const string CURRENCY_KEYS = "keys";
 		public const string CURRENCY_REF = "metal";
@@ -34,10 +34,7 @@ namespace BackpackTFPriceLister
 			{
 				if (_refinedPerKey == -1)
 				{
-					DataManager.Initialize(false);
-					DataManager.LoadData();
-					DataManager.ParseItemsJson();
-					DataManager.ParsePricesJson();
+					DataManager.AutoSetup(true, false);
 				}
 
 				return _refinedPerKey;
@@ -84,9 +81,29 @@ namespace BackpackTFPriceLister
 			}
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is Price)
+			{
+				return Equals((Price)obj);
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return TotalRefined.GetHashCode();
+		}
+
 		public override string ToString()
 		{
 			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString() + " ref");
+		}
+
+		public bool Equals(Price other)
+		{
+			return TotalRefined == other.TotalRefined;
 		}
 
 		// for scraping backpack.tf classifieds
@@ -143,11 +160,11 @@ namespace BackpackTFPriceLister
 
 		public static bool operator==(Price a, Price b)
 		{
-			return a.TotalRefined == b.TotalRefined;
+			return a.Equals(b);
 		}
 		public static bool operator!=(Price a, Price b)
 		{
-			return a.TotalRefined != b.TotalRefined;
+			return !a.Equals(b);
 		}
 
 		public static bool operator>(Price a, Price b)

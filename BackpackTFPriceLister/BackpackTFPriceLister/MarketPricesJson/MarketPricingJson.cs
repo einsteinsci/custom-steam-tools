@@ -8,18 +8,15 @@ using Newtonsoft.Json;
 namespace BackpackTFPriceLister.MarketPricesJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class MarketPricesResponseJson
+	public class MarketPricingJson
 	{
-		public int success
+		public ulong last_updated
 		{ get; set; }
 
-		public string message
+		public int quantity
 		{ get; set; }
 
-		public ulong current_time
-		{ get; set; }
-
-		public Dictionary<string, MarketPricingJson> items
+		public int value // in cents
 		{ get; set; }
 	}
 }

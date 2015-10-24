@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister.MarketDataJson
+namespace BackpackTFPriceLister.MarketPricesJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class MarketPriceDataJson
 	{
-
+		[JsonProperty]
+		public MarketPricesResponseJson response
+		{ get; set; }
 	}
 }

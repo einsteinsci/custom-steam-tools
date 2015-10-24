@@ -210,7 +210,7 @@ namespace BackpackTFPriceLister
 				if (i.Level != inst.Level)
 					continue;
 
-				if (i.GetHasKillstreak() != inst.GetHasKillstreak())
+				if (i.GetKillstreak() != inst.GetKillstreak())
 					continue;
 
 				if (i.GetUnusual() != inst.GetUnusual())
