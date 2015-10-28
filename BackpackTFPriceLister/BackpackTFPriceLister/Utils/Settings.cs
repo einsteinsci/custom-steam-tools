@@ -4,9 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister
+namespace BackpackTFPriceLister.Utils
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class Settings

@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Json.MarketPricesJson;
 
-namespace BackpackTFPriceLister
+using BackpackTFPriceLister.Utils;
+using BackpackTFPriceLister.Core;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Json.MarketPricesJson;
+using BackpackTFPriceLister.Lookup;
+
+namespace BackpackTFPriceLister.Market
 {
 	public class MarketPricing
 	{
@@ -201,6 +206,7 @@ namespace BackpackTFPriceLister
 					return true;
 
 					#region strangifier
+#pragma warning disable CS0162
 					string targetName = hashStart.CutOffEnd(" Strangifier".Length);
 					foreach (Item i in lookup.Items)
 					{
@@ -221,6 +227,7 @@ namespace BackpackTFPriceLister
 							break;
 						}
 					}
+#pragma warning restore CS0162
 					#endregion
 				}
 				else if (hash.EndsWith("Kit") && Killstreak.HasKillstreak())
@@ -229,6 +236,7 @@ namespace BackpackTFPriceLister
 					return true;
 
 					#region killstreak kit
+#pragma warning disable CS0162
 					string targetName = hashStart.CutOffEnd(" Kit".Length);
 					foreach (Item i in lookup.Items)
 					{
@@ -255,6 +263,7 @@ namespace BackpackTFPriceLister
 							break;
 						}
 					}
+#pragma warning restore CS0162
 					#endregion killstreak kit
 				}
 				else if (hash.Contains("Series #")) // it's a box!

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.Core;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Lookup;
+using BackpackTFPriceLister.Utils;
 
-namespace BackpackTFPriceLister
+namespace BackpackTFPriceLister.Classifieds
 {
 	public static class DealFinder
 	{

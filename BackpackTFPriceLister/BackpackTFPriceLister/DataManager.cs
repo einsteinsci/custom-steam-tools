@@ -10,8 +10,12 @@ using BackpackTFPriceLister.Json.BackpackDataJson;
 using BackpackTFPriceLister.Json.ItemDataJson;
 using BackpackTFPriceLister.Json.MarketPricesJson;
 using BackpackTFPriceLister.Json.PriceDataJson;
-
+using BackpackTFPriceLister.Utils;
 using Newtonsoft.Json;
+using BackpackTFPriceLister.Core;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Lookup;
+using BackpackTFPriceLister.Classifieds;
 
 namespace BackpackTFPriceLister
 {

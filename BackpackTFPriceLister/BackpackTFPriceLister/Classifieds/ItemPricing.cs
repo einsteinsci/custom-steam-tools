@@ -1,11 +1,12 @@
-﻿using BackpackTFPriceLister.Json.PriceDataJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.Core;
+using BackpackTFPriceLister.Items;
 
-namespace BackpackTFPriceLister
+namespace BackpackTFPriceLister.Classifieds
 {
 	public class ItemPricing
 	{

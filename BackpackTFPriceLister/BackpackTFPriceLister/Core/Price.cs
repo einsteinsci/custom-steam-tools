@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.Items;
 
-namespace BackpackTFPriceLister
+namespace BackpackTFPriceLister.Core
 {
 	public struct Price : IEquatable<Price>
 	{

@@ -4,7 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister
+using BackpackTFPriceLister.Utils;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Lookup;
+using BackpackTFPriceLister.Market;
+using BackpackTFPriceLister.Classifieds;
+
+namespace BackpackTFPriceLister.Core
 {
 	public static class CommandHandler
 	{

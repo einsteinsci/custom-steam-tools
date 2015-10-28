@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Json.MarketPricesJson;
 
-namespace BackpackTFPriceLister
+using BackpackTFPriceLister.Utils;
+using BackpackTFPriceLister.Json.MarketPricesJson;
+using BackpackTFPriceLister.Market;
+
+namespace BackpackTFPriceLister.Lookup
 {
 	public class MarketPriceData
 	{

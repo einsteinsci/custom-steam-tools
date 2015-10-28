@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister
+namespace BackpackTFPriceLister.Utils
 {
 	public static class Util
 	{

@@ -1,11 +1,12 @@
-﻿using BackpackTFPriceLister.Json.ItemDataJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister
+using BackpackTFPriceLister.Json.ItemDataJson;
+
+namespace BackpackTFPriceLister.Items
 {
 	public class StrangePart
 	{

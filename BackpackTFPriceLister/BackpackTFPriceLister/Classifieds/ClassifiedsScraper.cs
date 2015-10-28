@@ -1,12 +1,17 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.Core;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Lookup;
+using BackpackTFPriceLister.Utils;
 
-namespace BackpackTFPriceLister
+using HtmlAgilityPack;
+
+namespace BackpackTFPriceLister.Classifieds
 {
 	public static class ClassifiedsScraper
 	{

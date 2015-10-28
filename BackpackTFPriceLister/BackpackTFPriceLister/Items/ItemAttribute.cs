@@ -1,19 +1,13 @@
-﻿using BackpackTFPriceLister.Json.ItemDataJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister
-{
-	public enum AttributeEffectType
-	{
-		Negative = -1,
-		Neutral = 0,
-		Positive = 1
-	}
+using BackpackTFPriceLister.Json.ItemDataJson;
 
+namespace BackpackTFPriceLister.Items
+{
 	public class ItemAttribute
 	{
 		public const int UNUSUAL_ID = 134;

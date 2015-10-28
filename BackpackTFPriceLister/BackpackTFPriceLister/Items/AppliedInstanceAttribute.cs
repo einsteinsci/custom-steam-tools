@@ -1,11 +1,12 @@
-﻿using BackpackTFPriceLister.Json.BackpackDataJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister
+using BackpackTFPriceLister.Json.BackpackDataJson;
+
+namespace BackpackTFPriceLister.Items
 {
 	public class AppliedInstanceAttribute
 	{
