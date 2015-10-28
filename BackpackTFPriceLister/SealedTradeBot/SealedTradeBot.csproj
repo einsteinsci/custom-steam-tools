@@ -82,9 +82,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BackpackTFPriceLister\BackpackTFPriceLister.csproj">
+    <ProjectReference Include="..\BackpackTFPriceLister\CustomSteamTools.csproj">
       <Project>{b8611d7a-b36d-4422-8e3f-7ffa2a3a9ef2}</Project>
-      <Name>BackpackTFPriceLister</Name>
+      <Name>CustomSteamTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\SteamWebAPI\SteamWebAPI.csproj">
       <Project>{d846d108-d95b-4488-ba01-e487da220c17}</Project>

@@ -7,8 +7,8 @@
     <ProjectGuid>{B8611D7A-B36D-4422-8E3F-7FFA2A3A9EF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BackpackTFPriceLister</RootNamespace>
-    <AssemblyName>BackpackTFPriceLister</AssemblyName>
+    <RootNamespace>CustomSteamTools</RootNamespace>
+    <AssemblyName>CustomSteamTools</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
