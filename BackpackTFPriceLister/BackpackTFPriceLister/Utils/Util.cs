@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Utils
+namespace CustomSteamTools.Utils
 {
 	public static class Util
 	{

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Items;
+using CustomSteamTools.Items;
 
-namespace BackpackTFPriceLister.Classifieds
+namespace CustomSteamTools.Classifieds
 {
     public class ItemSale
     {

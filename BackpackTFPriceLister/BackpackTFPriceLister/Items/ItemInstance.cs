@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Classifieds;
-using BackpackTFPriceLister.Json.BackpackDataJson;
-using BackpackTFPriceLister.Lookup;
+using CustomSteamTools.Classifieds;
+using CustomSteamTools.Json.BackpackDataJson;
+using CustomSteamTools.Lookup;
 
-namespace BackpackTFPriceLister.Items
+namespace CustomSteamTools.Items
 {
 	public class ItemInstance
 	{

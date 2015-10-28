@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Lookup;
-using BackpackTFPriceLister.Utils;
+using CustomSteamTools.Items;
+using CustomSteamTools.Lookup;
+using CustomSteamTools.Utils;
 
-namespace BackpackTFPriceLister.Classifieds
+namespace CustomSteamTools.Classifieds
 {
 	public static class DealFinder
 	{

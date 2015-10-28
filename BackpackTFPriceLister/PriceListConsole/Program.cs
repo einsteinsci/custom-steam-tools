@@ -6,8 +6,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister;
-using BackpackTFPriceLister.Utils;
+using CustomSteamTools;
+using CustomSteamTools.Utils;
 
 namespace BackpackTFConsole
 {

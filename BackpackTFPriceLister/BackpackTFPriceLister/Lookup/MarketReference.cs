@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Utils;
-using BackpackTFPriceLister.Json.MarketPricesJson;
-using BackpackTFPriceLister.Market;
+using CustomSteamTools.Utils;
+using CustomSteamTools.Json.MarketPricesJson;
+using CustomSteamTools.Market;
 
-namespace BackpackTFPriceLister.Lookup
+namespace CustomSteamTools.Lookup
 {
 	public class MarketReference
 	{

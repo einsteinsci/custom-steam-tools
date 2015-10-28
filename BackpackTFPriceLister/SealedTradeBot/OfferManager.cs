@@ -7,7 +7,7 @@ using SteamKit2;
 using static SteamKit2.WebAPI;
 using SteamWebAPI;
 using static SteamWebAPI.SteamAPISession;
-using BackpackTFPriceLister;
+using CustomSteamTools;
 using System.Net;
 
 namespace SealedTradeBot

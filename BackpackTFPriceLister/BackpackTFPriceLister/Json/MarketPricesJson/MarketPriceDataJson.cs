@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister.Json.MarketPricesJson
+namespace CustomSteamTools.Json.MarketPricesJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class MarketPriceDataJson

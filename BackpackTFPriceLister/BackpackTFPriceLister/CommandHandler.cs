@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Utils;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Lookup;
-using BackpackTFPriceLister.Market;
-using BackpackTFPriceLister.Classifieds;
+using CustomSteamTools.Utils;
+using CustomSteamTools.Items;
+using CustomSteamTools.Lookup;
+using CustomSteamTools.Market;
+using CustomSteamTools.Classifieds;
 
-namespace BackpackTFPriceLister
+namespace CustomSteamTools
 {
 	public static class CommandHandler
 	{

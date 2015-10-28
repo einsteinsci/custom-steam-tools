@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Json.PriceDataJson
+namespace CustomSteamTools.Json.PriceDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class CraftibilityJson

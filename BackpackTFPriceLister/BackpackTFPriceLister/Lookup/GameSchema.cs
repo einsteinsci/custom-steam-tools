@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Json.ItemDataJson;
+using CustomSteamTools.Items;
+using CustomSteamTools.Json.ItemDataJson;
 
-namespace BackpackTFPriceLister.Lookup
+namespace CustomSteamTools.Lookup
 {
 	public class GameSchema
 	{

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Utils;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Json.PriceDataJson;
-using BackpackTFPriceLister.Classifieds;
+using CustomSteamTools.Utils;
+using CustomSteamTools.Items;
+using CustomSteamTools.Json.PriceDataJson;
+using CustomSteamTools.Classifieds;
 
-namespace BackpackTFPriceLister.Lookup
+namespace CustomSteamTools.Lookup
 {
 	public class PriceReference
 	{

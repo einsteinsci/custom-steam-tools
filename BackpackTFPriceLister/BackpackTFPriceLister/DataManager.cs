@@ -6,18 +6,18 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Classifieds;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Json.BackpackDataJson;
-using BackpackTFPriceLister.Json.ItemDataJson;
-using BackpackTFPriceLister.Json.MarketPricesJson;
-using BackpackTFPriceLister.Json.PriceDataJson;
-using BackpackTFPriceLister.Lookup;
-using BackpackTFPriceLister.Utils;
+using CustomSteamTools.Classifieds;
+using CustomSteamTools.Items;
+using CustomSteamTools.Json.BackpackDataJson;
+using CustomSteamTools.Json.ItemDataJson;
+using CustomSteamTools.Json.MarketPricesJson;
+using CustomSteamTools.Json.PriceDataJson;
+using CustomSteamTools.Lookup;
+using CustomSteamTools.Utils;
 
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister
+namespace CustomSteamTools
 {
 	// the "main" class in this DLL
 	public static class DataManager

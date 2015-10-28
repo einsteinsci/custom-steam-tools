@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Items;
+using CustomSteamTools.Items;
 
-namespace BackpackTFPriceLister
+namespace CustomSteamTools
 {
 	public enum AttributeEffectType
 	{

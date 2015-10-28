@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Json.BackpackDataJson
+namespace CustomSteamTools.Json.BackpackDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class AppliedItemInstanceAttributeJson

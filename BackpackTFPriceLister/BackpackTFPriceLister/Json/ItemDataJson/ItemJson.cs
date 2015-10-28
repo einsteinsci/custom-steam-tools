@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister.Json.ItemDataJson
+namespace CustomSteamTools.Json.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class ItemJson

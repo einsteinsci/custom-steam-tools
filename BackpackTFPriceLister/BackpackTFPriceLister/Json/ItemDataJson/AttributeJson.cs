@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Items;
+using CustomSteamTools.Items;
 
-namespace BackpackTFPriceLister.Json.ItemDataJson
+namespace CustomSteamTools.Json.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
 	public class AttributeJson

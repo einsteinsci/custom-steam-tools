@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Lookup;
-using BackpackTFPriceLister.Utils;
+using CustomSteamTools.Items;
+using CustomSteamTools.Lookup;
+using CustomSteamTools.Utils;
 
 using HtmlAgilityPack;
 
-namespace BackpackTFPriceLister.Classifieds
+namespace CustomSteamTools.Classifieds
 {
 	public static class ClassifiedsScraper
 	{

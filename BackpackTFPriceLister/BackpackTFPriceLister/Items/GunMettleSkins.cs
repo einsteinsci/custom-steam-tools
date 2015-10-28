@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Items
+namespace CustomSteamTools.Items
 {
 	public enum GunMettleCase
 	{

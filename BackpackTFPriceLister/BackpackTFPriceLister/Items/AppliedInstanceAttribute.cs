@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Json.BackpackDataJson;
+using CustomSteamTools.Json.BackpackDataJson;
 
-namespace BackpackTFPriceLister.Items
+namespace CustomSteamTools.Items
 {
 	public class AppliedInstanceAttribute
 	{

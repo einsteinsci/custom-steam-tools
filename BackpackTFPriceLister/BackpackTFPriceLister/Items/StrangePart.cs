@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BackpackTFPriceLister.Json.ItemDataJson;
+using CustomSteamTools.Json.ItemDataJson;
 
-namespace BackpackTFPriceLister.Items
+namespace CustomSteamTools.Items
 {
 	public class StrangePart
 	{

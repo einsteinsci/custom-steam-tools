@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Json.ItemDataJson
+namespace CustomSteamTools.Json.ItemDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class OriginJson

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackpackTFPriceLister.Utils
+namespace CustomSteamTools.Utils
 {
 	public delegate void LogEvent(object sender, LogEventArgs e);
 

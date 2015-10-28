@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace BackpackTFPriceLister.Utils
+namespace CustomSteamTools.Utils
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class Settings

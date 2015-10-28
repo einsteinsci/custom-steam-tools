@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister;
-using BackpackTFPriceLister.Items;
-using BackpackTFPriceLister.Lookup;
+using CustomSteamTools;
+using CustomSteamTools.Items;
+using CustomSteamTools.Lookup;
 using SteamKit2;
 
 namespace SealedTradeBot
