@@ -21,6 +21,12 @@ namespace BackpackTFConsole
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 255, 149, 63); // orange
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 82, 113, 165); // "vintage" blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 166, 40, 40); // "collector's" red
+			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 120, 70, 165); // unusual purple
+			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 60, 255, 190); // haunted teal
+
 			Console.Title = "Trade Helper Console";
 			Console.ForegroundColor = ConsoleColor.White;
 
@@ -60,6 +66,11 @@ namespace BackpackTFConsole
 				{
 					args.Add(DataManager.SEALEDINTERFACE_STEAMID);
 					return false;
+				}
+
+				if (args[0].ToLower() == "me")
+				{
+					args[0] = DataManager.SEALEDINTERFACE_STEAMID;
 				}
 			}
 			if (commandName.ToLower() == "deals")

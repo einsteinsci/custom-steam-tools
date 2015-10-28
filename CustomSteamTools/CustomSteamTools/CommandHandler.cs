@@ -126,25 +126,27 @@ namespace CustomSteamTools
 			}
 
 			bool takeInput = false;
-			foreach (ItemPricing p in others)
-			{
-				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
-			}
+
 			if (uniques.Count <= 2)
 			{
 				foreach (ItemPricing p in uniques)
 				{
-					Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
+					Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), ConsoleColor.Yellow);
 				}
-			}
-			if (unusuals.Count > 0)
-			{
-				Logger.Log("  Enter 'U' to list unusuals.", ConsoleColor.White);
-				takeInput = true;
 			}
 			else
 			{
 				Logger.Log("  Enter an ID for crate/strangifier information.", ConsoleColor.White);
+			}
+
+			foreach (ItemPricing p in others)
+			{
+				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), p.Quality.GetColor());
+			}
+
+			if (unusuals.Count > 0)
+			{
+				Logger.Log("  Enter 'U' to list unusuals.", ConsoleColor.White);
 				takeInput = true;
 			}
 
@@ -165,7 +167,7 @@ namespace CustomSteamTools
 				foreach (ItemPricing p in unusuals)
 				{
 					UnusualEffect fx = DataManager.Schema.Unusuals.First((ue) => ue.ID == p.PriceIndex);
-					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString());
+					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString(), ConsoleColor.DarkMagenta);
 				}
 			}
 			else
@@ -784,6 +786,18 @@ namespace CustomSteamTools
 
 				backpackData = DataManager.BackpackData[id];
 			}
+
+			bool skipWeapons = false;
+			if (args.Count > 1)
+			{
+				for (int i = 1; i < args.Count; i++)
+				{
+					if (args[i].ToLower() == "-weapons")
+					{
+						skipWeapons = true;
+					}
+				}
+			}
 			
 			Logger.Log("Backpack for user " + (id == DataManager.SEALEDINTERFACE_STEAMID ? 
 				"'sealed interface'" : "#" + id) + " (" +
@@ -800,7 +814,11 @@ namespace CustomSteamTools
 
 				if (!item.Tradable)
 				{
-					Logger.Log("  " + item.ToFullString() + ": Not Tradable", ConsoleColor.DarkGray);
+					if (item.Item.PlainSlot != ItemSlotPlain.Weapon || !skipWeapons)
+					{
+						Logger.Log("  " + item.ToFullString() + ": Not Tradable", ConsoleColor.DarkGray);
+					}
+
 					continue;
 				}
 				else if (pricing == null)
@@ -837,12 +855,19 @@ namespace CustomSteamTools
 				}
 				else
 				{
+					bool isCheapWeapon = item.Item.PlainSlot == ItemSlotPlain.Weapon && 
+						(int)(pricing.PriceLow.TotalRefined * 100.0) == 5; //0.05 ref
+
 					ConsoleColor color = ConsoleColor.Gray;
-					if (item.Item.PlainSlot != ItemSlotPlain.Weapon || 
-						(int)(pricing.PriceLow.TotalRefined * 100.0) != 5) //0.05 ref
+					if (!isCheapWeapon)
 					{
 						color = ConsoleColor.White;
 					}
+					else if (skipWeapons)
+					{
+						continue;
+					}
+
 					if (item.Quality != Quality.Unique)
 					{
 						color = item.Quality.GetColor();

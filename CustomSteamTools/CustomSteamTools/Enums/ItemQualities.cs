@@ -86,7 +86,7 @@ namespace CustomSteamTools
 				case Quality.Genuine:
 					return ConsoleColor.DarkGreen;
 				case Quality.Vintage:
-					return ConsoleColor.Blue;
+					return ConsoleColor.DarkBlue;
 				case Quality.Unusual:
 					return ConsoleColor.DarkMagenta;
 				case Quality.Unique:
@@ -102,7 +102,7 @@ namespace CustomSteamTools
 				case Quality.Haunted:
 					return ConsoleColor.Cyan;
 				case Quality.Collectors:
-					return ConsoleColor.Red;
+					return ConsoleColor.DarkRed;
 				case Quality.Decorated:
 					return ConsoleColor.DarkCyan;
 				default:
