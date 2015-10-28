@@ -1,4 +1,4 @@
-﻿using BackpackTFPriceLister.BackpackDataJson;
+﻿using BackpackTFPriceLister.Json.BackpackDataJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -191,6 +191,22 @@ namespace BackpackTFPriceLister
 			}
 
 			return DataManager.PriceData.GetPriceData(Item, Quality, priceIndex, Craftable, Tradable);
+		}
+
+		public SkinWear? GetSkinWear()
+		{
+			if (!Item.IsSkin())
+			{
+				return null;
+			}
+
+			AppliedInstanceAttribute att = Attributes.FirstOrDefault((a) => a.ID == ItemAttribute.SKINWEAR_ID);
+			if (att == null)
+			{
+				return null;
+			}
+
+			return SkinWears.GetFromFloatingPoint(att.Value);
 		}
 
 		public override string ToString()

@@ -1,4 +1,4 @@
-﻿using BackpackTFPriceLister.ItemDataJson;
+﻿using BackpackTFPriceLister.Json.ItemDataJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;

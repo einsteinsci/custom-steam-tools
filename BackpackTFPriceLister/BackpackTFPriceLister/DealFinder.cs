@@ -16,6 +16,8 @@ namespace BackpackTFPriceLister
 			bool? halloween = null;
 			bool? botkiller = null;
 			bool verify = false;
+			Price? minProfit = null;
+
 			foreach (object obj in filters)
 			{
 				if (obj is Quality)
@@ -59,6 +61,17 @@ namespace BackpackTFPriceLister
 					else if (s.ToLower() == "botkiller")
 					{
 						botkiller = true;
+					}
+					else if (s.ToLower().StartsWith("minprofit="))
+					{
+						string smin = s.ToLower().Substring("minprofit=".Length);
+						Price buf;
+						if (!Price.TryParse(smin, out buf))
+						{
+							Logger.Log("Invalid minProfit: " + smin, ConsoleColor.Red);
+							return null;
+						}
+						minProfit = buf;
 					}
 				}
 			}
@@ -110,7 +123,7 @@ namespace BackpackTFPriceLister
 
 			List<ItemSale> relevant = FindRelevantClassifeids(inRange, verify);
 
-			return PickOutDeals(relevant);
+			return PickOutDeals(relevant, minProfit);
 		}
 
 		public static List<ItemSale> FindRelevantClassifeids(List<ItemPricing> pricings, bool verify)
@@ -243,9 +256,9 @@ namespace BackpackTFPriceLister
 			return new Price(0, min);
 		}
 
-		public static List<ItemSale> PickOutDeals(List<ItemSale> relevant)
+		public static List<ItemSale> PickOutDeals(List<ItemSale> relevant, Price? minProfit)
 		{
-            const double PRICE_DROPPING_THRESHOLD = 0.96;
+            const double PRICE_DROPPING_THRESHOLD = 0.97;
 			const int PRICE_DROPPING_COUNT = 3;
 
 			List<ItemSale> results = new List<ItemSale>();
@@ -264,7 +277,9 @@ namespace BackpackTFPriceLister
 					}
 				}
 
-				if (sale.Profit.TotalRefined < 0.1)
+				Price profit = sale.Profit;
+
+				if (profit.TotalRefined < 0.1)
 				{
 					Logger.Log("  No real profit seen in " + sale.Pricing.ToUnpricedString() +
 						". Excluded", ConsoleColor.Yellow);
@@ -285,6 +300,13 @@ namespace BackpackTFPriceLister
 				{
 					Logger.Log("  The price is dropping for " + sale.Pricing.ToUnpricedString() + 
 						". Excluded.", ConsoleColor.Yellow);
+					continue;
+				}
+
+				if (minProfit != null && profit < minProfit.Value)
+				{
+					Logger.Log("  Profit (" + profit.ToString() + ") does not meet specified threshold of " + 
+						minProfit.Value.ToString() + ". Excluded.", ConsoleColor.Yellow);
 					continue;
 				}
 

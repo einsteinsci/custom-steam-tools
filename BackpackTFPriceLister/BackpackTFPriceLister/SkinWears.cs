@@ -36,6 +36,34 @@ namespace BackpackTFPriceLister
 			}
 		}
 
+		public static SkinWear? GetFromFloatingPoint(double input)
+		{
+			double val = Math.Round(input, 1);
+
+			if (val == 0.2)
+			{
+				return SkinWear.FactoryNew;
+			}
+			else if (val == 0.4)
+			{
+				return SkinWear.MinimalWear;
+			}
+			else if (val == 0.6)
+			{
+				return SkinWear.FieldTested;
+			}
+			else if (val == 0.8)
+			{
+				return SkinWear.WellWorn;
+			}
+			else if (val == 1.0)
+			{
+				return SkinWear.BattleScarred;
+			}
+
+			return null;
+		}
+
 		public static string WithParentheses(this SkinWear skin)
 		{
 			return "(" + skin.ToReadableString() + ")";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BackpackTFPriceLister.Json.MarketPricesJson;
 
 namespace BackpackTFPriceLister
 {
@@ -11,7 +12,7 @@ namespace BackpackTFPriceLister
 		public List<MarketPricing> Pricings
 		{ get; private set; }
 
-		public MarketPriceData(MarketPricesJson.MarketPriceDataJson json, TF2Data schema)
+		public MarketPriceData(MarketPriceDataJson json, TF2Data schema)
 		{
 			Pricings = new List<MarketPricing>();
 
@@ -21,7 +22,7 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			foreach (KeyValuePair<string, MarketPricesJson.MarketPricingJson> kvp in json.response.items)
+			foreach (KeyValuePair<string, MarketPricingJson> kvp in json.response.items)
 			{
 				MarketPricing p = new MarketPricing(kvp.Key, kvp.Value, schema);
 

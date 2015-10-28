@@ -1,4 +1,4 @@
-﻿using BackpackTFPriceLister.ItemDataJson;
+﻿using BackpackTFPriceLister.Json.ItemDataJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -184,6 +184,11 @@ namespace BackpackTFPriceLister
 			//	UnlocalizedName.StartsWith("craftsmann_") ||
 			//	UnlocalizedName.StartsWith("teufort_") ||
 			//	UnlocalizedName.StartsWith("powerhouse_");
+		}
+
+		public Skin GetSkin()
+		{
+			return GunMettleSkins.GetSkin(UnlocalizedName);
 		}
 
 		public bool IsSupplyCrate()

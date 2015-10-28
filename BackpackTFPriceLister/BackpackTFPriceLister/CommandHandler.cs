@@ -1,5 +1,4 @@
-﻿using BackpackTFPriceLister.BackpackDataJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -180,14 +179,27 @@ namespace BackpackTFPriceLister
 			}
 		}
 
-		// buyers {itemname | itemID | searchQuery}
-		// sellers {itemname | itemID | searchQuery}
+		// buyers [/verify] {itemname | itemID | searchQuery}
+		// sellers [/verify] {itemname | itemID | searchQuery}
 		public static void GetClassifieds(List<string> args, OrderType orderType)
 		{
 			if (args.Count == 0)
 			{
 				Logger.Log("No item specified.", ConsoleColor.Red);
 				return;
+			}
+
+			bool verify = false;
+			if (args[0].ToLower() == "/verify" || args[0].ToLower() == "/v")
+			{
+				args.RemoveAt(0);
+				verify = true;
+
+				if (args.Count == 0)
+				{
+					Logger.Log("No item specified.", ConsoleColor.Red);
+					return;
+				}
 			}
 
 			string query = string.Join(" ", args);
@@ -201,50 +213,69 @@ namespace BackpackTFPriceLister
 
 			Logger.Log("Item: " + item.Name, ConsoleColor.White);
 
-			string sQuality = Logger.GetInput("Quality? ");
-			Quality quality = ItemQualities.Parse(sQuality);
+			List<ItemPricing> relatedPricings = DataManager.PriceData.GetAllPriceData(item);
+			Quality _testQ = relatedPricings.First().Quality;
 
-			bool? australium = null;
-			while (australium == null)
+			Quality quality = _testQ;
+			if (!relatedPricings.All((p) => p.Quality == _testQ))
 			{
-				string sA = Logger.GetInput("Australium? ");
-				try
+				string sQuality = Logger.GetInput("Quality? ");
+				quality = ItemQualities.Parse(sQuality);
+			}
+
+			bool? australium = false;
+			if (relatedPricings.Exists((p) => p.Australium))
+			{
+				australium = null;
+				while (australium == null)
 				{
-					australium = Util.ParseAdvancedBool(sA);
-				}
-				catch (FormatException)
-				{
-					Logger.Log("  Invalid input: " + sA);
+					string sA = Logger.GetInput("Australium? ");
+					try
+					{
+						australium = Util.ParseAdvancedBool(sA);
+					}
+					catch (FormatException)
+					{
+						Logger.Log("  Invalid input: " + sA);
+					}
 				}
 			}
 
-			bool? tradable = null;
-			bool? craftable = null;
+			bool? tradable = true;
+			bool? craftable = true;
 			if (quality == Quality.Unique && !australium.Value)
 			{
-				while (craftable == null)
+				if (relatedPricings.Exists((p) => !p.Craftable))
 				{
-					string sCr = Logger.GetInput("Craftable? ");
-					try
+					craftable = null;
+					while (craftable == null)
 					{
-						craftable = Util.ParseAdvancedBool(sCr);
+						string sCr = Logger.GetInput("Craftable? ");
+						try
+						{
+							craftable = Util.ParseAdvancedBool(sCr);
+						}
+						catch (FormatException)
+						{
+							Logger.Log("  Invalid input: " + sCr);
+						}
 					}
-					catch (FormatException)
-					{
-						Logger.Log("  Invalid input: " + sCr);
-	                }
 				}
 
-				while (tradable == null)
+				if (relatedPricings.Exists((p) => !p.Tradable))
 				{
-					string sTr = Logger.GetInput("Tradable? ");
-					try
+					tradable = null;
+					while (tradable == null)
 					{
-						tradable = Util.ParseAdvancedBool(sTr);
-					}
-					catch (FormatException)
-					{
-						Logger.Log("  Invalid input: " + sTr);
+						string sTr = Logger.GetInput("Tradable? ");
+						try
+						{
+							tradable = Util.ParseAdvancedBool(sTr);
+						}
+						catch (FormatException)
+						{
+							Logger.Log("  Invalid input: " + sTr);
+						}
 					}
 				}
 			}
@@ -265,7 +296,7 @@ namespace BackpackTFPriceLister
 
             Logger.Log("Getting classifieds for " + searchedItemInfo + "...");
 			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
-				item, quality, true, craftable.Value, tradable.Value, australium.Value);
+				item, quality, verify, craftable.Value, tradable.Value, australium.Value);
 			classifieds.RemoveAll((c) => c.OrderType != orderType);
 
 			if (classifieds == null || classifieds.Count == 0)
@@ -362,6 +393,10 @@ namespace BackpackTFPriceLister
 		{
 			DataManager.AutoSetup(true, true);
 			ClassifiedsScraper.SteamBackpackDown = false;
+
+			DataManager.BackpackCaches.Clear();
+			DataManager.BackpackDataRaw.Clear();
+			DataManager.BackpackData.Clear();
 		}
 
 		// skin {skinname}
@@ -463,29 +498,17 @@ namespace BackpackTFPriceLister
 				return;
 			}
 
-			string sMin = args[0].ToLower();
-			string sMax = args[1].ToLower();
-
-			bool kMin = sMin.EndsWith("k");
-			bool kMax = sMax.EndsWith("k");
-
-			sMin = sMin.TrimEnd('k');
-			sMax = sMax.TrimEnd('k');
-
-			double dMin = -1, dMax = -1;
-			if (!double.TryParse(sMin, out dMin))
+			Price min, max;
+			if (!Price.TryParse(args[0], out min))
 			{
-				Logger.Log("Argument invalid: " + args[0], ConsoleColor.Red);
+				Logger.Log("Invalid priceMin: " + args[0], ConsoleColor.Red);
 				return;
 			}
-			if (!double.TryParse(sMax, out dMax))
+			if (!Price.TryParse(args[1], out max))
 			{
-				Logger.Log("Argument invalid: " + args[1], ConsoleColor.Red);
+				Logger.Log("Invalid priceMax: " + args[1], ConsoleColor.Red);
 				return;
 			}
-
-			Price min = new Price(dMin, kMin ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
-			Price max = new Price(dMax, kMax ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
 
 			List<string> sfilters = new List<string>();
 			for (int i = 2; i < args.Count; i++)
@@ -621,6 +644,9 @@ namespace BackpackTFPriceLister
 				}
 
 				if (filterClass && noAllClass && !p.Item.ValidClasses.IsAllClass())
+				{
+					continue;
+				}
 
 				if (p.PriceHigh <= max && p.PriceLow >= min)
 				{
@@ -773,12 +799,34 @@ namespace BackpackTFPriceLister
 				}
 				else if (pricing == null)
 				{
-					Logger.Log("  " + item.ToFullString() + ": Unknown", ConsoleColor.Red);
-					continue;
+					string hash = "";
+
+					if (item.Item.IsSkin())
+					{
+						Skin skin = item.Item.GetSkin();
+						hash = skin.GetMarketHash(item.GetSkinWear());
+					}
+					else
+					{
+						hash = MarketPricing.GetMarketHash(item.Item, item.GetKillstreak(), item.Quality);
+					}
+
+					MarketPricing market = DataManager.MarketPrices.GetPricing(hash);
+
+					if (market != null)
+					{
+						Logger.Log("  [M] " + hash + ": " + market.Price.ToString(), item.Quality.GetColor());
+						continue;
+					}
+					else
+					{
+						Logger.Log("  " + item.ToFullString() + ": Unknown", ConsoleColor.Red);
+						continue;
+					}
 				}
 				else if (item.Item.IsCurrency())
 				{
-					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString());
+					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString(), ConsoleColor.DarkCyan);
 					totalPure += item.Item.GetCurrencyPrice();
 				}
 				else
@@ -868,6 +916,11 @@ namespace BackpackTFPriceLister
 			#endregion filters
 
 			List<ItemSale> res = DealFinder.FindDeals(steamID, filtersRes);
+			if (res == null) // failed
+			{
+				return;
+			}
+
 			res.Sort((a, b) => a.Profit.TotalRefined.CompareTo(b.Profit.TotalRefined));
 
 			Logger.AddLine();
@@ -876,6 +929,8 @@ namespace BackpackTFPriceLister
 			{
 				Logger.LogComplex(sale.ToComplexOutput("  "));
 			}
+
+			Console.Beep();
 		}
 
 		// >> helper function

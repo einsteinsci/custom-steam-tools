@@ -18,11 +18,19 @@ namespace BackpackTFPriceLister
 		{ get; private set; }
 
 		[JsonProperty]
-		public long BpTfLastAccess
+		public long PriceListLastAccess
 		{ get; set; }
 
 		[JsonProperty]
-		public long SteamLastAccess
+		public long MarketPricesLastAccess
+		{ get; set; }
+
+		[JsonProperty]
+		public long SchemaLastAccess
+		{ get; set; }
+
+		[JsonProperty]
+		public long BackpackLastAccess
 		{ get; set; }
 
 		[JsonProperty]

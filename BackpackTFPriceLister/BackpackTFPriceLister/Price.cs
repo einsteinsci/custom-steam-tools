@@ -98,7 +98,7 @@ namespace BackpackTFPriceLister
 
 		public override string ToString()
 		{
-			return Keys > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
+			return Math.Abs(Keys) > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
 		}
 
 		public bool Equals(Price other)
@@ -138,6 +138,37 @@ namespace BackpackTFPriceLister
 			double refined = double.Parse(sRef);
 
 			return new Price(keys * RefinedPerKey + refined);
+		}
+		public static Price Parse(string input)
+		{
+			string s = input.ToLower();
+
+			bool isKey = s.EndsWith("k");
+
+			s = s.TrimEnd('k');
+
+			double d = -1;
+			if (!double.TryParse(s, out d))
+			{
+				throw new FormatException("Argument invalid: " + input);
+			}
+
+			return new Price(d, isKey ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
+		}
+		public static bool TryParse(string input, out Price result)
+		{
+			bool succeeded = false;
+			try
+			{
+				result = Parse(input);
+				succeeded = true;
+			}
+			catch (FormatException)
+			{
+				result = Zero;
+			}
+
+			return succeeded;
 		}
 
 		public static Price FromKeys(double keys)

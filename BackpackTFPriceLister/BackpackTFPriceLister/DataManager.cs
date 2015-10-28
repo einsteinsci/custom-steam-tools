@@ -1,15 +1,17 @@
-﻿using BackpackTFPriceLister.BackpackDataJson;
-using BackpackTFPriceLister.ItemDataJson;
-using BackpackTFPriceLister.PriceDataJson;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.MarketPricesJson;
+
+using BackpackTFPriceLister.Json.BackpackDataJson;
+using BackpackTFPriceLister.Json.ItemDataJson;
+using BackpackTFPriceLister.Json.MarketPricesJson;
+using BackpackTFPriceLister.Json.PriceDataJson;
+
+using Newtonsoft.Json;
 
 namespace BackpackTFPriceLister
 {
@@ -137,7 +139,7 @@ namespace BackpackTFPriceLister
 		{
 			bool offline = forceOffline;
 
-			DateTime lastAccess = new DateTime(Settings.Instance.SteamLastAccess);
+			DateTime lastAccess = new DateTime(Settings.Instance.SchemaLastAccess);
 			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
 			{
 				offline = true;
@@ -186,7 +188,7 @@ namespace BackpackTFPriceLister
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
 				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache, Encoding.UTF8);
-				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
+				Settings.Instance.SchemaLastAccess = currentAccess.Ticks;
 			}
 		}
 
@@ -194,7 +196,7 @@ namespace BackpackTFPriceLister
 		{
 			bool offline = forceOffline;
 
-			DateTime lastAccess = new DateTime(Settings.Instance.SteamLastAccess);
+			DateTime lastAccess = new DateTime(Settings.Instance.BackpackLastAccess);
 			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
 			{
 				offline = true;
@@ -244,7 +246,7 @@ namespace BackpackTFPriceLister
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
 				File.WriteAllText(CacheLocation + MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
-				Settings.Instance.SteamLastAccess = currentAccess.Ticks;
+				Settings.Instance.BackpackLastAccess = currentAccess.Ticks;
 			}
 		}
 
@@ -252,7 +254,7 @@ namespace BackpackTFPriceLister
 		{
 			bool offline = forceOffline;
 
-			DateTime lastAccess = new DateTime(Settings.Instance.BpTfLastAccess);
+			DateTime lastAccess = new DateTime(Settings.Instance.PriceListLastAccess);
 			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
 			{
 				offline = true;
@@ -302,7 +304,7 @@ namespace BackpackTFPriceLister
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
 				File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache, Encoding.UTF8);
-				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
+				Settings.Instance.PriceListLastAccess = currentAccess.Ticks;
 			}
 		}
 
@@ -310,7 +312,7 @@ namespace BackpackTFPriceLister
 		{
 			bool offline = forceOffline;
 
-			DateTime lastAccess = new DateTime(Settings.Instance.BpTfLastAccess);
+			DateTime lastAccess = new DateTime(Settings.Instance.MarketPricesLastAccess);
 			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 15)
 			{
 				offline = true;
@@ -360,7 +362,7 @@ namespace BackpackTFPriceLister
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
 				File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
-				Settings.Instance.BpTfLastAccess = currentAccess.Ticks;
+				Settings.Instance.MarketPricesLastAccess = currentAccess.Ticks;
 			}
 		}
 
