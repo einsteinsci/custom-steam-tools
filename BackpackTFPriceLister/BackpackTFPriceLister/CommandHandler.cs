@@ -164,7 +164,7 @@ namespace BackpackTFPriceLister
 			{
 				foreach (ItemPricing p in unusuals)
 				{
-					UnusualEffect fx = DataManager.ItemData.Unusuals.First((ue) => ue.ID == p.PriceIndex);
+					UnusualEffect fx = DataManager.Schema.Unusuals.First((ue) => ue.ID == p.PriceIndex);
 					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString());
 				}
 			}
@@ -665,7 +665,7 @@ namespace BackpackTFPriceLister
 			{
 				if (p.Quality == Quality.Unusual)
 				{
-					UnusualEffect fx = DataManager.ItemData.Unusuals.First((u) => u.ID == p.PriceIndex);
+					UnusualEffect fx = DataManager.Schema.Unusuals.First((u) => u.ID == p.PriceIndex);
 					Logger.Log("  " + p.CompiledTitleName + " (" + fx.Name + "): " + p.GetPriceString());
 					continue;
 				}
@@ -759,7 +759,7 @@ namespace BackpackTFPriceLister
 		// backpack ...
 		public static void BackpackCheck(List<string> args)
 		{
-			TF2BackpackData backpackData = null;
+			Backpack backpackData = null;
 
 			if (args.Count == 0)
 			{
@@ -951,11 +951,11 @@ namespace BackpackTFPriceLister
 			// shortcut
 			if (query.ToLower() == "key")
 			{
-				item = DataManager.ItemData.GetItem(5021);
+				item = DataManager.Schema.GetItem(5021);
 			}
 			else
 			{
-				foreach (Item i in DataManager.ItemData.Items)
+				foreach (Item i in DataManager.Schema.Items)
 				{
 					if (isNum)
 					{
@@ -983,7 +983,7 @@ namespace BackpackTFPriceLister
 				Logger.Log("Searching items...");
 
 				List<Item> possibleItems = new List<Item>();
-				foreach (Item i in DataManager.ItemData.Items)
+				foreach (Item i in DataManager.Schema.Items)
 				{
 					if (i.Name.ToLower().Contains(query.ToLower()))
 					{

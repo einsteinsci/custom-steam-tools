@@ -122,7 +122,7 @@ namespace SealedTradeBot
 			}
 		}
 
-		public Item GetItem(TF2Data data)
+		public Item GetItem(GameSchema data)
 		{
 			ItemAction action = Actions.FirstOrDefault((a) => a.Name == "Item Wiki Page...");
 			if (action == null)

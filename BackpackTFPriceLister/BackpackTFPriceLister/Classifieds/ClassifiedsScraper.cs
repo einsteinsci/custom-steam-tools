@@ -175,7 +175,7 @@ namespace BackpackTFPriceLister.Classifieds
 				return true;
 			}
 
-			TF2BackpackData bp = null;
+			Backpack bp = null;
 			if (steamID == DataManager.SEALEDINTERFACE_STEAMID)
 			{
 				bp = DataManager.MyBackpackData;

@@ -29,7 +29,7 @@ namespace BackpackTFPriceLister
 
 		public static string PriceDataUrl
 		{ get; set; }
-		public static string ItemDataUrl
+		public static string SchemaUrl
 		{ get; set; }
 		public static string MyBackpackDataUrl
 		{ get; set; }
@@ -38,7 +38,7 @@ namespace BackpackTFPriceLister
 
 		public static string PriceDataFilename
 		{ get; set; }
-		public static string ItemDataFilename
+		public static string SchemaFilename
 		{ get; set; }
 		public static string MyBackpackDataFilename
 		{ get; set; }
@@ -50,7 +50,7 @@ namespace BackpackTFPriceLister
 
 		public static string PricesCache
 		{ get; private set; }
-		public static string ItemCache
+		public static string SchemaCache
 		{ get; private set; }
 		public static string MyBackpackCache
 		{ get; private set; }
@@ -59,29 +59,29 @@ namespace BackpackTFPriceLister
 		public static string MarketPricesCache
 		{ get; private set; }
 
-		public static TF2DataJson ItemDataRaw
+		public static TF2DataJson SchemaRaw
 		{ get; private set; }
-		public static TF2Data ItemData
+		public static GameSchema Schema
 		{ get; private set; }
 
 		public static BpTfPriceDataJson PriceDataRaw
 		{ get; private set; }
-		public static BpTfPriceData PriceData
+		public static PriceReference PriceData
 		{ get; private set; }
 
 		public static TF2BackpackJson MyBackpackDataRaw
 		{ get; private set; }
-		public static TF2BackpackData MyBackpackData
+		public static Backpack MyBackpackData
 		{ get; private set; }
 
 		public static Dictionary<string, TF2BackpackJson> BackpackDataRaw
 		{ get; private set; }
-		public static Dictionary<string, TF2BackpackData> BackpackData
+		public static Dictionary<string, Backpack> BackpackData
 		{ get; private set; }
 
 		public static MarketPriceDataJson MarketPricesRaw
 		{ get; private set; }
-		public static MarketPriceData MarketPrices
+		public static MarketReference MarketPrices
 		{ get; private set; }
 
 		public static void Initialize(bool fancyJson)
@@ -95,7 +95,7 @@ namespace BackpackTFPriceLister
 
 			BackpackCaches = new Dictionary<string, string>();
 			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
-			BackpackData = new Dictionary<string, TF2BackpackData>();
+			BackpackData = new Dictionary<string, Backpack>();
 		}
 		
 		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
@@ -108,7 +108,7 @@ namespace BackpackTFPriceLister
 				PriceDataUrl += "&format=pretty";
 			}
 
-			ItemDataUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
+			SchemaUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
 				"/GetSchema/v0001/?key=" + STEAM_API_KEY + "&language=en_US";
 
 			MyBackpackDataUrl = GetBackbackUrl(SEALEDINTERFACE_STEAMID);
@@ -128,7 +128,7 @@ namespace BackpackTFPriceLister
 
 			CacheLocation = cacheLocation;
 			PriceDataFilename = bptfFilename;
-			ItemDataFilename = itemFilename;
+			SchemaFilename = itemFilename;
 			MyBackpackDataFilename = backpackFilename;
 			MarketPricesFilename = marketFilename;
 		}
@@ -149,7 +149,7 @@ namespace BackpackTFPriceLister
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + ItemDataFilename))
+			if (!File.Exists(CacheLocation + SchemaFilename))
 			{
 				offline = false;
 			}
@@ -161,7 +161,7 @@ namespace BackpackTFPriceLister
 				Logger.Log("Downloading item schema...", ConsoleColor.DarkGray);
 				try
 				{
-					ItemCache = Util.DownloadString(ItemDataUrl, Settings.Instance.DownloadTimeout);
+					SchemaCache = Util.DownloadString(SchemaUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
@@ -170,12 +170,12 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			if (ItemCache == null)
+			if (SchemaCache == null)
 			{
 				Logger.Log("Retrieving item schema cache...", ConsoleColor.DarkGray);
 				try
 				{
-					ItemCache = File.ReadAllText(CacheLocation + ItemDataFilename, Encoding.UTF8);
+					SchemaCache = File.ReadAllText(CacheLocation + SchemaFilename, Encoding.UTF8);
 					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
@@ -184,14 +184,14 @@ namespace BackpackTFPriceLister
 				}
 			}
 
-			ItemCache = Util.Asciify(ItemCache);
+			SchemaCache = Util.Asciify(SchemaCache);
 
 			ParseItemsJson();
 			TranslateItemsData();
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(CacheLocation + ItemDataFilename, ItemCache, Encoding.UTF8);
+				File.WriteAllText(CacheLocation + SchemaFilename, SchemaCache, Encoding.UTF8);
 				Settings.Instance.SchemaLastAccess = currentAccess.Ticks;
 			}
 		}
@@ -393,11 +393,11 @@ namespace BackpackTFPriceLister
 				return false;
 			}
 
-			if (ItemData == null)
+			if (Schema == null)
 			{
 				TranslateItemsData();
 			}
-			TF2BackpackData data = new TF2BackpackData(json, ItemData);
+			Backpack data = new Backpack(json, Schema);
 			BackpackData.Add(steamID64, data);
 			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
@@ -409,22 +409,22 @@ namespace BackpackTFPriceLister
 		public static TF2DataJson ParseItemsJson()
 		{
 			Logger.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
-			ItemDataRaw = JsonConvert.DeserializeObject<TF2DataJson>(ItemCache);
+			SchemaRaw = JsonConvert.DeserializeObject<TF2DataJson>(SchemaCache);
 			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
 
-			return ItemDataRaw;
+			return SchemaRaw;
 		}
 
-		public static TF2Data TranslateItemsData()
+		public static GameSchema TranslateItemsData()
 		{
-			if (ItemDataRaw == null)
+			if (SchemaRaw == null)
 			{
 				ParseItemsJson();
 			}
 
-			ItemData = new TF2Data(ItemDataRaw);
+			Schema = new GameSchema(SchemaRaw);
 
-			return ItemData;
+			return Schema;
 		}
 
 		public static BpTfPriceDataJson ParsePricesJson()
@@ -439,18 +439,18 @@ namespace BackpackTFPriceLister
 			return PriceDataRaw;
 		}
 
-		public static BpTfPriceData TranslatePricingData()
+		public static PriceReference TranslatePricingData()
 		{
 			if (PriceDataRaw == null)
 			{
 				ParsePricesJson();
 			}
-			if (ItemData == null)
+			if (Schema == null)
 			{
 				TranslateItemsData();
 			}
 
-			PriceData = new BpTfPriceData(PriceDataRaw, ItemData);
+			PriceData = new PriceReference(PriceDataRaw, Schema);
 
 			return PriceData;
 		}
@@ -464,18 +464,18 @@ namespace BackpackTFPriceLister
 			return MyBackpackDataRaw;
 		}
 
-		public static TF2BackpackData TranslateBackpackData()
+		public static Backpack TranslateBackpackData()
 		{
 			if (MyBackpackDataRaw == null)
 			{
 				ParseBackpackJson();
 			}
-			if (ItemData == null)
+			if (Schema == null)
 			{
 				TranslateItemsData();
 			}
 
-			MyBackpackData = new TF2BackpackData(MyBackpackDataRaw, ItemData);
+			MyBackpackData = new Backpack(MyBackpackDataRaw, Schema);
 
 			return MyBackpackData;
 		}
@@ -489,18 +489,18 @@ namespace BackpackTFPriceLister
 			return MarketPricesRaw;
 		}
 
-		public static MarketPriceData TranslateMarketPrices()
+		public static MarketReference TranslateMarketPrices()
 		{
 			if (MarketPricesRaw == null)
 			{
 				ParseMarketJson();
 			}
-			if (ItemData == null)
+			if (Schema == null)
 			{
 				TranslateItemsData();
 			}
 
-			MarketPrices = new MarketPriceData(MarketPricesRaw, ItemData);
+			MarketPrices = new MarketReference(MarketPricesRaw, Schema);
 
 			return MarketPrices;
 		}
@@ -525,7 +525,7 @@ namespace BackpackTFPriceLister
 
 		public static void FixHauntedItems()
 		{
-			if (ItemData == null)
+			if (Schema == null)
 			{
 				ParseItemsJson();
 			}
@@ -536,7 +536,7 @@ namespace BackpackTFPriceLister
 			}
 
 			Logger.Log("Fixing haunted items...", ConsoleColor.DarkGray);
-			foreach (Item i in ItemData.Items)
+			foreach (Item i in Schema.Items)
 			{
 				List<ItemPricing> prices = PriceData.GetAllPriceData(i);
 

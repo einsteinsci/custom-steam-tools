@@ -48,11 +48,11 @@ namespace BackpackTFPriceLister.Market
 		public bool Australium
 		{ get; private set; }
 
-		public MarketPricing(string hash, MarketPricingJson json, TF2Data lookup) : 
+		public MarketPricing(string hash, MarketPricingJson json, GameSchema lookup) : 
 			this(hash, json.last_updated, json.quantity, json.value / 100.0, lookup)
 		{ }
 
-		public MarketPricing(string hash, ulong lastUpdated, int volume, double priceUSD, TF2Data lookup)
+		public MarketPricing(string hash, ulong lastUpdated, int volume, double priceUSD, GameSchema lookup)
 		{
 			Failed = false;
 
@@ -77,7 +77,7 @@ namespace BackpackTFPriceLister.Market
 			Failed = _processHash(MarketHash, lookup);
 		}
 
-		private bool _processHash(string hashStart, TF2Data lookup)
+		private bool _processHash(string hashStart, GameSchema lookup)
 		{
 			string hash = hashStart.Trim();
 

@@ -9,7 +9,7 @@ using BackpackTFPriceLister.Json.ItemDataJson;
 
 namespace BackpackTFPriceLister.Lookup
 {
-	public class TF2Data
+	public class GameSchema
 	{
 		// the big one
 		public List<Item> Items
@@ -27,7 +27,7 @@ namespace BackpackTFPriceLister.Lookup
 		public List<StrangePart> StrangeParts
 		{ get; set; }
 
-		public TF2Data(TF2DataResultJson json)
+		public GameSchema(TF2DataResultJson json)
 		{
 			Attributes = json.attributes.ConvertAll((j) => new ItemAttribute(j));
 			Items = json.items.ConvertAll((j) => new Item(j, Attributes));
@@ -36,7 +36,7 @@ namespace BackpackTFPriceLister.Lookup
 			StrangeParts = json.kill_eater_score_types.ConvertAll((j) => new StrangePart(j));
 		}
 
-		public TF2Data(TF2DataJson json) : this(json.result)
+		public GameSchema(TF2DataJson json) : this(json.result)
 		{ }
 
 		public Item GetItem(long id)

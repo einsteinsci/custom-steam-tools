@@ -10,12 +10,12 @@ using BackpackTFPriceLister.Market;
 
 namespace BackpackTFPriceLister.Lookup
 {
-	public class MarketPriceData
+	public class MarketReference
 	{
 		public List<MarketPricing> Pricings
 		{ get; private set; }
 
-		public MarketPriceData(MarketPriceDataJson json, TF2Data schema)
+		public MarketReference(MarketPriceDataJson json, GameSchema schema)
 		{
 			Pricings = new List<MarketPricing>();
 

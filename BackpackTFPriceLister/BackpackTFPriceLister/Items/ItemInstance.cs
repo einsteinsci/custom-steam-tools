@@ -50,7 +50,7 @@ namespace BackpackTFPriceLister.Items
 		public int Style
 		{ get; private set; }
 
-		public ItemInstance(ItemInstanceJson json, TF2Data reference)
+		public ItemInstance(ItemInstanceJson json, GameSchema reference)
 		{
 			InstanceID = json.id;
 			OriginalInstanceID = json.original_id;
@@ -152,7 +152,7 @@ namespace BackpackTFPriceLister.Items
 				return null;
 			}
 
-			return DataManager.ItemData.Unusuals.FirstOrDefault((u) => u.ID == att.Value);
+			return DataManager.Schema.Unusuals.FirstOrDefault((u) => u.ID == att.Value);
 		}
 		public int? GetCrateSeries()
 		{

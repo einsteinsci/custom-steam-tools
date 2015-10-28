@@ -11,7 +11,7 @@ using BackpackTFPriceLister.Classifieds;
 
 namespace BackpackTFPriceLister.Lookup
 {
-	public class BpTfPriceData
+	public class PriceReference
 	{
 		public List<ItemPricing> Prices
 		{ get; private set; }
@@ -68,7 +68,7 @@ namespace BackpackTFPriceLister.Lookup
 			return res;
 		}
 
-		public BpTfPriceData(BpTfPriceDataJson json, TF2Data db)
+		public PriceReference(BpTfPriceDataJson json, GameSchema db)
 		{
 			Prices = new List<ItemPricing>();
 

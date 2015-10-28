@@ -49,7 +49,7 @@ namespace BackpackTFPriceLister.Items
 			return Name + " " + BaseWeapon + " " + wear.Value.WithParentheses();
 		}
 
-		public Item GetItemForm(TF2Data data)
+		public Item GetItemForm(GameSchema data)
 		{
 			foreach (Item i in data.Items)
 			{

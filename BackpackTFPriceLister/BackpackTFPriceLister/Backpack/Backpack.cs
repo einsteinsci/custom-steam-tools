@@ -9,7 +9,7 @@ using BackpackTFPriceLister.Lookup;
 
 namespace BackpackTFPriceLister
 {
-	public class TF2BackpackData
+	public class Backpack
 	{
 		public int SlotCount
 		{ get; private set; }
@@ -17,10 +17,10 @@ namespace BackpackTFPriceLister
 		public List<ItemInstance> Items
 		{ get; private set; }
 
-		public TF2BackpackData(TF2BackpackJson json, TF2Data reference) : this(json.result, reference)
+		public Backpack(TF2BackpackJson json, GameSchema reference) : this(json.result, reference)
 		{ }
 
-		public TF2BackpackData(TF2BackpackResultJson json, TF2Data reference)
+		public Backpack(TF2BackpackResultJson json, GameSchema reference)
 		{
 			SlotCount = json.num_backpack_slots;
 

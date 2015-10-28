@@ -219,7 +219,7 @@ namespace BackpackTFPriceLister.Classifieds
 		public static Price? GetMaxPrice(string id = DataManager.SEALEDINTERFACE_STEAMID)
 		{
 			Logger.Log("Opening backpack of #" + id + "...", ConsoleColor.DarkGray);
-			TF2BackpackData backpack = null;
+			Backpack backpack = null;
 			if (id == DataManager.SEALEDINTERFACE_STEAMID ||
 				id == null)
 			{

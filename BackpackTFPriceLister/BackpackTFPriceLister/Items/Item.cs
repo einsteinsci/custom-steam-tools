@@ -260,7 +260,7 @@ namespace BackpackTFPriceLister.Items
 				{
 					string targetImpName = UnlocalizedName.Substring(0, UnlocalizedName.IndexOf(" Killstreakifier"));
 
-					foreach (Item i in DataManager.ItemData.Items)
+					foreach (Item i in DataManager.Schema.Items)
 					{
 						if (i.ImproperName == targetImpName)
 						{
@@ -299,7 +299,7 @@ namespace BackpackTFPriceLister.Items
 
 					string targetImpName = UnlocalizedName.CutOffEnd(" Strangifier".Length);
 
-					foreach (Item i in DataManager.ItemData.Items)
+					foreach (Item i in DataManager.Schema.Items)
 					{
 						if (i.ImproperName == targetImpName)
 						{

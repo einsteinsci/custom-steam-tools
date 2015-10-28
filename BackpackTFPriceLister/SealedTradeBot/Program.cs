@@ -20,7 +20,7 @@ namespace SealedTradeBot
 {
 	public class Program
 	{
-		public static TF2Data ItemData
+		public static GameSchema ItemData
 		{ get; private set; }
 
 		public const string BOT_API_KEY = "6EC366E3D20B931D81378B625575CFF3";
@@ -40,7 +40,7 @@ namespace SealedTradeBot
 
 			Settings.LoadFromFile();
 			DataManager.AutoSetup(true, true);
-			ItemData = DataManager.ItemData;
+			ItemData = DataManager.Schema;
 
 			Console.WriteLine();
 			List<TradeOffer> openOffers = OfferManager.GetAllOpenOffers();

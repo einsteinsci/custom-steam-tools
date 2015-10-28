@@ -25,9 +25,9 @@ namespace BackpackTFPriceLister
 		public static Price OneRef => new Price(0, 1);
 		public static Price Zero => new Price(0, 0);
 
-		public static Item RefinedMetal => DataManager.ItemData.GetItem(REF_DEFINDEX);
-		public static Item ReclaimedMetal => DataManager.ItemData.GetItem(REC_DEFINDEX);
-		public static Item ScrapMetal => DataManager.ItemData.GetItem(SCRAP_DEFINDEX);
+		public static Item RefinedMetal => DataManager.Schema.GetItem(REF_DEFINDEX);
+		public static Item ReclaimedMetal => DataManager.Schema.GetItem(REC_DEFINDEX);
+		public static Item ScrapMetal => DataManager.Schema.GetItem(SCRAP_DEFINDEX);
 
 		public static double RefinedPerKey
 		{
