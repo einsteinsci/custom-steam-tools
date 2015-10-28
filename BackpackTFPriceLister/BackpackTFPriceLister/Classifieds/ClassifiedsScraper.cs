@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using BackpackTFPriceLister.Core;
 using BackpackTFPriceLister.Items;
 using BackpackTFPriceLister.Lookup;
 using BackpackTFPriceLister.Utils;

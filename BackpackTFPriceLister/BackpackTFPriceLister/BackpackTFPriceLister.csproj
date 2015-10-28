@@ -70,7 +70,7 @@
     <Compile Include="Json\BackpackDataJson\ItemInstanceJson.cs" />
     <Compile Include="Json\BackpackDataJson\TF2BackpackJson.cs" />
     <Compile Include="Json\BackpackDataJson\TF2BackpackResultJson.cs" />
-    <Compile Include="Core\CommandHandler.cs" />
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Items\ItemAttribute.cs" />
     <Compile Include="Items\ItemInstance.cs" />
     <Compile Include="Items\ItemSet.cs" />
@@ -100,7 +100,7 @@
     <Compile Include="Enums\ItemQualities.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Classifieds\ItemPricing.cs" />
-    <Compile Include="Core\Price.cs" />
+    <Compile Include="Price.cs" />
     <Compile Include="Lookup\BpTfPriceData.cs" />
     <Compile Include="Json\PriceDataJson\CraftibilityJson.cs" />
     <Compile Include="Json\PriceDataJson\QualityPriceDataJson.cs" />

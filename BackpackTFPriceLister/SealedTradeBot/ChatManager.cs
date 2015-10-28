@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BackpackTFPriceLister;
+using BackpackTFPriceLister.Utils;
 using SteamKit2;
 
 namespace SealedTradeBot

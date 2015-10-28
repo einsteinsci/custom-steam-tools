@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BackpackTFPriceLister.Utils;
-using BackpackTFPriceLister.Core;
 using BackpackTFPriceLister.Items;
 using BackpackTFPriceLister.Json.MarketPricesJson;
 using BackpackTFPriceLister.Lookup;

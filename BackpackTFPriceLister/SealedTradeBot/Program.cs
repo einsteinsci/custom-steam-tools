@@ -4,12 +4,17 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using SteamKit2;
-using static SteamKit2.WebAPI;
-using SteamWebAPI;
-using static SteamWebAPI.SteamAPISession;
+
 using BackpackTFPriceLister;
-using Sample5_SteamGuard;
+using BackpackTFPriceLister.Lookup;
+using BackpackTFPriceLister.Utils;
+
+using SteamKit2;
+
+using SteamWebAPI;
+
+using static SteamKit2.WebAPI;
+using static SteamWebAPI.SteamAPISession;
 
 namespace SealedTradeBot
 {

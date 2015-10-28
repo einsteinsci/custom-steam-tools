@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BackpackTFPriceLister;
+using BackpackTFPriceLister.Items;
+using BackpackTFPriceLister.Lookup;
 using SteamKit2;
 
 namespace SealedTradeBot

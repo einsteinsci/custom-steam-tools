@@ -10,7 +10,7 @@ using BackpackTFPriceLister.Lookup;
 using BackpackTFPriceLister.Market;
 using BackpackTFPriceLister.Classifieds;
 
-namespace BackpackTFPriceLister.Core
+namespace BackpackTFPriceLister
 {
 	public static class CommandHandler
 	{

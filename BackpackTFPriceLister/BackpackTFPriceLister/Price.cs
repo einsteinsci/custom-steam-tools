@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BackpackTFPriceLister.Items;
 
-namespace BackpackTFPriceLister.Core
+namespace BackpackTFPriceLister
 {
 	public struct Price : IEquatable<Price>
 	{

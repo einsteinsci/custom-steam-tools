@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BackpackTFPriceLister;
-using BackpackTFPriceLister.Core;
 using BackpackTFPriceLister.Utils;
 
 namespace BackpackTFConsole
