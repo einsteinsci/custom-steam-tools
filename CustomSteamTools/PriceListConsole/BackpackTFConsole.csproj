@@ -57,7 +57,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BackpackTFPriceLister\CustomSteamTools.csproj">
+    <ProjectReference Include="..\CustomSteamTools\CustomSteamTools.csproj">
       <Project>{b8611d7a-b36d-4422-8e3f-7ffa2a3a9ef2}</Project>
       <Name>CustomSteamTools</Name>
     </ProjectReference>
