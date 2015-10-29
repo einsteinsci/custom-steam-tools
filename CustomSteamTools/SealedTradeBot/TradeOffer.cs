@@ -21,7 +21,7 @@ namespace SealedTradeBot
 		EmailCanceled = 10,
 	};
 
-	public class TradeOffer
+	public class TradeOffer : IEquatable<TradeOffer>
 	{
 		public string TradeOfferID
 		{ get; set; }
@@ -82,6 +82,26 @@ namespace SealedTradeBot
 			{
 				ItemsToReceive.Add(new TradeAsset(_kv));
 			}
+		}
+
+		public bool Equals(TradeOffer other)
+		{
+			return TradeOfferID == other.TradeOfferID;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is TradeOffer)
+			{
+				return Equals(obj as TradeOffer);
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return TradeOfferID.GetHashCode();
 		}
 
 		public override string ToString()

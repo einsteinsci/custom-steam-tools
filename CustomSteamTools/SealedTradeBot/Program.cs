@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CustomSteamTools;
@@ -29,7 +30,113 @@ namespace SealedTradeBot
 		public static SealedBot Bot
 		{ get; private set; }
 
+		public static Thread OfferCheckerThread
+		{ get; private set; }
+
 		public static void Main(string[] args)
+		{
+			StartOfferChecker();
+			Console.ReadKey();
+		}
+
+		private static void StartOfferChecker()
+		{
+			TimeSpan CHECK_INTERVAL = TimeSpan.FromMinutes(10);
+
+			bool shutDownThread = false;
+
+			OfferCheckerThread = new Thread(() =>
+			{
+				List<TradeOffer> knownOffers = OfferManager.GetAllOpenOffers();
+
+				DateTime lastCheck = DateTime.Now.Subtract(TimeSpan.FromMinutes(20));
+				while (!shutDownThread)
+				{
+					if (DateTime.Now.Subtract(lastCheck) < CHECK_INTERVAL)
+					{
+						Thread.Sleep(2000);
+						continue;
+					}
+
+					lastCheck = DateTime.Now;
+					OfferManager.LoadOffers();
+					List<TradeOffer> offers = OfferManager.GetAllOpenOffers();
+					DateTime currentTime = DateTime.Now;
+					string timeStamp = currentTime.ToString("[HH:mm:ss] ");
+
+					List<TradeOffer> incoming = new List<TradeOffer>();
+					foreach (TradeOffer o in offers)
+					{
+						if (o.State != TradeOfferState.Active)
+						{
+							continue;
+						}
+
+						if (o.IsRealTimeTrade)
+						{
+							Console.ForegroundColor = ConsoleColor.Gray;
+							Console.WriteLine(timeStamp + "Real-time trade completed with " +
+								o.OtherAccountID.ToString());
+							continue; // I already know about these.
+						}
+
+						if (!knownOffers.Exists((_o) => _o.Equals(o)))
+						{
+							incoming.Add(o);
+						}
+					}
+
+					if (incoming.Count == 0)
+					{
+						Console.ForegroundColor = ConsoleColor.DarkGray;
+						Console.WriteLine(timeStamp + "No new offers found.");
+					}
+					else
+					{
+						Console.Beep(); // make some noise
+						Console.ForegroundColor = ConsoleColor.Green;
+						foreach (TradeOffer o in incoming)
+						{
+							string id = o.OtherAccountID.ToString();
+							string msg = o.Message;
+
+							Console.WriteLine(timeStamp + "Offer from " + id + ": " + msg);
+						}
+					}
+
+					knownOffers = new List<TradeOffer>(offers);
+				}
+
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine("Shutting down thread...");
+			});
+			OfferCheckerThread.Name = "Offer Checker";
+			OfferCheckerThread.Start();
+
+			Thread.Sleep(10000);
+
+			while (OfferCheckerThread.IsAlive)
+			{
+				if (shutDownThread)
+				{
+					Thread.Sleep(100);
+					continue;
+				}
+
+				Console.ForegroundColor = ConsoleColor.White;
+				string input = Console.ReadLine();
+
+				if (input.ToLower() == "exit")
+				{
+					shutDownThread = true;
+				}
+			}
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("Press any key to exit.");
+		}
+
+		private static void StartTradeBot()
 		{
 			Console.Title = "Sealed's Trade Bot";
 
@@ -47,14 +154,14 @@ namespace SealedTradeBot
 			BotEventManager.Initialize(new CallbackManager(new SteamClient()));
 
 			BotLogger.LogLine(" Log in to Steam");
-            BotLogger.LogLine("  Username: sealedinterfacebot", ConsoleColor.White);
-            string username = "sealedinterfacebot";
-            BotLogger.Log("  Passsword: ", ConsoleColor.White);
-            string password = Util.ReadPassword();
+			BotLogger.LogLine("  Username: sealedinterfacebot", ConsoleColor.White);
+			string username = "sealedinterfacebot";
+			BotLogger.Log("  Passsword: ", ConsoleColor.White);
+			string password = Util.ReadPassword();
 
-            Bot = new SealedBot(username, password);
+			Bot = new SealedBot(username, password);
 			Bot.StartBot();
-            
+
 			//ClientManager.Run();
 			Settings.SaveToFile();
 
@@ -62,28 +169,28 @@ namespace SealedTradeBot
 
 			while (Bot.IsRunning)
 			{
-                Console.ForegroundColor = ConsoleColor.Green;
+				Console.ForegroundColor = ConsoleColor.Green;
 				string input = Console.ReadLine();
 
-                string[] cmdAndArgs = input.Split(' ');
-                if (cmdAndArgs.Length == 0)
-                {
-                    continue;
-                }
+				string[] cmdAndArgs = input.Split(' ');
+				if (cmdAndArgs.Length == 0)
+				{
+					continue;
+				}
 
-                if (cmdAndArgs[0].ToLower() == "auth")
-                {
-                    if (cmdAndArgs.Length < 2)
-                    {
-                        BotLogger.LogErr("A code must be provided.");
-                        continue;
-                    }
+				if (cmdAndArgs[0].ToLower() == "auth")
+				{
+					if (cmdAndArgs.Length < 2)
+					{
+						BotLogger.LogErr("A code must be provided.");
+						continue;
+					}
 
-                    string auth = cmdAndArgs[1].ToUpper();
+					string auth = cmdAndArgs[1].ToUpper();
 					Bot.SteamGuardCode = auth;
 
 					BotLogger.LogLine("SteamGuard code set.");
-                }
+				}
 
 				if (cmdAndArgs[0].ToLower() == "exit")
 				{
@@ -92,8 +199,7 @@ namespace SealedTradeBot
 				}
 			}
 
-            BotLogger.LogLine("Bot has exited!", ConsoleColor.Yellow);
-            Console.ReadKey();
+			BotLogger.LogLine("Bot has exited!", ConsoleColor.Yellow);
 		}
 
 		public static void LoginToSteam()
