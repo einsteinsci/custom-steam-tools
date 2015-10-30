@@ -35,7 +35,7 @@ namespace CustomSteamTools.Items
 
 			string weaponDesc = weapon.ToLower().Replace(" ", "");
 
-			UnlocalizedName = collection.GetPrefixString() + weaponDesc +
+			UnlocalizedName = collection.GetPrefixString() + weaponDesc + "_" +
 				Name.ToLower().Replace(" ", "").Replace(",", "").Replace("-", "");
 		}
 

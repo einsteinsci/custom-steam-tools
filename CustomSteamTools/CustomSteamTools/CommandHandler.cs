@@ -850,16 +850,13 @@ namespace CustomSteamTools
 				}
 				else if (item.Item.IsCurrency())
 				{
-					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString(), ConsoleColor.DarkCyan);
+					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString(), ConsoleColor.Yellow);
 					totalPure += item.Item.GetCurrencyPrice();
 				}
 				else
 				{
-					bool isCheapWeapon = item.Item.PlainSlot == ItemSlotPlain.Weapon && 
-						(int)(pricing.PriceLow.TotalRefined * 100.0) == 5; //0.05 ref
-
 					ConsoleColor color = ConsoleColor.Gray;
-					if (!isCheapWeapon)
+					if (!item.Item.IsCheapWeapon())
 					{
 						color = ConsoleColor.White;
 					}

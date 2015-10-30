@@ -329,5 +329,21 @@ namespace CustomSteamTools.Items
 
 			return null;
 		}
+
+		public bool IsCheapWeapon()
+		{
+			if (PlainSlot != ItemSlotPlain.Weapon)
+			{
+				return false;
+			}
+
+			ItemPricing pricing = DataManager.PriceData.GetPriceData(this, Quality.Unique, null, true);
+			if (pricing == null)
+			{
+				return false;
+			}
+
+			return (int)(pricing.PriceLow.TotalRefined * 100.0) == 5;
+        }
 	}
 }
