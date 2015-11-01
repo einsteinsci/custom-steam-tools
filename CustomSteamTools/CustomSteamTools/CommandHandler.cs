@@ -36,6 +36,7 @@ namespace CustomSteamTools
 			_commands.Add("deals", GetDeals);
 			_commands.Add("skin", PriceSkin);
 			_commands.Add("ks", PriceKillstreak);
+			_commands.Add("weapons", FindWeapons);
 		}
 
 		public static void RunCommand(string command, params string[] args)
@@ -313,6 +314,8 @@ namespace CustomSteamTools
 				return;
 			}
 
+
+
 			Price? bestPrice = null;
 			string bestLister = null;
 			foreach (ClassifiedsListing c in classifieds)
@@ -375,7 +378,7 @@ namespace CustomSteamTools
 			}
 			avg /= (double)validPrices.Count;
 			Price estimate = new Price(0, avg);
-			Logger.Log("Price: " + estimate.ToString());
+			Logger.LogComplex(ConsoleColor.Green, "Price: ", ConsoleColor.White, estimate.ToString());
 
 			Price diff = bestPrice.Value - estimate;
 			bool good = true;
@@ -959,6 +962,158 @@ namespace CustomSteamTools
 			}
 
 			Console.Beep();
+		}
+
+		// weapons [filters...]
+		public static void FindWeapons(List<string> args)
+		{
+			List<Item> weapons = DataManager.Schema.Items.FindAll((i) => i.PlainSlot == ItemSlotPlain.Weapon);
+
+			List<ItemSlot> validWeaponSlots = new List<ItemSlot>();
+			List<PlayerClass> validClasses = new List<PlayerClass>();
+			bool? specialWeapons = null;
+			Backpack excludeBp = null;
+
+			foreach (string str in args)
+			{
+				ItemSlot bufSlot = ItemSlots.Parse(str);
+				if (bufSlot != ItemSlot._Grenade)
+				{
+					validWeaponSlots.Add(bufSlot);
+					continue;
+				}
+
+				PlayerClass bufClass = PlayerClasses.Parse(str);
+				if (bufClass != 0)
+				{
+					validClasses.Add(bufClass);
+					continue;
+				}
+
+				if (str.ToLower() == "normal" || str.ToLower() == "-special")
+				{
+					specialWeapons = false;
+				}
+				else if (str.ToLower() == "special" || str.ToLower() == "-normal")
+				{
+					specialWeapons = true;
+				}
+
+				if (str.ToLower().StartsWith("exclude="))
+				{
+					string playerID = str.Substring("exclude=".Length);
+
+					if (playerID == DataManager.SEALEDINTERFACE_STEAMID)
+					{
+						excludeBp = DataManager.MyBackpackData;
+					}
+					else
+					{
+						bool worked = DataManager.LoadOtherBackpack(playerID);
+						if (!worked)
+						{
+							excludeBp = DataManager.BackpackData[playerID];
+						}
+					}
+				}
+			}
+
+			List<Item> res = new List<Item>();
+			foreach (Item i in weapons)
+			{
+				if (specialWeapons == true && i.IsCheapWeapon())
+					continue;
+				if (specialWeapons == false && !i.IsCheapWeapon())
+					continue;
+
+				if (validWeaponSlots.Count > 0 && !validWeaponSlots.Contains(i.Slot))
+					continue;
+
+				if (!i.ValidClasses.IsAllClass() && validClasses.Count > 0)
+				{
+					bool matches = false;
+					foreach (PlayerClass c in validClasses)
+					{
+						if (i.ValidClasses.Contains(c))
+						{
+							matches = true;
+							break;
+						}
+					}
+
+					if (!matches)
+						continue;
+				}
+
+				if (excludeBp != null)
+				{
+					bool found = false;
+					foreach (ItemInstance inst in excludeBp.Items)
+					{
+						if (inst.Item == i)
+						{
+							found = true;
+							break;
+						}
+					}
+
+					if (found)
+						continue;
+				}
+
+				// eliminated stuff
+				res.Add(i);
+			}
+
+			string wepsFilters = "";
+			if (validWeaponSlots.Count > 0)
+			{
+				wepsFilters = string.Join(" ", validWeaponSlots.ConvertAll((s) => s.ToString()) );
+				wepsFilters += " ";
+			}
+
+			string classFilters = "";
+			if (validClasses.Count > 0)
+			{
+				classFilters = string.Join(" ", validClasses.ConvertAll((c) => c.ToString()) );
+				classFilters += " ";
+			}
+
+			string specialFilters = "";
+			if (specialWeapons != null)
+			{
+				specialFilters = specialWeapons.Value ? "Special" : "Normal";
+			}
+
+			Logger.Log("Filters: " + wepsFilters + classFilters + specialFilters, ConsoleColor.White);
+			Logger.Log("Found " + res.Count + " matching weapons:", ConsoleColor.White);
+
+			Price? priciestValue = null;
+			Item priciestWeapon = null;
+			foreach (Item i in res)
+			{
+				ItemPricing p = DataManager.PriceData.GetPriceData(i);
+				string priceStr = p?.GetPriceString() ?? "UNKNOWN";
+
+				Logger.Log("  " + i.Name + ": " + priceStr);
+
+				if (p != null)
+				{
+					if (priciestValue == null)
+					{
+						priciestValue = p.PriceHigh;
+						priciestWeapon = i;
+					}
+					else if (p.PriceHigh > priciestValue)
+					{
+						priciestValue = p.PriceHigh;
+						priciestWeapon = i;
+					}
+				}
+			}
+
+			Logger.Log("Most expensive weapon: " + priciestWeapon + " at " + 
+				priciestValue.ToString(), ConsoleColor.White);
 		}
 
 		// >> helper function

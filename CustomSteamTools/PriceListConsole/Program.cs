@@ -86,6 +86,17 @@ namespace BackpackTFConsole
 					args[0] = DataManager.SEALEDINTERFACE_STEAMID;
 				}
 			}
+			if (commandName.ToLower() == "weapons")
+			{
+				for (int i = 0; i < args.Count; i++)
+				{
+					if (args[i].ToLower() == "exclude=me")
+					{
+						args[i] = "exclude=" + DataManager.SEALEDINTERFACE_STEAMID;
+						break;
+					}
+				}
+			}
 
 			return false;
 		}
