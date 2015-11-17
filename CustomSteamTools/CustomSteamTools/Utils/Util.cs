@@ -72,17 +72,17 @@ namespace CustomSteamTools.Utils
 
 			try
 			{
-				Logger.Log("  Downloading...", ConsoleColor.DarkGray);
+				LoggerOld.Log("  Downloading...", ConsoleColor.DarkGray);
 				WebClient client = new WebClient();
 				result = await client.DownloadStringTaskAsync(url);
 			}
 			catch (WebException e)
 			{
-				Logger.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
+				LoggerOld.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
 				return null;
 			}
 
-			Logger.Log("  Download complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Download complete.", ConsoleColor.DarkGray);
 			return result;
 		}
 
@@ -98,11 +98,11 @@ namespace CustomSteamTools.Utils
 				try
 				{
 					result = client.DownloadString(url);
-					Logger.Log("  Download complete.", ConsoleColor.DarkGray);
+					LoggerOld.Log("  Download complete.", ConsoleColor.DarkGray);
 				}
 				catch (WebException e)
 				{
-					Logger.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
+					LoggerOld.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
 					giveup = true;
 				}
 			});
@@ -118,13 +118,18 @@ namespace CustomSteamTools.Utils
 				if (now.Subtract(start) >= timeout)
 				{
 					giveup = true;
-					Logger.Log("  Download timed out.", ConsoleColor.Red);
+					LoggerOld.Log("  Download timed out.", ConsoleColor.Red);
 					thread.Abort();
 					return null;
 				}
 			}
 
 			return result;
+		}
+
+		public static string ToCodeString(this List<string> list)
+		{
+			return "new string[] { " + string.Join(", ", list.ConvertAll((s) => '"' + s + '"')) + " }";
 		}
 
 		public static string Asciify(string content)

@@ -254,7 +254,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					Logger.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
 				}
 				else
 				{
@@ -268,7 +268,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					Logger.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
 				}
 			}
 			else if (IsStrangifier())
@@ -288,7 +288,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					Logger.Log("No target found for strangifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No target found for strangifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
 				}
 				else
 				{

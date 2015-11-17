@@ -28,12 +28,12 @@ namespace CustomSteamTools.Classifieds
 			url += "&australium=" + (australium ? 1 : -1).ToString();
 			url += "&killstreak_tier=0";
 			
-			Logger.Log("Downloading listings from " + url.SubstringMax(100) + "...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Downloading listings from " + url.SubstringMax(100) + "...", ConsoleColor.DarkGray);
 			WebClient client = new WebClient();
 			string html = client.DownloadString(url);
 			//Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
-			Logger.Log("  Scraping listings from HTML...", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Scraping listings from HTML...", ConsoleColor.DarkGray);
 			HtmlDocument doc = new HtmlDocument();
 			doc.LoadHtml(html);
 
@@ -47,7 +47,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (sellOrderRoot == null)
 			{
-				Logger.Log("  No sell orders found.", ConsoleColor.DarkGray);
+				LoggerOld.Log("  No sell orders found.", ConsoleColor.DarkGray);
 			}
 			else
 			{
@@ -96,13 +96,13 @@ namespace CustomSteamTools.Classifieds
 					{
 						if (!UserHasItem(listing.ListerSteamID64, instance))
 						{
-							Logger.Log("  Dead listing. Skipping.", ConsoleColor.DarkGray);
+							LoggerOld.Log("  Dead listing. Skipping.", ConsoleColor.DarkGray);
 						}
 					}
 
 					results.Add(listing);
 				}
-				Logger.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
+				LoggerOld.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
 			}
 			#endregion sells
 
@@ -112,7 +112,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (buyOrderRoot == null)
 			{
-				Logger.Log("  No buy orders found.", ConsoleColor.DarkGray);
+				LoggerOld.Log("  No buy orders found.", ConsoleColor.DarkGray);
 			}
 			else
 			{
@@ -171,7 +171,7 @@ namespace CustomSteamTools.Classifieds
 		{
 			if (SteamBackpackDown)
 			{
-				Logger.Log("  Steam API is down; skipping verify.", ConsoleColor.DarkGray);
+				LoggerOld.Log("  Steam API is down; skipping verify.", ConsoleColor.DarkGray);
 				return true;
 			}
 
@@ -186,7 +186,7 @@ namespace CustomSteamTools.Classifieds
 				{
 					if (!DataManager.LoadOtherBackpack(steamID))
 					{
-						Logger.Log("  Steam API is down. Disabling verify until refresh command.", ConsoleColor.Red);
+						LoggerOld.Log("  Steam API is down. Disabling verify until refresh command.", ConsoleColor.Red);
 						SteamBackpackDown = true;
 						return true;
 					}
@@ -230,7 +230,7 @@ namespace CustomSteamTools.Classifieds
 					i.CustomName.ToLower() != inst.CustomName.ToLower())
 					continue;
 
-				Logger.Log("  Item verified!", ConsoleColor.DarkGray);
+				LoggerOld.Log("  Item verified!", ConsoleColor.DarkGray);
 				return true;
 			}
 

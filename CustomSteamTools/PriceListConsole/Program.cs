@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools;
+using CustomSteamTools.Commands;
 using CustomSteamTools.Utils;
 
 namespace BackpackTFConsole
@@ -15,15 +16,15 @@ namespace BackpackTFConsole
 	{
 		public static readonly string logFolder = Environment.GetEnvironmentVariable("TEMP") +
 			"\\BACKPACK.TF-PRICELIST\\logs\\";
-        public static readonly string logFile = logFolder + "log-" + 
+		public static readonly string logFile = logFolder + "log-" + 
 			DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss") + ".txt";
 
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 255, 149, 63); // orange
-			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 82, 113, 165); // "vintage" blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 166, 40, 40); // "collector's" red
+			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 255, 149, 63); // strange orange
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 82, 113, 165); // vintage blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 166, 40, 40); // collector's red
 			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 120, 70, 165); // unusual purple
 			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 60, 255, 190); // haunted teal
 
@@ -35,13 +36,13 @@ namespace BackpackTFConsole
 				Directory.CreateDirectory(logFolder);
 			}
 
-			Logger.Logging += DebugLog;
-			Logger.LoggingComplex += DebugLogComplex;
-			Logger.Prompting = DebugPrompt;
+			LoggerOld.Logging += DebugLog;
+			LoggerOld.LoggingComplex += DebugLogComplex;
+			LoggerOld.Prompting = DebugPrompt;
 
-			Logger.Log("Starting program...");
+			LoggerOld.Log("Starting program...");
 
-			CommandHandler.PreCommand += PreCommand;
+			CommandHandler.Instance.OnPreCommand += PreCommand;
 
 			DataManager.AutoSetup(true, true);
 
@@ -49,7 +50,7 @@ namespace BackpackTFConsole
 			while (input.ToLower() != "exit")
 			{
 				Console.WriteLine();
-				input = Logger.GetInput("datamgr> ", false, true);
+				input = LoggerOld.GetInput("datamgr> ", false, true);
 
 				if (input.ToLower() != "exit")
 				{
@@ -58,41 +59,41 @@ namespace BackpackTFConsole
 			}
 		}
 
-		private static bool PreCommand(string commandName, List<string> args)
+		private static bool PreCommand(object sender, PreCommandArgs e)
 		{
-			if (commandName.ToLower() == "bp")
+			if (e.Name.ToLower() == "bp")
 			{
-				if (args.Count == 0)
+				if (e.Args.Count == 0)
 				{
-					args.Add(DataManager.SEALEDINTERFACE_STEAMID);
+					e.Args.Add(DataManager.SEALEDINTERFACE_STEAMID);
 					return false;
 				}
 
-				if (args[0].ToLower() == "me")
+				if (e.Args[0].ToLower() == "me")
 				{
-					args[0] = DataManager.SEALEDINTERFACE_STEAMID;
+					e.Args[0] = DataManager.SEALEDINTERFACE_STEAMID;
 				}
 			}
-			if (commandName.ToLower() == "deals")
+			if (e.Name.ToLower() == "deals")
 			{
-				if (args.Count == 0)
+				if (e.Args.Count == 0)
 				{
-					args.Insert(0, DataManager.SEALEDINTERFACE_STEAMID);
+					e.Args.Insert(0, DataManager.SEALEDINTERFACE_STEAMID);
 					return false;
 				}
 
-				if (args[0].ToLower() == "me")
+				if (e.Args[0].ToLower() == "me")
 				{
-					args[0] = DataManager.SEALEDINTERFACE_STEAMID;
+					e.Args[0] = DataManager.SEALEDINTERFACE_STEAMID;
 				}
 			}
-			if (commandName.ToLower() == "weapons")
+			if (e.Name.ToLower() == "weapons")
 			{
-				for (int i = 0; i < args.Count; i++)
+				for (int i = 0; i < e.Args.Count; i++)
 				{
-					if (args[i].ToLower() == "exclude=me")
+					if (e.Args[i].ToLower() == "exclude=me")
 					{
-						args[i] = "exclude=" + DataManager.SEALEDINTERFACE_STEAMID;
+						e.Args[i] = "exclude=" + DataManager.SEALEDINTERFACE_STEAMID;
 						break;
 					}
 				}

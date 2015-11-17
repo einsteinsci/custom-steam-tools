@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Classifieds;
+using CustomSteamTools.Commands;
 using CustomSteamTools.Items;
 using CustomSteamTools.Json.BackpackDataJson;
 using CustomSteamTools.Json.ItemDataJson;
@@ -21,7 +22,7 @@ namespace CustomSteamTools
 {
 	// the "main" class in this DLL
 	public static class DataManager
-    {
+	{
 		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
 		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
 		public const string TF2_APP_ID = "440";
@@ -42,8 +43,8 @@ namespace CustomSteamTools
 		{ get; set; }
 		public static string MyBackpackDataFilename
 		{ get; set; }
-		public static string MarketPricesFilename // Downloaded from an official bp.tf API, not scraped off
-		{ get; set; }								 //   steam community market
+		public static string MarketPricesFilename	// Downloaded from an official bp.tf API, not scraped off
+		{ get; set; }								//   steam community market
 
 		public static string CacheLocation
 		{ get; set; }
@@ -123,7 +124,7 @@ namespace CustomSteamTools
 			if (!Directory.Exists(cacheLocation))
 			{
 				Directory.CreateDirectory(cacheLocation);
-				Logger.Log("Created Cache at " + cacheLocation);
+				LoggerOld.Log("Created Cache at " + cacheLocation);
 			}
 
 			CacheLocation = cacheLocation;
@@ -131,6 +132,8 @@ namespace CustomSteamTools
 			SchemaFilename = itemFilename;
 			MyBackpackDataFilename = backpackFilename;
 			MarketPricesFilename = marketFilename;
+
+			CommandHandler.Initialize();
 		}
 
 		public static string GetBackbackUrl(string steamID64)
@@ -158,29 +161,29 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				Logger.Log("Downloading item schema...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Downloading item schema...", ConsoleColor.DarkGray);
 				try
 				{
 					SchemaCache = Util.DownloadString(SchemaUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					Logger.Log("  Download failed.", ConsoleColor.Red);
+					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
 					failed = true;
 				}
 			}
 
 			if (SchemaCache == null)
 			{
-				Logger.Log("Retrieving item schema cache...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Retrieving item schema cache...", ConsoleColor.DarkGray);
 				try
 				{
 					SchemaCache = File.ReadAllText(CacheLocation + SchemaFilename, Encoding.UTF8);
-					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
@@ -215,7 +218,7 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				Logger.Log("Downloading backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Downloading backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
 				try
 				{
 					MyBackpackCache = Util.DownloadString(GetBackbackUrl(SEALEDINTERFACE_STEAMID), 
@@ -223,22 +226,22 @@ namespace CustomSteamTools
 				}
 				catch (WebException)
 				{
-					Logger.Log("  Download failed.", ConsoleColor.Red);
+					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
 					failed = true;
 				}
 			}
 
 			if (MyBackpackCache == null)
 			{
-				Logger.Log("Retrieving backpack data cache...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Retrieving backpack data cache...", ConsoleColor.DarkGray);
 				try
 				{
 					MyBackpackCache = File.ReadAllText(CacheLocation + MyBackpackDataFilename, Encoding.UTF8);
-					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
@@ -273,29 +276,29 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				Logger.Log("Downloading price list...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Downloading price list...", ConsoleColor.DarkGray);
 				try
 				{
 					PricesCache = Util.DownloadString(PriceDataUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					Logger.Log("  Download failed.", ConsoleColor.Red);
+					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
 					failed = true;
 				}
 			}
 
 			if (PricesCache == null)
 			{
-				Logger.Log("Retrieving price list cache...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Retrieving price list cache...", ConsoleColor.DarkGray);
 				try
 				{
 					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename, Encoding.UTF8);
-					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
@@ -331,29 +334,29 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				Logger.Log("Downloading market price list...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Downloading market price list...", ConsoleColor.DarkGray);
 				try
 				{
 					MarketPricesCache = Util.DownloadString(MarketPricesUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					Logger.Log("  Download failed.", ConsoleColor.Red);
+					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
 					failed = true;
 				}
 			}
 
 			if (MarketPricesCache == null)
 			{
-				Logger.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
+				LoggerOld.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
 				try
 				{
 					MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename, Encoding.UTF8);
-					Logger.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
 				}
 				catch (Exception e)
 				{
-					Logger.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
 				}
 			}
 
@@ -374,7 +377,7 @@ namespace CustomSteamTools
 		{
 			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
 
-			Logger.Log("Requesting backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Requesting backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
 			string result = Util.DownloadString(GetBackbackUrl(steamID64), TIMEOUT);
 			if (result == null)
 			{
@@ -383,13 +386,13 @@ namespace CustomSteamTools
 
 			BackpackCaches.Add(steamID64, result);
 
-			Logger.Log("  Parsing backpack data...", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parsing backpack data...", ConsoleColor.DarkGray);
 			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);
 			BackpackDataRaw.Add(steamID64, json);
 
 			if (json.result.status != TF2BackpackResultJson.Status.SUCCESS)
 			{
-				Logger.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], ConsoleColor.Red);
+				LoggerOld.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], ConsoleColor.Red);
 				return false;
 			}
 
@@ -399,7 +402,7 @@ namespace CustomSteamTools
 			}
 			Backpack data = new Backpack(json, Schema);
 			BackpackData.Add(steamID64, data);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return true;
 		}
@@ -408,9 +411,9 @@ namespace CustomSteamTools
 
 		public static TF2DataJson ParseItemsJson()
 		{
-			Logger.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
 			SchemaRaw = JsonConvert.DeserializeObject<TF2DataJson>(SchemaCache);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return SchemaRaw;
 		}
@@ -429,9 +432,9 @@ namespace CustomSteamTools
 
 		public static BpTfPriceDataJson ParsePricesJson()
 		{
-			Logger.Log("Parsing backpack.tf price data...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Parsing backpack.tf price data...", ConsoleColor.DarkGray);
 			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
 				.prices["6"].Tradable.Craftable["0"].value;
@@ -457,9 +460,9 @@ namespace CustomSteamTools
 
 		public static TF2BackpackJson ParseBackpackJson()
 		{
-			Logger.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
 			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return MyBackpackDataRaw;
 		}
@@ -482,9 +485,9 @@ namespace CustomSteamTools
 
 		public static MarketPriceDataJson ParseMarketJson()
 		{
-			Logger.Log("Parsing market price data...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Parsing market price data...", ConsoleColor.DarkGray);
 			MarketPricesRaw = JsonConvert.DeserializeObject<MarketPriceDataJson>(MarketPricesCache);
-			Logger.Log("  Parse complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
 
 			return MarketPricesRaw;
 		}
@@ -535,7 +538,7 @@ namespace CustomSteamTools
 				ParsePricesJson();
 			}
 
-			Logger.Log("Fixing haunted items...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Fixing haunted items...", ConsoleColor.DarkGray);
 			foreach (Item i in Schema.Items)
 			{
 				List<ItemPricing> prices = PriceData.GetAllPriceData(i);
@@ -545,12 +548,12 @@ namespace CustomSteamTools
 					i.HasHauntedVersion = true;
 				}
 			}
-			Logger.Log("  Fix complete.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Fix complete.", ConsoleColor.DarkGray);
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)
 		{
-			CommandHandler.RunCommand(cmdName, args);
+			CommandHandler.Instance.RunCommand(cmdName, args);
 		}
 		public static void RunCommand(string cmdAndArgs)
 		{

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CustomSteamTools.Utils
 {
-	public delegate void LogEvent(object sender, LogEventArgs e);
+	public delegate void LogEventOld(object sender, LogEventArgs e);
 
 	public class LogEventArgs : EventArgs
 	{
@@ -28,7 +28,7 @@ namespace CustomSteamTools.Utils
 		}
 	}
 
-	public delegate void LogComplexEvent(object sender, LogComplexEventArgs e);
+	public delegate void LogComplexEventOld(object sender, LogComplexEventArgs e);
 	public class LogComplexEventArgs : EventArgs
 	{
 		public List<object> Arguments
@@ -62,7 +62,7 @@ namespace CustomSteamTools.Utils
 		}
 	}
 
-	public delegate string PromptEvent(object sender, PromptEventArgs e);
+	public delegate string PromptEventOld(object sender, PromptEventArgs e);
 	public class PromptEventArgs : EventArgs
 	{
 		public string Prompt
@@ -91,12 +91,12 @@ namespace CustomSteamTools.Utils
 		}
 	}
 
-	public static class Logger
+	public static class LoggerOld
 	{
-		public static event LogEvent Logging;
-		public static event LogComplexEvent LoggingComplex;
+		public static event LogEventOld Logging;
+		public static event LogComplexEventOld LoggingComplex;
 
-		public static PromptEvent Prompting
+		public static PromptEventOld Prompting
 		{ get; set; }
 
 		public static void Log(string message, ConsoleColor? color = ConsoleColor.Gray,

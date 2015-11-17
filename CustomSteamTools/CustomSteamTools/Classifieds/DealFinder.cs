@@ -71,7 +71,7 @@ namespace CustomSteamTools.Classifieds
 						Price buf;
 						if (!Price.TryParse(smin, out buf))
 						{
-							Logger.Log("Invalid minProfit: " + smin, ConsoleColor.Red);
+							LoggerOld.Log("Invalid minProfit: " + smin, ConsoleColor.Red);
 							return null;
 						}
 						minProfit = buf;
@@ -96,7 +96,7 @@ namespace CustomSteamTools.Classifieds
 					filtersListString += f + " ";
 				}
 			}
-			Logger.Log("Filters: " + filtersListString, ConsoleColor.White);
+			LoggerOld.Log("Filters: " + filtersListString, ConsoleColor.White);
 
 			if (allowedSlots.Count == 0)
 			{
@@ -118,8 +118,8 @@ namespace CustomSteamTools.Classifieds
 			}
 			Price min = GetMinPrice(max.Value);
 
-			Logger.Log("Price range: " + min.ToString() + " - " + max.ToString(), ConsoleColor.White);
-			Logger.AddLine();
+			LoggerOld.Log("Price range: " + min.ToString() + " - " + max.ToString(), ConsoleColor.White);
+			LoggerOld.AddLine();
 
 			List<ItemPricing> inRange = FindPricingsInRange(min, max.Value, 
 				allowedQualities, allowedSlots, craftable, halloween, botkiller);
@@ -137,7 +137,7 @@ namespace CustomSteamTools.Classifieds
 			{
 				ItemSale set = new ItemSale(p);
 
-				Logger.Log("Searching classifieds for " + 
+				LoggerOld.Log("Searching classifieds for " + 
 					p.ToUnpricedString() + "...", ConsoleColor.DarkGray);
 				List<ClassifiedsListing> buf = ClassifiedsScraper.GetClassifieds(
 					p.Item, p.Quality, verify, p.Craftable, p.Tradable, p.Australium);
@@ -174,7 +174,7 @@ namespace CustomSteamTools.Classifieds
 		{
 			List<ItemPricing> results = new List<ItemPricing>();
 
-			Logger.Log("Finding valid items in price range...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Finding valid items in price range...", ConsoleColor.DarkGray);
 			foreach (ItemPricing p in DataManager.PriceData.Prices) // get ALL the datas!
 			{
 				if (p.PriceLow < low || p.PriceHigh > high)
@@ -218,7 +218,7 @@ namespace CustomSteamTools.Classifieds
 
 		public static Price? GetMaxPrice(string id = DataManager.SEALEDINTERFACE_STEAMID)
 		{
-			Logger.Log("Opening backpack of #" + id + "...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Opening backpack of #" + id + "...", ConsoleColor.DarkGray);
 			Backpack backpack = null;
 			if (id == DataManager.SEALEDINTERFACE_STEAMID ||
 				id == null)
@@ -246,7 +246,7 @@ namespace CustomSteamTools.Classifieds
 					totalPure += i.Item.GetCurrencyPrice();
 				}
 			}
-			Logger.Log("Found " + totalPure + " pure.");
+			LoggerOld.Log("Found " + totalPure + " pure.");
 
 			return totalPure;
 		}
@@ -266,7 +266,7 @@ namespace CustomSteamTools.Classifieds
 
 			List<ItemSale> results = new List<ItemSale>();
 
-			Logger.Log("Trimming deals...");
+			LoggerOld.Log("Trimming deals...");
 			foreach (ItemSale sale in relevant)
 			{
 				ClassifiedsListing highestBuyer = sale.HighestBuyer;
@@ -284,7 +284,7 @@ namespace CustomSteamTools.Classifieds
 
 				if (profit.TotalRefined < 0.1)
 				{
-					Logger.Log("  No real profit seen in " + sale.Pricing.ToUnpricedString() +
+					LoggerOld.Log("  No real profit seen in " + sale.Pricing.ToUnpricedString() +
 						". Excluded", ConsoleColor.Yellow);
 					continue;
 				}
@@ -301,14 +301,14 @@ namespace CustomSteamTools.Classifieds
 
 				if (totalBelow >= PRICE_DROPPING_COUNT)
 				{
-					Logger.Log("  The price is dropping for " + sale.Pricing.ToUnpricedString() + 
+					LoggerOld.Log("  The price is dropping for " + sale.Pricing.ToUnpricedString() + 
 						". Excluded.", ConsoleColor.Yellow);
 					continue;
 				}
 
 				if (minProfit != null && profit < minProfit.Value)
 				{
-					Logger.Log("  Profit (" + profit.ToString() + ") does not meet specified threshold of " + 
+					LoggerOld.Log("  Profit (" + profit.ToString() + ") does not meet specified threshold of " + 
 						minProfit.Value.ToString() + ". Excluded.", ConsoleColor.Yellow);
 					continue;
 				}

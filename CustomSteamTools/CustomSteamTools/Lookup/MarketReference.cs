@@ -21,7 +21,7 @@ namespace CustomSteamTools.Lookup
 
 			if (json.response.success == 0)
 			{
-				Logger.Log("Market price data failed: " + json.response.message, ConsoleColor.Red);
+				LoggerOld.Log("Market price data failed: " + json.response.message, ConsoleColor.Red);
 				return;
 			}
 

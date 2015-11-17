@@ -108,15 +108,23 @@ namespace CustomSteamTools.Classifieds
 				PriceIndex = int.Parse(priceIndex);
 			}
 
-			PriceLow = new Price(price, currency);
-
-			if (priceHigh == 0)
+			if (items.Contains(Price.RefinedMetal) && quality == Quality.Unique)
 			{
-				PriceHigh = PriceLow;
+				PriceLow = Price.OneRef;
+				PriceHigh = Price.OneRef;
 			}
 			else
 			{
-				PriceHigh = new Price(priceHigh, currency);
+				PriceLow = new Price(price, currency);
+
+				if (priceHigh == 0)
+				{
+					PriceHigh = PriceLow;
+				}
+				else
+				{
+					PriceHigh = new Price(priceHigh, currency);
+				}
 			}
 		}
 

@@ -9,19 +9,21 @@ using CustomSteamTools.Items;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Market;
 using CustomSteamTools.Classifieds;
+using System.IO;
+using CustomSteamTools.Commands;
 
 namespace CustomSteamTools
 {
-	public static class CommandHandler
+	[Obsolete("Use CommandHandler instead")]
+	public static class CommandHandlerOld
 	{
 		public delegate void Command(List<string> args);
-		public delegate bool PreCommandHandler(string name, List<string> args);
 
 		static Dictionary<string, Command> _commands;
 
-		public static event PreCommandHandler PreCommand;
+		public static event CommandHandler.PreCommandHandler PreCommand;
 
-		static CommandHandler()
+		static CommandHandlerOld()
 		{
 			_commands = new Dictionary<string, Command>();
 
@@ -44,18 +46,18 @@ namespace CustomSteamTools
 			List<string> largs = args.ToList();
 			if (PreCommand != null)
 			{
-				bool cancel = PreCommand(command, largs);
+				bool cancel = PreCommand(command, new PreCommandArgs(command, largs));
 
 				if (cancel)
 				{
-					Logger.Log("Command canceled.", ConsoleColor.Yellow);
+					LoggerOld.Log("Command canceled.", ConsoleColor.Yellow);
 					return;
 				}
 			}
 
 			if (!_commands.Keys.Contains(command.ToLower()))
 			{
-				Logger.Log("Command not found.", ConsoleColor.Red);
+				LoggerOld.Log("Command not found.", ConsoleColor.Red);
 				return;
 			}
 
@@ -68,7 +70,7 @@ namespace CustomSteamTools
 		{
 			if (args.Count == 0)
 			{
-				Logger.Log("No item specified", ConsoleColor.Red);
+				LoggerOld.Log("No item specified", ConsoleColor.Red);
 			}
 
 			string itemName = "";
@@ -77,27 +79,26 @@ namespace CustomSteamTools
 				itemName += s + " ";
 			}
 
-			Item item = SearchItem(itemName.Trim());
+			Item item = CmdInfo.SearchItem(itemName.Trim());
 
 			if (item == null)
 			{
 				return;
 			}
-
-			Logger.AddLine();
-			Logger.Log(item.Name + " (#" + item.ID.ToString() + ")", ConsoleColor.White);
+			
+			LoggerOld.Log(item.Name + " (#" + item.ID.ToString() + ")", ConsoleColor.White);
 
 			List<ItemPricing> itemPricings = DataManager.PriceData.GetAllPriceData(item);
 
 			if (itemPricings.Count == 0)
 			{
-				Logger.Log("  No price data found for " + item.Name, ConsoleColor.Red);
+				LoggerOld.Log("  No price data found for " + item.Name, ConsoleColor.Red);
 				return;
 			}
 
 			if (itemPricings.All((p) => !p.Tradable)) // none are tradable
 			{
-				Logger.Log("  Item not tradable.", ConsoleColor.Red);
+				LoggerOld.Log("  Item not tradable.", ConsoleColor.Red);
 				return;
 			}
 
@@ -132,22 +133,22 @@ namespace CustomSteamTools
 			{
 				foreach (ItemPricing p in uniques)
 				{
-					Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), ConsoleColor.Yellow);
+					LoggerOld.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), ConsoleColor.Yellow);
 				}
 			}
 			else
 			{
-				Logger.Log("  Enter an ID for crate/strangifier information.", ConsoleColor.White);
+				LoggerOld.Log("  Enter an ID for crate/strangifier information.", ConsoleColor.White);
 			}
 
 			foreach (ItemPricing p in others)
 			{
-				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), p.Quality.GetColor());
+				LoggerOld.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString(), p.Quality.GetColor());
 			}
 
 			if (unusuals.Count > 0)
 			{
-				Logger.Log("  Enter 'U' to list unusuals.", ConsoleColor.White);
+				LoggerOld.Log("  Enter 'U' to list unusuals.", ConsoleColor.White);
 				takeInput = true;
 			}
 
@@ -156,11 +157,11 @@ namespace CustomSteamTools
 				return;
 			}
 
-			string input = Logger.GetInput("  Press Enter to continue> ", false, true);
+			string input = LoggerOld.GetInput("  Press Enter to continue> ", false, true);
 
 			if (input.ToLower() == "esc")
 			{
-				Logger.Log("Canceled.");
+				LoggerOld.Log("Canceled.");
 				return;
 			}
 			else if (input.ToLower() == "u")
@@ -168,7 +169,7 @@ namespace CustomSteamTools
 				foreach (ItemPricing p in unusuals)
 				{
 					UnusualEffect fx = DataManager.Schema.Unusuals.First((ue) => ue.ID == p.PriceIndex);
-					Logger.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString(), ConsoleColor.DarkMagenta);
+					LoggerOld.Log("  " + fx.Name + " (#" + fx.ID + "): " + p.GetPriceString(), ConsoleColor.DarkMagenta);
 				}
 			}
 			else
@@ -179,11 +180,11 @@ namespace CustomSteamTools
 					ItemPricing p = uniques.FirstOrDefault((_p) => _p.PriceIndex == pid);
 					if (p == null)
 					{
-						Logger.Log("  No " + item.Name + " found with PriceIndex " + pid.ToString(), ConsoleColor.Red);
+						LoggerOld.Log("  No " + item.Name + " found with PriceIndex " + pid.ToString(), ConsoleColor.Red);
 						return;
 					}
 
-					Logger.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.GetPriceString());
+					LoggerOld.Log("  " + item.Name + " #" + pid.ToString() + ": " + p.GetPriceString());
 				}
 			}
 		}
@@ -194,7 +195,7 @@ namespace CustomSteamTools
 		{
 			if (args.Count == 0)
 			{
-				Logger.Log("No item specified.", ConsoleColor.Red);
+				LoggerOld.Log("No item specified.", ConsoleColor.Red);
 				return;
 			}
 
@@ -206,7 +207,7 @@ namespace CustomSteamTools
 
 				if (args.Count == 0)
 				{
-					Logger.Log("No item specified.", ConsoleColor.Red);
+					LoggerOld.Log("No item specified.", ConsoleColor.Red);
 					return;
 				}
 			}
@@ -214,13 +215,13 @@ namespace CustomSteamTools
 			string query = string.Join(" ", args);
 			query = query.Trim();
 
-			Item item = SearchItem(query);
+			Item item = CmdInfo.SearchItem(query);
 			if (item == null)
 			{
 				return;
 			}
 
-			Logger.Log("Item: " + item.Name, ConsoleColor.White);
+			LoggerOld.Log("Item: " + item.Name, ConsoleColor.White);
 
 			List<ItemPricing> relatedPricings = DataManager.PriceData.GetAllPriceData(item);
 			Quality _testQ = relatedPricings.First().Quality;
@@ -228,7 +229,7 @@ namespace CustomSteamTools
 			Quality quality = _testQ;
 			if (!relatedPricings.All((p) => p.Quality == _testQ))
 			{
-				string sQuality = Logger.GetInput("Quality? ");
+				string sQuality = LoggerOld.GetInput("Quality? ");
 				quality = ItemQualities.Parse(sQuality);
 			}
 
@@ -238,14 +239,14 @@ namespace CustomSteamTools
 				australium = null;
 				while (australium == null)
 				{
-					string sA = Logger.GetInput("Australium? ");
+					string sA = LoggerOld.GetInput("Australium? ");
 					try
 					{
 						australium = Util.ParseAdvancedBool(sA);
 					}
 					catch (FormatException)
 					{
-						Logger.Log("  Invalid input: " + sA);
+						LoggerOld.Log("  Invalid input: " + sA);
 					}
 				}
 			}
@@ -259,14 +260,14 @@ namespace CustomSteamTools
 					craftable = null;
 					while (craftable == null)
 					{
-						string sCr = Logger.GetInput("Craftable? ");
+						string sCr = LoggerOld.GetInput("Craftable? ");
 						try
 						{
 							craftable = Util.ParseAdvancedBool(sCr);
 						}
 						catch (FormatException)
 						{
-							Logger.Log("  Invalid input: " + sCr);
+							LoggerOld.Log("  Invalid input: " + sCr);
 						}
 					}
 				}
@@ -276,14 +277,14 @@ namespace CustomSteamTools
 					tradable = null;
 					while (tradable == null)
 					{
-						string sTr = Logger.GetInput("Tradable? ");
+						string sTr = LoggerOld.GetInput("Tradable? ");
 						try
 						{
 							tradable = Util.ParseAdvancedBool(sTr);
 						}
 						catch (FormatException)
 						{
-							Logger.Log("  Invalid input: " + sTr);
+							LoggerOld.Log("  Invalid input: " + sTr);
 						}
 					}
 				}
@@ -303,14 +304,14 @@ namespace CustomSteamTools
 				(tradable.Value ? "" : "Non-Tradable ") +
 				(australium.Value ? "Australium " : "") + item.ImproperName;
 
-            Logger.Log("Getting classifieds for " + searchedItemInfo + "...");
+			LoggerOld.Log("Getting classifieds for " + searchedItemInfo + "...");
 			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
 				item, quality, verify, craftable.Value, tradable.Value, australium.Value);
 			classifieds.RemoveAll((c) => c.OrderType != orderType);
 
 			if (classifieds == null || classifieds.Count == 0)
 			{
-				Logger.Log("No classifieds found for " + searchedItemInfo, ConsoleColor.Red);
+				LoggerOld.Log("No classifieds found for " + searchedItemInfo, ConsoleColor.Red);
 				return;
 			}
 
@@ -329,7 +330,7 @@ namespace CustomSteamTools
 					ConsoleColor.Gray, c.Comment == null ? "" : ": " + c.Comment.SubstringMax(100)
 				};
 
-				Logger.LogComplex(logLine);
+				LoggerOld.LogComplex(logLine);
 
 				if (orderType == OrderType.Buy)
 				{
@@ -378,7 +379,7 @@ namespace CustomSteamTools
 			}
 			avg /= (double)validPrices.Count;
 			Price estimate = new Price(0, avg);
-			Logger.LogComplex(ConsoleColor.Green, "Price: ", ConsoleColor.White, estimate.ToString());
+			LoggerOld.LogComplex(ConsoleColor.Green, "Price: ", ConsoleColor.White, estimate.ToString());
 
 			Price diff = bestPrice.Value - estimate;
 			bool good = true;
@@ -393,7 +394,7 @@ namespace CustomSteamTools
 			}
 
 			ConsoleColor goodbadcolor = good ? ConsoleColor.DarkGreen : ConsoleColor.Red;
-			Logger.LogComplex(ConsoleColor.White, "Best Deal: ",
+			LoggerOld.LogComplex(ConsoleColor.White, "Best Deal: ",
 				goodbadcolor, bestPrice.ToString(), ConsoleColor.Gray, " from ", 
 				ConsoleColor.White, bestLister,
 				goodbadcolor, " (" + diff.ToString() + (good ? " better)" : " worse)"));
@@ -415,7 +416,7 @@ namespace CustomSteamTools
 		{
 			if (args.Count == 0)
 			{
-				Logger.Log("No skin name given.", ConsoleColor.Red);
+				LoggerOld.Log("No skin name given.", ConsoleColor.Red);
 				return;
 			}
 
@@ -434,7 +435,7 @@ namespace CustomSteamTools
 			#region search
 			if (skin == null)
 			{
-				Logger.Log("Searching skins...");
+				LoggerOld.Log("Searching skins...");
 
 				List<Skin> possibleSkins = new List<Skin>();
 				foreach (Skin s in GunMettleSkins.Skins)
@@ -442,13 +443,13 @@ namespace CustomSteamTools
 					if (s.Name.ToLower().Contains(query.ToLower()))
 					{
 						possibleSkins.Add(s);
-						Logger.Log("  " + possibleSkins.Count.ToString() + ": " + s.Name, ConsoleColor.White);
+						LoggerOld.Log("  " + possibleSkins.Count.ToString() + ": " + s.Name, ConsoleColor.White);
 					}
 				}
 
 				if (possibleSkins.Count == 0)
 				{
-					Logger.Log("No skins found matching '" + query + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No skins found matching '" + query + "'.", ConsoleColor.Red);
 					return;
 				}
 
@@ -460,10 +461,10 @@ namespace CustomSteamTools
 						break;
 					}
 
-					string sint = Logger.GetInput("Enter Selection >");
+					string sint = LoggerOld.GetInput("Enter Selection >");
 					if (sint.ToLower() == "esc")
 					{
-						Logger.Log("Search Cancelled.");
+						LoggerOld.Log("Search Cancelled.");
 						return;
 					}
 
@@ -475,7 +476,7 @@ namespace CustomSteamTools
 					}
 					else
 					{
-						Logger.Log("Invalid choice: " + sint + ". Try again.", ConsoleColor.Red);
+						LoggerOld.Log("Invalid choice: " + sint + ". Try again.", ConsoleColor.Red);
 					}
 				}
 			}
@@ -493,10 +494,10 @@ namespace CustomSteamTools
 				}
 			}
 
-			Logger.Log("Prices found for '" + skin.Name + "':", ConsoleColor.White);
+			LoggerOld.Log("Prices found for '" + skin.Name + "':", ConsoleColor.White);
 			foreach (MarketPricing p in prices)
 			{
-				Logger.Log("  " + p.Wear.Value.ToReadableString() + ": " + p.Price.ToString());
+				LoggerOld.Log("  " + p.Wear.Value.ToReadableString() + ": " + p.Price.ToString());
 			}
 		}
 
@@ -505,19 +506,19 @@ namespace CustomSteamTools
 		{
 			if (args.Count < 2)
 			{
-				Logger.Log("Missing arguments: priceMin, priceMax", ConsoleColor.Red);
+				LoggerOld.Log("Missing arguments: priceMin, priceMax", ConsoleColor.Red);
 				return;
 			}
 
 			Price min, max;
 			if (!Price.TryParse(args[0], out min))
 			{
-				Logger.Log("Invalid priceMin: " + args[0], ConsoleColor.Red);
+				LoggerOld.Log("Invalid priceMin: " + args[0], ConsoleColor.Red);
 				return;
 			}
 			if (!Price.TryParse(args[1], out max))
 			{
-				Logger.Log("Invalid priceMax: " + args[1], ConsoleColor.Red);
+				LoggerOld.Log("Invalid priceMax: " + args[1], ConsoleColor.Red);
 				return;
 			}
 
@@ -613,7 +614,7 @@ namespace CustomSteamTools
 					res += "Non-halloween";
 				}
 
-				Logger.Log(res, ConsoleColor.White);
+				LoggerOld.Log(res, ConsoleColor.White);
 			}
 
 			List<ItemPricing> results = new List<ItemPricing>();
@@ -665,19 +666,19 @@ namespace CustomSteamTools
 				}
 			}
 
-			Logger.Log("Items in price range " + min.ToString() + " to " + max.ToString() + ": ", ConsoleColor.White);
+			LoggerOld.Log("Items in price range " + min.ToString() + " to " + max.ToString() + ": ", ConsoleColor.White);
 			foreach (ItemPricing p in results)
 			{
 				if (p.Quality == Quality.Unusual)
 				{
 					UnusualEffect fx = DataManager.Schema.Unusuals.First((u) => u.ID == p.PriceIndex);
-					Logger.Log("  " + p.CompiledTitleName + " (" + fx.Name + "): " + p.GetPriceString());
+					LoggerOld.Log("  " + p.CompiledTitleName + " (" + fx.Name + "): " + p.GetPriceString());
 					continue;
 				}
 
-				Logger.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
+				LoggerOld.Log("  " + p.CompiledTitleName + ": " + p.GetPriceString());
 			}
-			Logger.Log(results.Count.ToString() + " items found.");
+			LoggerOld.Log(results.Count.ToString() + " items found.");
 		}
 
 		// ks {itemname}
@@ -685,12 +686,12 @@ namespace CustomSteamTools
 		{
 			if (args.Count == 0)
 			{
-				Logger.Log("No item name provided.", ConsoleColor.Red);
+				LoggerOld.Log("No item name provided.", ConsoleColor.Red);
 				return;
 			}
 
 			string query = string.Join(" ", args);
-			Item item = SearchItem(query);
+			Item item = CmdInfo.SearchItem(query);
 			if (item == null)
 			{
 				// logging already done
@@ -699,33 +700,33 @@ namespace CustomSteamTools
 
 			if (item.PlainSlot != ItemSlotPlain.Weapon)
 			{
-				Logger.Log("Item must be a weapon.", ConsoleColor.Red);
+				LoggerOld.Log("Item must be a weapon.", ConsoleColor.Red);
 				return;
 			}
 
-			Logger.Log("Item: " + item.Name, ConsoleColor.White);
+			LoggerOld.Log("Item: " + item.Name, ConsoleColor.White);
 
 			Quality? q = null;
 			while (q == null)
 			{
-				string s = Logger.GetInput("Quality? ");
+				string s = LoggerOld.GetInput("Quality? ");
 				q = ItemQualities.ParseNullable(s);
 
 				if (q == null)
 				{
-					Logger.Log("  Invalid Quality: " + s, ConsoleColor.Red);
+					LoggerOld.Log("  Invalid Quality: " + s, ConsoleColor.Red);
 				}
 			}
 
 			KillstreakType ks = KillstreakType.None;
 			while (ks == KillstreakType.None)
 			{
-				string s = Logger.GetInput("Killstreak type (basic/specialized/professional)? ");
+				string s = LoggerOld.GetInput("Killstreak type (basic/specialized/professional)? ");
 				ks = KillstreakTypes.Parse(s);
 
 				if (ks == KillstreakType.None)
 				{
-					Logger.Log("  Invalid Killstreak type: " + s, ConsoleColor.Red);
+					LoggerOld.Log("  Invalid Killstreak type: " + s, ConsoleColor.Red);
 				}
 			}
 
@@ -752,11 +753,11 @@ namespace CustomSteamTools
 			}
 
 			string qstr = q.Value.ToReadableString();
-			Logger.Log("Pricings for " + qstr + (qstr != "" ? " " : "") +
+			LoggerOld.Log("Pricings for " + qstr + (qstr != "" ? " " : "") +
 				ks.ToReadableString() + " " + item.Name + ":", ConsoleColor.White);
 			foreach (MarketPricing p in pricings)
 			{
-				Logger.Log("  " + p.MarketHash + ": " + p.Price.ToString());
+				LoggerOld.Log("  " + p.MarketHash + ": " + p.Price.ToString());
 			}
 		}
 
@@ -768,7 +769,7 @@ namespace CustomSteamTools
 
 			if (args.Count == 0)
 			{
-				Logger.Log("No player specified.", ConsoleColor.Red);
+				LoggerOld.Log("No player specified.", ConsoleColor.Red);
 				return;
 			}
 			
@@ -802,7 +803,7 @@ namespace CustomSteamTools
 				}
 			}
 			
-			Logger.Log("Backpack for user " + (id == DataManager.SEALEDINTERFACE_STEAMID ? 
+			LoggerOld.Log("Backpack for user " + (id == DataManager.SEALEDINTERFACE_STEAMID ? 
 				"'sealed interface'" : "#" + id) + " (" +
 				backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 
@@ -819,7 +820,7 @@ namespace CustomSteamTools
 				{
 					if (item.Item.PlainSlot != ItemSlotPlain.Weapon || !skipWeapons)
 					{
-						Logger.Log("  " + item.ToFullString() + ": Not Tradable", ConsoleColor.DarkGray);
+						LoggerOld.Log("  " + item.ToFullString() + ": Not Tradable", ConsoleColor.DarkGray);
 					}
 
 					continue;
@@ -842,18 +843,18 @@ namespace CustomSteamTools
 
 					if (market != null)
 					{
-						Logger.Log("  [M] " + hash + ": " + market.Price.ToString(), item.Quality.GetColor());
+						LoggerOld.Log("  [M] " + hash + ": " + market.Price.ToString(), item.Quality.GetColor());
 						continue;
 					}
 					else
 					{
-						Logger.Log("  " + item.ToFullString() + ": Unknown", ConsoleColor.Red);
+						LoggerOld.Log("  " + item.ToFullString() + ": Unknown", ConsoleColor.Red);
 						continue;
 					}
 				}
 				else if (item.Item.IsCurrency())
 				{
-					Logger.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString(), ConsoleColor.Yellow);
+					LoggerOld.Log("  " + item.ToFullString() + ": " + item.Item.GetCurrencyPrice().ToString(), ConsoleColor.Yellow);
 					totalPure += item.Item.GetCurrencyPrice();
 				}
 				else
@@ -873,7 +874,7 @@ namespace CustomSteamTools
 						color = item.Quality.GetColor();
 					}
 
-					Logger.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), color);
+					LoggerOld.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), color);
 				}
 
 				lowNetWorth += pricing.PriceLow;
@@ -882,14 +883,14 @@ namespace CustomSteamTools
 
 			if (lowNetWorth == highNetWorth)
 			{
-				Logger.Log("Net worth: " + lowNetWorth.ToString(), ConsoleColor.White);
+				LoggerOld.Log("Net worth: " + lowNetWorth.ToString(), ConsoleColor.White);
 			}
 			else
 			{
-				Logger.Log("Net worth: " + lowNetWorth.ToString() + " - " + highNetWorth.ToString(), ConsoleColor.White);
+				LoggerOld.Log("Net worth: " + lowNetWorth.ToString() + " - " + highNetWorth.ToString(), ConsoleColor.White);
 			}
 
-			Logger.Log("Total pure: " + totalPure.ToString(), ConsoleColor.White);
+			LoggerOld.Log("Total pure: " + totalPure.ToString(), ConsoleColor.White);
 		}
 
 		// deals {steamid64} [filters...]
@@ -897,7 +898,7 @@ namespace CustomSteamTools
 		{
 			if (args.Count == 0)
 			{
-				Logger.Log("SteamID is required (64-bit form).", ConsoleColor.Red);
+				LoggerOld.Log("SteamID is required (64-bit form).", ConsoleColor.Red);
 				return;
 			}
 
@@ -905,11 +906,11 @@ namespace CustomSteamTools
 			ulong nothing;
 			if (!ulong.TryParse(steamID, out nothing))
 			{
-				Logger.Log("Invalid SteamID64: " + steamID, ConsoleColor.Red);
+				LoggerOld.Log("Invalid SteamID64: " + steamID, ConsoleColor.Red);
 				return;
 			}
 
-			Logger.Log("Searching deals for user #" + steamID + "...", ConsoleColor.White);
+			LoggerOld.Log("Searching deals for user #" + steamID + "...", ConsoleColor.White);
 			
 			List<string> filters = new List<string>();
 			for (int i = 1; i < args.Count; i++)
@@ -954,11 +955,11 @@ namespace CustomSteamTools
 
 			res.Sort((a, b) => a.Profit.TotalRefined.CompareTo(b.Profit.TotalRefined));
 
-			Logger.AddLine();
-			Logger.Log(res.Count.ToString() + " deals found:", ConsoleColor.White);
+			LoggerOld.AddLine();
+			LoggerOld.Log(res.Count.ToString() + " deals found:", ConsoleColor.White);
 			foreach (ItemSale sale in res)
 			{
-				Logger.LogComplex(sale.ToComplexOutput("  "));
+				LoggerOld.LogComplex(sale.ToComplexOutput("  "));
 			}
 
 			Console.Beep();
@@ -973,6 +974,8 @@ namespace CustomSteamTools
 			List<PlayerClass> validClasses = new List<PlayerClass>();
 			bool? specialWeapons = null;
 			Backpack excludeBp = null;
+			string excludeBpSteamID = "";
+			bool createCopyString = false;
 
 			foreach (string str in args)
 			{
@@ -998,29 +1001,40 @@ namespace CustomSteamTools
 				{
 					specialWeapons = true;
 				}
+				else if (str.ToLower() == "copy")
+				{
+					createCopyString = true;
+				}
 
 				if (str.ToLower().StartsWith("exclude="))
 				{
-					string playerID = str.Substring("exclude=".Length);
+					excludeBpSteamID = str.Substring("exclude=".Length);
 
-					if (playerID == DataManager.SEALEDINTERFACE_STEAMID)
+					if (excludeBpSteamID == DataManager.SEALEDINTERFACE_STEAMID)
 					{
 						excludeBp = DataManager.MyBackpackData;
 					}
 					else
 					{
-						bool worked = DataManager.LoadOtherBackpack(playerID);
+						bool worked = DataManager.LoadOtherBackpack(excludeBpSteamID);
 						if (!worked)
 						{
-							excludeBp = DataManager.BackpackData[playerID];
+							excludeBp = DataManager.BackpackData[excludeBpSteamID];
 						}
 					}
 				}
 			}
 
+			string copyString = "\t\tprivate static List<Weapon> _weapons = new List<Weapon>()\n" +
+				"\t\t{\n";
+			copyString += "\t\t\t#region WeaponsList\n";
+
 			List<Item> res = new List<Item>();
 			foreach (Item i in weapons)
 			{
+				if (i.DefaultQuality != Quality.Unique)
+					continue;
+
 				if (specialWeapons == true && i.IsCheapWeapon())
 					continue;
 				if (specialWeapons == false && !i.IsCheapWeapon())
@@ -1063,7 +1077,11 @@ namespace CustomSteamTools
 
 				// eliminated stuff
 				res.Add(i);
+				copyString += string.Format("\t\t\tnew Weapon({0}, \"{1}\", {2}),\n", i.ID, i.Name, 
+					i.ValidClasses.ConvertAll((c) => c.ToString().ToUpper()).ToCodeString());
 			}
+			copyString += "\t\t\t#endregion WeaponsList\n";
+			copyString += "\t\t};";
 
 			string wepsFilters = "";
 			if (validWeaponSlots.Count > 0)
@@ -1079,14 +1097,22 @@ namespace CustomSteamTools
 				classFilters += " ";
 			}
 
-			string specialFilters = "";
+			string specialFilter = "";
 			if (specialWeapons != null)
 			{
-				specialFilters = specialWeapons.Value ? "Special" : "Normal";
+				specialFilter = specialWeapons.Value ? "Special" : "Normal";
+				specialFilter += " ";
 			}
 
-			Logger.Log("Filters: " + wepsFilters + classFilters + specialFilters, ConsoleColor.White);
-			Logger.Log("Found " + res.Count + " matching weapons:", ConsoleColor.White);
+			string bpFilter = "";
+			if (excludeBp != null)
+			{
+				bpFilter = "Backpack:" + excludeBpSteamID;
+				bpFilter += " ";
+			}
+
+			LoggerOld.Log("Filters: " + wepsFilters + classFilters + specialFilter + bpFilter, ConsoleColor.White);
+			LoggerOld.Log("Found " + res.Count + " matching weapons:", ConsoleColor.White);
 
 			Price? priciestValue = null;
 			Item priciestWeapon = null;
@@ -1095,7 +1121,7 @@ namespace CustomSteamTools
 				ItemPricing p = DataManager.PriceData.GetPriceData(i);
 				string priceStr = p?.GetPriceString() ?? "UNKNOWN";
 
-				Logger.Log("  " + i.Name + ": " + priceStr);
+				LoggerOld.Log("  " + i.Name + ": " + priceStr);
 
 				if (p != null)
 				{
@@ -1112,100 +1138,18 @@ namespace CustomSteamTools
 				}
 			}
 
-			Logger.Log("Most expensive weapon: " + priciestWeapon + " at " + 
+			if (createCopyString)
+			{
+				LoggerOld.Log("Writing code snippet...", ConsoleColor.DarkGray);
+				File.WriteAllText(DataManager.CacheLocation + "temporaryStuff.txt", copyString, Encoding.ASCII);
+				LoggerOld.Log("  Code snippet complete.", ConsoleColor.DarkGray);
+			}
+
+			LoggerOld.Log("Most expensive weapon: " + priciestWeapon + " at " + 
 				priciestValue.ToString(), ConsoleColor.White);
 		}
 
 		// >> helper function
-		public static Item SearchItem(string query)
-		{
-			int id = -1;
-			bool isNum = int.TryParse(query, out id);
-
-			Item item = null;
-
-			#region lookup
-			// shortcut
-			if (query.ToLower() == "key")
-			{
-				item = DataManager.Schema.GetItem(5021);
-			}
-			else
-			{
-				foreach (Item i in DataManager.Schema.Items)
-				{
-					if (isNum)
-					{
-						if (i.ID == id)
-						{
-							item = i;
-							break;
-						}
-					}
-					else
-					{
-						if (i.Name.ToLower() == query.ToLower())
-						{
-							item = i;
-							break;
-						}
-					}
-				}
-			}
-			#endregion lookup
-
-			#region search
-			if (item == null)
-			{
-				Logger.Log("Searching items...");
-
-				List<Item> possibleItems = new List<Item>();
-				foreach (Item i in DataManager.Schema.Items)
-				{
-					if (i.Name.ToLower().Contains(query.ToLower()))
-					{
-						possibleItems.Add(i);
-						Logger.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, ConsoleColor.White);
-					}
-				}
-
-				if (possibleItems.Count == 0)
-				{
-					Logger.Log("No items found matching '" + query + "'.", ConsoleColor.Red);
-					return null;
-				}
-
-				while (item == null)
-				{
-					if (possibleItems.Count == 1)
-					{
-						item = possibleItems.First();
-						break;
-					}
-
-					string sint = Logger.GetInput("Enter selection > ");
-					if (sint.ToLower() == "esc")
-					{
-						Logger.Log("Canceled.");
-						return null;
-					}
-
-					int n = -1;
-
-					bool worked = int.TryParse(sint, out n);
-					if (worked && n > 0 && n <= possibleItems.Count)
-					{
-						item = possibleItems[n - 1];
-					}
-					else
-					{
-						Logger.Log("Invalid choice: " + sint, ConsoleColor.Red);
-					}
-				}
-			}
-			#endregion
-
-			return item;
-		}
+		
 	}
 }

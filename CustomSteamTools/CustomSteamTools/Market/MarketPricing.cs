@@ -122,7 +122,7 @@ namespace CustomSteamTools.Market
 
 			if (Wear != null)
 			{
-				Logger.Log("No skin was found for skin '" + hashPreSkin + "'.", ConsoleColor.Red);
+				LoggerOld.Log("No skin was found for skin '" + hashPreSkin + "'.", ConsoleColor.Red);
 				return true;
 			}
 			#endregion
@@ -196,7 +196,7 @@ namespace CustomSteamTools.Market
 						}
 					}
 
-					Logger.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
 					return true;
 				}
 				if (hash.EndsWith("Strangifier") || hashStart == "Strange Bacon Grease")
@@ -292,7 +292,7 @@ namespace CustomSteamTools.Market
 				}
 				else
 				{
-					Logger.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
+					LoggerOld.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
 					return true;
 				}
 			}

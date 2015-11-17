@@ -42,7 +42,7 @@ namespace CustomSteamTools.Utils
 
 		public static void Load()
 		{
-			Logger.Log("Loading settings...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Loading settings...", ConsoleColor.DarkGray);
 
 			if (!Directory.Exists(LOCATION))
 			{
@@ -59,12 +59,12 @@ namespace CustomSteamTools.Utils
 				Instance = new Settings();
 			}
 
-			Logger.Log("  Settings loaded.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Settings loaded.", ConsoleColor.DarkGray);
 		}
 
 		public static void Save()
 		{
-			Logger.Log("Saving settings...", ConsoleColor.DarkGray);
+			LoggerOld.Log("Saving settings...", ConsoleColor.DarkGray);
 			
 			if (!Directory.Exists(LOCATION))
 			{
@@ -74,7 +74,7 @@ namespace CustomSteamTools.Utils
 			string contents = JsonConvert.SerializeObject(Instance, Formatting.Indented);
 			File.WriteAllText(FILEPATH, contents);
 
-			Logger.Log("  Settings saved.", ConsoleColor.DarkGray);
+			LoggerOld.Log("  Settings saved.", ConsoleColor.DarkGray);
 		}
 
 		public Settings()

@@ -100,7 +100,7 @@ namespace CustomSteamTools.Lookup
 						s_ids += l.ToString() + " ";
 					}
 					s_ids += "]";
-					Logger.Log("Could not find item with any ID among " + s_ids, ConsoleColor.Red);
+					LoggerOld.Log("Could not find item with any ID among " + s_ids, ConsoleColor.Red);
 				}
 
 				bool australium = kvp0.Key.StartsWith("Australium ");
