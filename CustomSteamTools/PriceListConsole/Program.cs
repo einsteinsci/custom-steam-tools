@@ -42,6 +42,7 @@ namespace BackpackTFConsole
 
 			LoggerOld.Log("Starting program...");
 
+			CommandHandler.Initialize();
 			CommandHandler.Instance.OnPreCommand += PreCommand;
 
 			DataManager.AutoSetup(true, true);

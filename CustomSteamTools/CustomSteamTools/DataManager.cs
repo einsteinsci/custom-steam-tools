@@ -132,8 +132,6 @@ namespace CustomSteamTools
 			SchemaFilename = itemFilename;
 			MyBackpackDataFilename = backpackFilename;
 			MarketPricesFilename = marketFilename;
-
-			CommandHandler.Initialize();
 		}
 
 		public static string GetBackbackUrl(string steamID64)

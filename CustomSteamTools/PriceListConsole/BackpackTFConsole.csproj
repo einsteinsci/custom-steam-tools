@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CustomSteamTools\CustomSteamTools.csproj">
-      <Project>{b8611d7a-b36d-4422-8e3f-7ffa2a3a9ef2}</Project>
+      <Project>{41b19086-bc2a-4035-bb99-e17dff7567dc}</Project>
       <Name>CustomSteamTools</Name>
     </ProjectReference>
   </ItemGroup>

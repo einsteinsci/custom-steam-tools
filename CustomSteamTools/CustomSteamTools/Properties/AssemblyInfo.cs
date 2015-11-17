@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BackpackTFPriceLister")]
+[assembly: AssemblyTitle("CustomSteamTools")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BackpackTFPriceLister")]
+[assembly: AssemblyProduct("CustomSteamTools")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b8611d7a-b36d-4422-8e3f-7ffa2a3a9ef2")]
+[assembly: Guid("41b19086-bc2a-4035-bb99-e17dff7567dc")]
 
 // Version information for an assembly consists of the following four values:
 //
