@@ -11,6 +11,7 @@ using CustomSteamTools.Market;
 using CustomSteamTools.Classifieds;
 using System.IO;
 using CustomSteamTools.Commands;
+using UltimateUtil;
 
 namespace CustomSteamTools
 {
@@ -159,9 +160,8 @@ namespace CustomSteamTools
 
 			string input = LoggerOld.GetInput("  Press Enter to continue> ", false, true);
 
-			if (input.ToLower() == "esc")
+			if (input.IsNullOrEmpty() || input.ToLower() == "esc")
 			{
-				LoggerOld.Log("Canceled.");
 				return;
 			}
 			else if (input.ToLower() == "u")

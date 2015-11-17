@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Items;
 using CustomSteamTools.Utils;
+using UltimateUtil;
 
 namespace CustomSteamTools.Commands
 {
@@ -21,7 +22,38 @@ namespace CustomSteamTools.Commands
 
 		public void RunCommand(CommandHandler sender, List<string> args)
 		{
+			if (args.Count == 0)
+			{
+				LoggerOld.Log("Usage: " + Syntax, ConsoleColor.Red);
+				return;
+			}
 
+			string query = string.Join(" ", args);
+			Item item = SearchItem(query);
+
+			LoggerOld.Log(item.ToString(), ConsoleColor.White);
+			LoggerOld.Log(" - Description: " + item.Description.Shorten(120).Replace('\n', ' '));
+			LoggerOld.Log(" - Defindex: " + item.ID);
+			LoggerOld.Log(" - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot));
+			LoggerOld.Log(" - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
+			LoggerOld.Log(" - " + item.GetSubtext());
+			LoggerOld.Log(" - Default Quality: " + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
+			if (!item.Styles.IsNullOrEmpty())
+			{
+				LoggerOld.Log(" - Styles: " + item.Styles.ToReadableString(includeBraces: false), ConsoleColor.White);
+			}
+			if (item.CanBeAustralium())
+			{
+				LoggerOld.Log(" - Can be Australium", ConsoleColor.White);
+			}
+			if (item.IsCheapWeapon())
+			{
+				LoggerOld.Log(" - Drop weapon", ConsoleColor.White);
+			}
+			if (item.HalloweenOnly || item.HasHauntedVersion == true)
+			{
+				LoggerOld.Log(" - Halloween only", ConsoleColor.White);
+			}
 		}
 
 		public static Item SearchItem(string query)

@@ -132,12 +132,7 @@ namespace CustomSteamTools.Classifieds
 		{
 			if (!Tradable)
 			{
-				return "n/a";
-			}
-
-			if (PriceHigh != PriceLow && PriceHigh.MatchesUnit(PriceLow))
-			{
-				return PriceLow.ToStringUnitless() + " - " + PriceHigh.ToString();
+				return "Not Tradable";
 			}
 
 			if (PriceHigh != PriceLow)

@@ -64,6 +64,7 @@
     <Compile Include="Commands\CmdInfo.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Commands\ITradeCommand.cs" />
+    <Compile Include="Commands\PriceCheck.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="Enums\AttributeEffectTypes.cs" />
     <Compile Include="Enums\ItemQualities.cs" />

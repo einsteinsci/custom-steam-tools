@@ -181,12 +181,10 @@ namespace CustomSteamTools.Items
 
 		public bool IsSkin()
 		{
-			return DefaultQuality == Quality.Decorated;
-
-			//return UnlocalizedName.StartsWith("concealedkiller_") ||
-			//	UnlocalizedName.StartsWith("craftsmann_") ||
-			//	UnlocalizedName.StartsWith("teufort_") ||
-			//	UnlocalizedName.StartsWith("powerhouse_");
+			return UnlocalizedName.StartsWith("concealedkiller_") ||
+				UnlocalizedName.StartsWith("craftsmann_") ||
+				UnlocalizedName.StartsWith("teufort_") ||
+				UnlocalizedName.StartsWith("powerhouse_");
 		}
 
 		public Skin GetSkin()
@@ -344,6 +342,6 @@ namespace CustomSteamTools.Items
 			}
 
 			return (int)(pricing.PriceLow.TotalRefined * 100.0) == 5;
-        }
+		}
 	}
 }

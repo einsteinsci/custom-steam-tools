@@ -17,7 +17,7 @@ namespace CustomSteamTools.Classifieds
 		public static bool SteamBackpackDown
 		{ get; set; }
 
-		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, bool verifySellers = true,
+		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, bool verifySellers = false,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
 			string url = "http://backpack.tf/classifieds?item=";

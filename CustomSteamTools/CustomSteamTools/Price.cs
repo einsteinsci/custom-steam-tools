@@ -185,11 +185,6 @@ namespace CustomSteamTools
 			return new Price(usd, CURRENCY_CASH);
 		}
 
-		public string ToStringUnitless()
-		{
-			return Keys > 0 ? TotalKeys.ToString() : TotalRefined.ToString();
-		}
-
 		public static bool operator==(Price a, Price b)
 		{
 			return a.Equals(b);
@@ -227,6 +222,16 @@ namespace CustomSteamTools
 		public static Price operator-(Price a, Price b)
 		{
 			return new Price(0, a.TotalRefined - b.TotalRefined);
+		}
+
+		public static Price operator*(Price a, double b)
+		{
+			return new Price(0, a.TotalRefined * b);
+		}
+
+		public static Price operator/(Price a, double b)
+		{
+			return new Price(0, a.TotalRefined / b);
 		}
 
 		public bool MatchesUnit(Price other)
