@@ -48,10 +48,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UltimateUtil, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UltimateUtil.1.0.0.1\lib\UltimateUtil.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -63,6 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ultimate-util\UltimateUtil\UltimateUtil\UltimateUtil.csproj">
+      <Project>{927cc5f4-bafb-4683-8ab4-f3eaa2fcd26f}</Project>
+      <Name>UltimateUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CustomSteamTools\CustomSteamTools.csproj">
       <Project>{41b19086-bc2a-4035-bb99-e17dff7567dc}</Project>
       <Name>CustomSteamTools</Name>

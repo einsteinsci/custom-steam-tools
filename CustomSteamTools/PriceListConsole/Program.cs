@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using CustomSteamTools;
 using CustomSteamTools.Commands;
 using CustomSteamTools.Utils;
+using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace BackpackTFConsole
 {
@@ -22,6 +24,12 @@ namespace BackpackTFConsole
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			PresetVersatileConsoleIO.Initialize(ConsoleColor.Green);
+			VersatileIO.WriteComplex("&0BLACK\n&1DARKBLUE\n&2GREEN\n&3TEAL\n" +
+				"&4DARKRED\n&5PURPLE\n&6ORANGE\n&7GRAY\n&8DARKGRAY\n&9BLUE\n" +
+				"&aLIME\n&bCYAN\n&cRED\n&dPINK\n&eYELLOW\n&fWHITE", '&');
+			VersatileIO.WriteComplex("&f - {0}: &7{1}".Fmt("optionName", "optionValue"), '&');
+
 			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 255, 149, 63); // strange orange
 			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 82, 113, 165); // vintage blue
 			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 166, 40, 40); // collector's red

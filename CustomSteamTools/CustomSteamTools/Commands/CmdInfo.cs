@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CustomSteamTools.Items;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Commands
 {
@@ -24,35 +25,35 @@ namespace CustomSteamTools.Commands
 		{
 			if (args.Count == 0)
 			{
-				LoggerOld.Log("Usage: " + Syntax, ConsoleColor.Red);
+				VersatileIO.WriteLine("Usage: " + Syntax, ConsoleColor.Red);
 				return;
 			}
 
 			string query = string.Join(" ", args);
 			Item item = SearchItem(query);
 
-			LoggerOld.Log(item.ToString(), ConsoleColor.White);
-			LoggerOld.Log(" - Description: " + item.Description.Shorten(120).Replace('\n', ' '));
-			LoggerOld.Log(" - Defindex: " + item.ID);
-			LoggerOld.Log(" - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot));
-			LoggerOld.Log(" - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
-			LoggerOld.Log(" - " + item.GetSubtext());
-			LoggerOld.Log(" - Default Quality: " + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
+			VersatileIO.WriteLine(item.ToString(), ConsoleColor.White);
+			VersatileIO.WriteLine(" - Description: " + item.Description.Shorten(120).Replace('\n', ' '), ConsoleColor.Gray);
+			VersatileIO.WriteLine(" - Defindex: " + item.ID, ConsoleColor.Gray);
+			VersatileIO.WriteLine(" - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
+			VersatileIO.WriteLine(" - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
+			VersatileIO.WriteLine(" - " + item.GetSubtext());
+			VersatileIO.WriteComplex(" - Default Quality: {0}" + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
 			if (!item.Styles.IsNullOrEmpty())
 			{
-				LoggerOld.Log(" - Styles: " + item.Styles.ToReadableString(includeBraces: false), ConsoleColor.White);
+				VersatileIO.WriteLine(" - Styles: " + item.Styles.ToReadableString(includeBraces: false));
 			}
 			if (item.CanBeAustralium())
 			{
-				LoggerOld.Log(" - Can be Australium", ConsoleColor.White);
+				VersatileIO.WriteLine(" - Can be Australium", ConsoleColor.Yellow);
 			}
 			if (item.IsCheapWeapon())
 			{
-				LoggerOld.Log(" - Drop weapon", ConsoleColor.White);
+				VersatileIO.WriteLine(" - Drop weapon", ConsoleColor.Gray);
 			}
 			if (item.HalloweenOnly || item.HasHauntedVersion == true)
 			{
-				LoggerOld.Log(" - Halloween only", ConsoleColor.White);
+				VersatileIO.WriteLine(" - Halloween only", ConsoleColor.Cyan);
 			}
 		}
 
@@ -96,21 +97,41 @@ namespace CustomSteamTools.Commands
 			#region search
 			if (item == null)
 			{
-				LoggerOld.Log("Searching items...");
+				VersatileIO.WriteLine("Searching items...", ConsoleColor.Gray);
 
 				List<Item> possibleItems = new List<Item>();
+
+				if (possibleItems.Count == 0)
+				{
+					VersatileIO.WriteLine("No items found matching '{0}'.".Fmt(query), ConsoleColor.Red);
+					return null;
+				}
+
+				int index = -1;
+				if (possibleItems.Count == 1)
+				{
+					index = 0;
+				}
+				else
+				{
+					index = VersatileIO.GetSelection("Select an item: ", possibleItems.ConvertAll((i) => i.Name));
+				}
+
+				item = possibleItems[index];
+
+				/*
 				foreach (Item i in DataManager.Schema.Items)
 				{
 					if (i.Name.ToLower().Contains(query.ToLower()))
 					{
 						possibleItems.Add(i);
-						LoggerOld.Log("  " + possibleItems.Count.ToString() + ": " + i.Name, ConsoleColor.White);
+						VersatileIO.WriteLine("  " + possibleItems.Count.ToString() + ": " + i.Name);
 					}
 				}
 
 				if (possibleItems.Count == 0)
 				{
-					LoggerOld.Log("No items found matching '" + query + "'.", ConsoleColor.Red);
+					VersatileIO.WriteLine("No items found matching '" + query + "'.", ConsoleColor.Red);
 					return null;
 				}
 
@@ -122,10 +143,10 @@ namespace CustomSteamTools.Commands
 						break;
 					}
 
-					string sint = LoggerOld.GetInput("Enter selection > ");
+					string sint = VersatileIO.GetString("Enter selection > ");
 					if (sint.ToLower() == "esc")
 					{
-						LoggerOld.Log("Canceled.");
+						VersatileIO.WriteLine("Canceled.", ConsoleColor.Yellow);
 						return null;
 					}
 
@@ -138,9 +159,10 @@ namespace CustomSteamTools.Commands
 					}
 					else
 					{
-						LoggerOld.Log("Invalid choice: " + sint, ConsoleColor.Red);
+						VersatileIO.WriteLine("Invalid choice: " + sint, ConsoleColor.Red);
 					}
 				}
+				// */
 			}
 			#endregion
 

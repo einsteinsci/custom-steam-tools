@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Commands
 {
@@ -27,7 +28,7 @@ namespace CustomSteamTools.Commands
 			{
 				foreach (ITradeCommand cmd in sender.Commands)
 				{
-					LoggerOld.Log(" - {0}: {1}".Fmt(cmd.RegistryName, cmd.Description), ConsoleColor.White);
+					VersatileIO.WriteComplex("&f - {0}: &7{1}".Fmt(cmd.RegistryName, cmd.Description), '&');
 				}
 			}
 			else
@@ -35,17 +36,17 @@ namespace CustomSteamTools.Commands
 				ITradeCommand cmd = sender.FindCommand(cmdname);
 				if (cmd == null)
 				{
-					LoggerOld.Log("No command found by name of " + cmdname, ConsoleColor.Red);
+					VersatileIO.WriteLine("No command found by name of " + cmdname, ConsoleColor.Red);
 					return;
 				}
 
 				bool hasAliases = cmd.Aliases.Length > 1;
 				string aliases = cmd.Aliases.ToReadableString((s) => "'" + s + "'", includeBraces: false);
-				LoggerOld.Log("Command {0}: {1}".Fmt(cmd.RegistryName, cmd.Description));
-				LoggerOld.Log(" - Syntax: " + cmd.Syntax);
+				VersatileIO.WriteComplex("&fCommand {0}: &7{1}".Fmt(cmd.RegistryName, cmd.Description), '&');
+				VersatileIO.WriteLine(" - Syntax: " + cmd.Syntax, ConsoleColor.Gray);
 				if (hasAliases)
 				{
-					LoggerOld.Log(" - Aliases: " + aliases);
+					VersatileIO.WriteLine(" - Aliases: " + aliases, ConsoleColor.Gray);
 				}
 			}
 		}

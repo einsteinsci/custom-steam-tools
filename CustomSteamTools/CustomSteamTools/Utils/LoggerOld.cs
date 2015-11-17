@@ -91,6 +91,7 @@ namespace CustomSteamTools.Utils
 		}
 	}
 
+	[Obsolete("Use UltimateUtil.UserInteraction.VersatileIO instead")]
 	public static class LoggerOld
 	{
 		public static event LogEventOld Logging;

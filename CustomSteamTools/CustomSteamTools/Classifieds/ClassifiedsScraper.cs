@@ -17,6 +17,11 @@ namespace CustomSteamTools.Classifieds
 		public static bool SteamBackpackDown
 		{ get; set; }
 
+		public static List<ClassifiedsListing> GetClassifieds(Item item, ListingProperties props, bool verify = false)
+		{
+			return GetClassifieds(item, props.Quality, verify, props.Craftable, props.Tradable, props.Australium);
+		}
+
 		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, bool verifySellers = false,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
