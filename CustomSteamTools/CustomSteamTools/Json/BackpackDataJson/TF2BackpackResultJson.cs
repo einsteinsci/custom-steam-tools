@@ -34,5 +34,5 @@ namespace CustomSteamTools.Json.BackpackDataJson
 
 		public List<ItemInstanceJson> items
 		{ get; set; }
-    }
+	}
 }

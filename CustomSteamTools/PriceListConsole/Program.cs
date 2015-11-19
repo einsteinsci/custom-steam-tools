@@ -10,6 +10,7 @@ using CustomSteamTools;
 using CustomSteamTools.Commands;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.Logging;
 using UltimateUtil.UserInteraction;
 
 namespace BackpackTFConsole
@@ -24,31 +25,30 @@ namespace BackpackTFConsole
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			PresetVersatileConsoleIO.Initialize(ConsoleColor.Green);
-			VersatileIO.WriteComplex("&0BLACK\n&1DARKBLUE\n&2GREEN\n&3TEAL\n" +
-				"&4DARKRED\n&5PURPLE\n&6ORANGE\n&7GRAY\n&8DARKGRAY\n&9BLUE\n" +
-				"&aLIME\n&bCYAN\n&cRED\n&dPINK\n&eYELLOW\n&fWHITE", '&');
-			VersatileIO.WriteComplex("&f - {0}: &7{1}".Fmt("optionName", "optionValue"), '&');
-
-			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 255, 149, 63); // strange orange
-			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 82, 113, 165); // vintage blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 166, 40, 40); // collector's red
-			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 120, 70, 165); // unusual purple
-			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 60, 255, 190); // haunted teal
+			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0); // strange orange
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122); // vintage blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0); // collector's red
+			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172); // unusual purple
+			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171); // haunted teal
+			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255); // "this is where you come in" blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);	// darken verbose gray
+			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);		// to set apart debug gray
 
 			Console.Title = "Trade Helper Console";
-			Console.ForegroundColor = ConsoleColor.White;
 
 			if (!Directory.Exists(logFolder))
 			{
 				Directory.CreateDirectory(logFolder);
 			}
 
+			PresetVersatileConsoleIO.Initialize(ConsoleColor.Blue);
+			VersatileIO.MinLogLevel = LogLevel.Verbose;
+
 			LoggerOld.Logging += DebugLog;
 			LoggerOld.LoggingComplex += DebugLogComplex;
 			LoggerOld.Prompting = DebugPrompt;
 
-			LoggerOld.Log("Starting program...");
+			VersatileIO.Info("Starting program...");
 
 			CommandHandler.Initialize();
 			CommandHandler.Instance.OnPreCommand += PreCommand;
@@ -59,7 +59,7 @@ namespace BackpackTFConsole
 			while (input.ToLower() != "exit")
 			{
 				Console.WriteLine();
-				input = LoggerOld.GetInput("datamgr> ", false, true);
+				input = VersatileIO.GetString("datamgr> ");
 
 				if (input.ToLower() != "exit")
 				{
@@ -68,6 +68,7 @@ namespace BackpackTFConsole
 			}
 		}
 
+		// TODO: Switch from e.Name.ToLower() == "" to e.Command is T
 		private static bool PreCommand(object sender, PreCommandArgs e)
 		{
 			if (e.Name.ToLower() == "bp")
@@ -116,7 +117,8 @@ namespace BackpackTFConsole
 			return DateTime.Now.ToString("[HH:mm:ss] ");
 		}
 
-		private static void DebugLog(object sender, LogEventArgs e)
+		[Obsolete]
+		private static void DebugLog(object sender, LogEventArgsOld e)
 		{
 			if (e.Foreground.HasValue)
 			{
@@ -133,6 +135,7 @@ namespace BackpackTFConsole
 			File.AppendAllLines(logFile, new string[] { GetTimeStamp() + e.Message });
 		}
 
+		[Obsolete]
 		private static void DebugLogComplex(object sender, LogComplexEventArgs e)
 		{
 			foreach (object obj in e.Arguments)
@@ -155,6 +158,7 @@ namespace BackpackTFConsole
 			File.AppendAllLines(logFile, new string[] { GetTimeStamp() + e.Unformatted });
 		}
 
+		[Obsolete]
 		private static string DebugPrompt(object sender, PromptEventArgs e)
 		{
 			if (e.Foreground.HasValue)

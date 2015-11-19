@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CustomSteamTools.Items;
 
 namespace CustomSteamTools.Classifieds
 {
-	public struct ListingProperties
+	public class ListingProperties
 	{
 		public Quality Quality
 		{ get; set; }
@@ -19,5 +20,35 @@ namespace CustomSteamTools.Classifieds
 
 		public bool Australium
 		{ get; set; }
+
+		public ListingProperties()
+		{
+			Craftable = true;
+			Tradable = true;
+			Australium = false;
+			Quality = Quality.Unique;
+		}
+
+		public string ToString(Item item)
+		{
+			string res = Quality.ToReadableString() + " " + item.Name;
+
+			if (Australium)
+			{
+				res = "Australium " + res;
+			}
+
+			if (!Craftable)
+			{
+				res = "Non-Craftable " + res;
+			}
+
+			if (!Tradable)
+			{
+				res = "Non-Tradable " + res;
+			}
+
+			return res;
+		}
 	}
 }

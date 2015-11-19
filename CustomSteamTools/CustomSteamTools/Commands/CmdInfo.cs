@@ -32,8 +32,13 @@ namespace CustomSteamTools.Commands
 			string query = string.Join(" ", args);
 			Item item = SearchItem(query);
 
+			if (item == null)
+			{
+				return;
+			}
+
 			VersatileIO.WriteLine(item.ToString(), ConsoleColor.White);
-			VersatileIO.WriteLine(" - Description: " + item.Description.Shorten(120).Replace('\n', ' '), ConsoleColor.Gray);
+			VersatileIO.WriteLine(" - Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "", ConsoleColor.Gray);
 			VersatileIO.WriteLine(" - Defindex: " + item.ID, ConsoleColor.Gray);
 			VersatileIO.WriteLine(" - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
 			VersatileIO.WriteLine(" - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
@@ -99,7 +104,8 @@ namespace CustomSteamTools.Commands
 			{
 				VersatileIO.WriteLine("Searching items...", ConsoleColor.Gray);
 
-				List<Item> possibleItems = new List<Item>();
+				List<Item> possibleItems = DataManager.Schema.Items.FindAll(
+					(i) => i.Name.ContainsIgnoreCase(query) || i.UnlocalizedName.ContainsIgnoreCase(query));
 
 				if (possibleItems.Count == 0)
 				{
@@ -118,51 +124,6 @@ namespace CustomSteamTools.Commands
 				}
 
 				item = possibleItems[index];
-
-				/*
-				foreach (Item i in DataManager.Schema.Items)
-				{
-					if (i.Name.ToLower().Contains(query.ToLower()))
-					{
-						possibleItems.Add(i);
-						VersatileIO.WriteLine("  " + possibleItems.Count.ToString() + ": " + i.Name);
-					}
-				}
-
-				if (possibleItems.Count == 0)
-				{
-					VersatileIO.WriteLine("No items found matching '" + query + "'.", ConsoleColor.Red);
-					return null;
-				}
-
-				while (item == null)
-				{
-					if (possibleItems.Count == 1)
-					{
-						item = possibleItems.First();
-						break;
-					}
-
-					string sint = VersatileIO.GetString("Enter selection > ");
-					if (sint.ToLower() == "esc")
-					{
-						VersatileIO.WriteLine("Canceled.", ConsoleColor.Yellow);
-						return null;
-					}
-
-					int n = -1;
-
-					bool worked = int.TryParse(sint, out n);
-					if (worked && n > 0 && n <= possibleItems.Count)
-					{
-						item = possibleItems[n - 1];
-					}
-					else
-					{
-						VersatileIO.WriteLine("Invalid choice: " + sint, ConsoleColor.Red);
-					}
-				}
-				// */
 			}
 			#endregion
 

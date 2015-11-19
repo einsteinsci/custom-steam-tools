@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Utils
 {
@@ -98,11 +99,11 @@ namespace CustomSteamTools.Utils
 				try
 				{
 					result = client.DownloadString(url);
-					LoggerOld.Log("  Download complete.", ConsoleColor.DarkGray);
+					VersatileIO.Verbose("  Download complete.");
 				}
 				catch (WebException e)
 				{
-					LoggerOld.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
+					VersatileIO.Error("  Error downloading: " + e.Message);
 					giveup = true;
 				}
 			});
@@ -118,7 +119,7 @@ namespace CustomSteamTools.Utils
 				if (now.Subtract(start) >= timeout)
 				{
 					giveup = true;
-					LoggerOld.Log("  Download timed out.", ConsoleColor.Red);
+					VersatileIO.Debug("  Download timed out.");
 					thread.Abort();
 					return null;
 				}

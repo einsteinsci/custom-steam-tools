@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CustomSteamTools.Utils
 {
-	public delegate void LogEventOld(object sender, LogEventArgs e);
+	public delegate void LogEventOld(object sender, LogEventArgsOld e);
 
-	public class LogEventArgs : EventArgs
+	public class LogEventArgsOld : EventArgs
 	{
 		public string Message
 		{ get; private set; }
@@ -19,7 +19,7 @@ namespace CustomSteamTools.Utils
 		public ConsoleColor? Background
 		{ get; set; }
 
-		public LogEventArgs(string message, ConsoleColor? fg = ConsoleColor.Gray,
+		public LogEventArgsOld(string message, ConsoleColor? fg = ConsoleColor.Gray,
 			ConsoleColor? bg = null)
 		{
 			Message = message;
@@ -108,7 +108,7 @@ namespace CustomSteamTools.Utils
 				return;
 			}
 
-			Logging(sender, new LogEventArgs(message, color, background));
+			Logging(sender, new LogEventArgsOld(message, color, background));
 		}
 
 		public static void AddLine()

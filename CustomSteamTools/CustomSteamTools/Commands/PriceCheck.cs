@@ -7,6 +7,7 @@ using CustomSteamTools.Classifieds;
 using CustomSteamTools.Items;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Commands
 {
@@ -25,7 +26,7 @@ namespace CustomSteamTools.Commands
 		{
 			if (args.Count == 0)
 			{
-				LoggerOld.Log("Usage: " + Syntax, ConsoleColor.Red);
+				VersatileIO.Error("Usage: " + Syntax);
 				return;
 			}
 
@@ -40,41 +41,60 @@ namespace CustomSteamTools.Commands
 
 			if (!results.HasResults)
 			{
-				LoggerOld.Log("  No price data found for item " + item.Name, ConsoleColor.Red);
+				VersatileIO.Error("  No price data found for item " + item.Name);
 				return;
 			}
 
 			if (results.HasCrates)
 			{
-				LoggerOld.Log("Crates by series:", ConsoleColor.White);
+				VersatileIO.Info("Crates by series:");
 			}
 			foreach (PricingCheck c in results.Uniques)
 			{
-				LoggerOld.Log("  " + c.ToString(), c.Quality.GetColor());
+				VersatileIO.WriteLine("  " + c.ToString(), c.Quality.GetColor());
 			}
+
 			foreach (PricingCheck c in results.Others)
 			{
-				LoggerOld.Log("  " + c.ToString(), c.Quality.GetColor());
+				VersatileIO.WriteLine("  " + c.ToString(), c.Quality.GetColor());
 			}
 
 			if (results.HasUnusuals)
 			{
-				LoggerOld.Log("  Enter 'U' to get unusual prices.", ConsoleColor.DarkMagenta);
-				string input = LoggerOld.GetInput("  Enter a code or continue: ", optional:true);
-
-				if (input.Trim().EqualsIgnoreCase("u"))
+				string code = VersatileIO.GetSelection("  Enter a code or continue: ", true, 
+					"U", "Get unusual prices.");
+				if (code.Trim().EqualsIgnoreCase("u"))
 				{
-					LoggerOld.Log("{0} effects priced:".Fmt(results.Unusuals.Count));
+					VersatileIO.Info("{0} effects priced:", results.Unusuals.Count);
 					Price total = Price.Zero;
 					foreach (PricingCheck u in results.Unusuals)
 					{
-						LoggerOld.Log("  " + u.GetUnusualEffectString(), ConsoleColor.DarkMagenta);
+						VersatileIO.WriteLine("  " + u.GetUnusualEffectString(), ConsoleColor.DarkMagenta);
 						total += u.Pricing.PriceMid;
 					}
 					Price avg = total / results.Unusuals.Count;
-					LoggerOld.Log("Averate Unusual Price: " + avg.ToString());
+					VersatileIO.Info("Average Unusual Price: " + avg.ToString());
 				}
 			}
+
+			//if (results.HasUnusuals)
+			//{
+			//	VersatileIO.WriteLine("  Enter 'U' to get unusual prices.", ConsoleColor.DarkMagenta);
+			//	string input = VersatileIO.GetString("  Enter a code or continue: ", optional:true);
+			//
+			//	if (input.Trim().EqualsIgnoreCase("u"))
+			//	{
+			//		LoggerOld.Log("{0} effects priced:".Fmt(results.Unusuals.Count));
+			//		Price total = Price.Zero;
+			//		foreach (PricingCheck u in results.Unusuals)
+			//		{
+			//			LoggerOld.Log("  " + u.GetUnusualEffectString(), ConsoleColor.DarkMagenta);
+			//			total += u.Pricing.PriceMid;
+			//		}
+			//		Price avg = total / results.Unusuals.Count;
+			//		LoggerOld.Log("Averate Unusual Price: " + avg.ToString());
+			//	}
+			//}
 		}
 
 		public static PriceCheckResults GetPriceInfo(Item item)

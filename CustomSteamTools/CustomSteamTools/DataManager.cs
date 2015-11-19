@@ -17,6 +17,7 @@ using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
 
 using Newtonsoft.Json;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools
 {
@@ -124,7 +125,7 @@ namespace CustomSteamTools
 			if (!Directory.Exists(cacheLocation))
 			{
 				Directory.CreateDirectory(cacheLocation);
-				LoggerOld.Log("Created Cache at " + cacheLocation);
+				VersatileIO.Debug("Created Cache at " + cacheLocation);
 			}
 
 			CacheLocation = cacheLocation;
@@ -159,29 +160,30 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				LoggerOld.Log("Downloading item schema...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Downloading item schema...");
 				try
 				{
 					SchemaCache = Util.DownloadString(SchemaUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
+					VersatileIO.Error("  Download failed.");
 					failed = true;
 				}
 			}
 
 			if (SchemaCache == null)
 			{
-				LoggerOld.Log("Retrieving item schema cache...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Retrieving item schema cache...");
 				try
 				{
 					SchemaCache = File.ReadAllText(CacheLocation + SchemaFilename, Encoding.UTF8);
-					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
 				{
-					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					VersatileIO.Fatal("  Schema retrieval failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.Schema);
 				}
 			}
 
@@ -216,7 +218,7 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				LoggerOld.Log("Downloading backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Downloading backpack data for 'sealed interface'...");
 				try
 				{
 					MyBackpackCache = Util.DownloadString(GetBackbackUrl(SEALEDINTERFACE_STEAMID), 
@@ -224,22 +226,23 @@ namespace CustomSteamTools
 				}
 				catch (WebException)
 				{
-					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
+					VersatileIO.Error("  Download failed.");
 					failed = true;
 				}
 			}
 
 			if (MyBackpackCache == null)
 			{
-				LoggerOld.Log("Retrieving backpack data cache...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Retrieving backpack data cache...");
 				try
 				{
 					MyBackpackCache = File.ReadAllText(CacheLocation + MyBackpackDataFilename, Encoding.UTF8);
-					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
 				{
-					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					VersatileIO.Fatal("  Backpack retrieval failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.BackpackContents);
 				}
 			}
 
@@ -274,29 +277,30 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				LoggerOld.Log("Downloading price list...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Downloading price list...");
 				try
 				{
 					PricesCache = Util.DownloadString(PriceDataUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
+					VersatileIO.Error("  Download failed.");
 					failed = true;
 				}
 			}
 
 			if (PricesCache == null)
 			{
-				LoggerOld.Log("Retrieving price list cache...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Retrieving price list cache...");
 				try
 				{
 					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename, Encoding.UTF8);
-					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
 				{
-					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					VersatileIO.Fatal("  Price data retrieval failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.PriceData);
 				}
 			}
 
@@ -332,29 +336,30 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				LoggerOld.Log("Downloading market price list...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Downloading market price list...");
 				try
 				{
 					MarketPricesCache = Util.DownloadString(MarketPricesUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
-					LoggerOld.Log("  Download failed.", ConsoleColor.Red);
+					VersatileIO.Error("  Download failed.");
 					failed = true;
 				}
 			}
 
 			if (MarketPricesCache == null)
 			{
-				LoggerOld.Log("Retrieving market prices cache...", ConsoleColor.DarkGray);
+				VersatileIO.Debug("Retrieving market prices cache...");
 				try
 				{
 					MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename, Encoding.UTF8);
-					LoggerOld.Log("  Retrieval complete.", ConsoleColor.DarkGray);
+					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
 				{
-					LoggerOld.Log("  Retrieval failed: " + e.Message, ConsoleColor.Red);
+					VersatileIO.Fatal("  Market price retrieval failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.MarketData);
 				}
 			}
 
@@ -375,7 +380,7 @@ namespace CustomSteamTools
 		{
 			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
 
-			LoggerOld.Log("Requesting backpack data for user #" + steamID64 + " from Steam...", ConsoleColor.DarkGray);
+			VersatileIO.Debug("Requesting backpack data for user #{0} from Steam...", steamID64);
 			string result = Util.DownloadString(GetBackbackUrl(steamID64), TIMEOUT);
 			if (result == null)
 			{
@@ -384,13 +389,14 @@ namespace CustomSteamTools
 
 			BackpackCaches.Add(steamID64, result);
 
-			LoggerOld.Log("  Parsing backpack data...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parsing backpack data...");
 			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);
 			BackpackDataRaw.Add(steamID64, json);
 
 			if (json.result.status != TF2BackpackResultJson.Status.SUCCESS)
 			{
-				LoggerOld.Log("  Error parsing: " + TF2BackpackResultJson.Status.ErrorMessages[json.result.status], ConsoleColor.Red);
+				VersatileIO.Fatal("  Error parsing backpack data: " + TF2BackpackResultJson.Status
+					.ErrorMessages[json.result.status]);
 				return false;
 			}
 
@@ -400,7 +406,7 @@ namespace CustomSteamTools
 			}
 			Backpack data = new Backpack(json, Schema);
 			BackpackData.Add(steamID64, data);
-			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parse complete.");
 
 			return true;
 		}
@@ -409,9 +415,9 @@ namespace CustomSteamTools
 
 		public static TF2DataJson ParseItemsJson()
 		{
-			LoggerOld.Log("Parsing TF2 item data...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Parsing TF2 item data...");
 			SchemaRaw = JsonConvert.DeserializeObject<TF2DataJson>(SchemaCache);
-			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parse complete.");
 
 			return SchemaRaw;
 		}
@@ -430,9 +436,9 @@ namespace CustomSteamTools
 
 		public static BpTfPriceDataJson ParsePricesJson()
 		{
-			LoggerOld.Log("Parsing backpack.tf price data...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Parsing backpack.tf price data...");
 			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
-			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parse complete.");
 
 			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
 				.prices["6"].Tradable.Craftable["0"].value;
@@ -458,9 +464,9 @@ namespace CustomSteamTools
 
 		public static TF2BackpackJson ParseBackpackJson()
 		{
-			LoggerOld.Log("Parsing steam backpack data for 'sealed interface'...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Parsing steam backpack data for 'sealed interface'...");
 			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
-			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parse complete.");
 
 			return MyBackpackDataRaw;
 		}
@@ -483,9 +489,9 @@ namespace CustomSteamTools
 
 		public static MarketPriceDataJson ParseMarketJson()
 		{
-			LoggerOld.Log("Parsing market price data...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Parsing market price data...");
 			MarketPricesRaw = JsonConvert.DeserializeObject<MarketPriceDataJson>(MarketPricesCache);
-			LoggerOld.Log("  Parse complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Parse complete.");
 
 			return MarketPricesRaw;
 		}
@@ -514,10 +520,24 @@ namespace CustomSteamTools
 
 			Initialize(fancy);
 
-			LoadItemSchema(!force);
-			LoadMyBackpackData(!force);
-			LoadPriceData(!force);
-			LoadMarketData(!force);
+			bool success = false;
+			while (!success)
+			{
+				try
+				{
+					LoadItemSchema(!force);
+					LoadMyBackpackData(!force);
+					LoadPriceData(!force);
+					LoadMarketData(!force);
+
+					success = true;
+				}
+				catch (RetrievalFailedException e)
+				{
+					VersatileIO.Fatal("Details: " + e.ToString());
+					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
+				}
+			}
 
 			Settings.Save();
 
@@ -536,7 +556,7 @@ namespace CustomSteamTools
 				ParsePricesJson();
 			}
 
-			LoggerOld.Log("Fixing haunted items...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Fixing haunted items...");
 			foreach (Item i in Schema.Items)
 			{
 				List<ItemPricing> prices = PriceData.GetAllPriceData(i);
@@ -546,7 +566,7 @@ namespace CustomSteamTools
 					i.HasHauntedVersion = true;
 				}
 			}
-			LoggerOld.Log("  Fix complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Fix complete.");
 		}
 
 		public static void RunCommand(string cmdName, params string[] args)

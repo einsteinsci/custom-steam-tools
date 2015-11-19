@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Utils
 {
@@ -42,7 +43,7 @@ namespace CustomSteamTools.Utils
 
 		public static void Load()
 		{
-			LoggerOld.Log("Loading settings...", ConsoleColor.DarkGray);
+			VersatileIO.Debug("Loading settings...");
 
 			if (!Directory.Exists(LOCATION))
 			{

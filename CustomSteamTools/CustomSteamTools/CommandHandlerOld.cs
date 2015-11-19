@@ -47,7 +47,7 @@ namespace CustomSteamTools
 			List<string> largs = args.ToList();
 			if (PreCommand != null)
 			{
-				bool cancel = PreCommand(command, new PreCommandArgs(command, largs));
+				bool cancel = PreCommand(command, new PreCommandArgs(command, null, largs));
 
 				if (cancel)
 				{
@@ -314,8 +314,6 @@ namespace CustomSteamTools
 				LoggerOld.Log("No classifieds found for " + searchedItemInfo, ConsoleColor.Red);
 				return;
 			}
-
-
 
 			Price? bestPrice = null;
 			string bestLister = null;

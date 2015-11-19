@@ -77,6 +77,22 @@ namespace CustomSteamTools
 			return null;
 		}
 
+		public static bool TryParse(string str, out Quality quality)
+		{
+			Quality? qn = ParseNullable(str);
+
+			if (qn == null)
+			{
+				quality = Quality.Unique;
+				return false;
+			}
+			else
+			{
+				quality = qn.Value;
+				return true;
+			}
+		}
+
 		public static ConsoleColor GetColor(this Quality q)
 		{
 			switch (q)

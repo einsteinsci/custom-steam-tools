@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Items;
+using UltimateUtil;
 
 namespace CustomSteamTools.Classifieds
 {
@@ -50,12 +51,31 @@ namespace CustomSteamTools.Classifieds
 			OfferURL = url;
 		}
 
-		public override string ToString()
+		public string ToString(bool complex, int commentLength, char esc)
 		{
-			string res = "[" + OrderType.ToString().ToUpper() + "] ";
-			res += ItemInstance.ToString() + " @" + Price.ToString() + " from " + (ListerNickname ?? ListerSteamID64);
+			string res = "";
+			if (complex)
+			{
+				res = "&2[{0}] &f{1} &7at &2{2} &7from &f{3}".Replace('&', esc).Fmt(OrderType.ToString().ToUpper(),
+					ItemInstance.ToString(), Price.ToString(), ListerNickname ?? ListerSteamID64);
+			}
+			else
+			{
+				res = "[" + OrderType.ToString().ToUpper() + "] ";
+				res += ItemInstance.ToString() + " at " + Price.ToString() + " from " + (ListerNickname ?? ListerSteamID64);
+			}
+
+			if (commentLength != -1)
+			{
+				res += ": " + Comment.Shorten(commentLength);
+			}
 
 			return res;
+		}
+
+		public override string ToString()
+		{
+			return ToString(false, -1, '\\');
 		}
 	}
 }

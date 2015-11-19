@@ -26,9 +26,13 @@ namespace CustomSteamTools.Commands
 		public List<string> Args
 		{ get; private set; }
 
-		public PreCommandArgs(string name, List<string> args)
+		public ITradeCommand Command
+		{ get; private set; }
+
+		public PreCommandArgs(string name, ITradeCommand cmd, List<string> args)
 		{
 			Name = name;
+			Command = cmd;
 			Args = args;
 		}
 	}
@@ -55,23 +59,24 @@ namespace CustomSteamTools.Commands
 		public void RunCommand(string command, params string[] args)
 		{
 			List<string> largs = args.ToList();
-			if (OnPreCommand != null)
-			{
-				PreCommandArgs e = new PreCommandArgs(command, largs);
-				OnPreCommand(this, e);
-
-				if (e.Cancel)
-				{
-					LoggerOld.Log("Command canceled.", ConsoleColor.Yellow);
-					return;
-				}
-			}
 
 			ITradeCommand cmd = FindCommand(command);
 			if (cmd == null)
 			{
-				LoggerOld.Log("No command found by name '{0}'.".Fmt(command), ConsoleColor.Red);
+				VersatileIO.Error("No command found by name '{0}'.", command);
 				return;
+			}
+
+			if (OnPreCommand != null)
+			{
+				PreCommandArgs e = new PreCommandArgs(command, cmd, largs);
+				OnPreCommand(this, e);
+
+				if (e.Cancel)
+				{
+					VersatileIO.Warning("Command canceled.");
+					return;
+				}
 			}
 
 			cmd.RunCommand(this, largs);
