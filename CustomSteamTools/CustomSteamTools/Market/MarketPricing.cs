@@ -152,15 +152,15 @@ namespace CustomSteamTools.Market
 			else if (hash == "RoboCrate Key") // general inconsistencies with robocrate keys
 			{
 				hash = "Robo Community Crate Key";
-            }
+			}
 			else if (hash == "A Random RoboKey Gift")
 			{
 				hash = "A Random Robo Community Crate Key Gift";
-            }
+			}
 			else if (hash == "Pile of RoboKey Gifts")
 			{
 				hash = "Pile of Robo Community Crate Key Gifts";
-            }
+			}
 
 			if (hash.Contains("Creature’s Grin"))
 			{
@@ -246,7 +246,7 @@ namespace CustomSteamTools.Market
 
 						// What is with these ones acting so funky?
 						if (i.UnlocalizedName.EndsWith("Killstreakifier Basic"))
-                        {
+						{
 							continue;
 						}
 
@@ -426,6 +426,11 @@ namespace CustomSteamTools.Market
 			}
 
 			return s_q + s_ks + item.ImproperName;
+		}
+
+		public override string ToString()
+		{
+			return MarketHash;
 		}
 	}
 }

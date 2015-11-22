@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltimateUtil;
 
 namespace CustomSteamTools
 {
@@ -67,8 +68,9 @@ namespace CustomSteamTools
 			for (int i = 0; i <= 15; i++)
 			{
 				Quality q = (Quality)i;
-				string qs = q.ToReadableString().ToLower();
-				if (qs == s.ToLower() || q.ToString().ToLower() == s || qs.TrimEnd('s', 'S') == s.ToLower())
+				string readable = q.ToReadableString().ToLower();
+				if (readable == s.ToLower() || q.ToString().ToLower() == s || 
+					readable.RemoveChars('\'', '-') == s.ToLower())
 				{
 					return q;
 				}

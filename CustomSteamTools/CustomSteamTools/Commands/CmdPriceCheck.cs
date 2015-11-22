@@ -12,7 +12,7 @@ using UltimateUtil.UserInteraction;
 namespace CustomSteamTools.Commands
 {
 	[TradeCommand]
-	public class PriceCheck : ITradeCommand
+	public class CmdPriceCheck : ITradeCommand
 	{
 		public string[] Aliases => new string[] { "pc", "pricecheck", "price" };
 
@@ -63,7 +63,7 @@ namespace CustomSteamTools.Commands
 			{
 				string code = VersatileIO.GetSelection("  Enter a code or continue: ", true, 
 					"U", "Get unusual prices.");
-				if (code.Trim().EqualsIgnoreCase("u"))
+				if (code != null && code.Trim().EqualsIgnoreCase("u"))
 				{
 					VersatileIO.Info("{0} effects priced:", results.Unusuals.Count);
 					Price total = Price.Zero;
@@ -76,25 +76,6 @@ namespace CustomSteamTools.Commands
 					VersatileIO.Info("Average Unusual Price: " + avg.ToString());
 				}
 			}
-
-			//if (results.HasUnusuals)
-			//{
-			//	VersatileIO.WriteLine("  Enter 'U' to get unusual prices.", ConsoleColor.DarkMagenta);
-			//	string input = VersatileIO.GetString("  Enter a code or continue: ", optional:true);
-			//
-			//	if (input.Trim().EqualsIgnoreCase("u"))
-			//	{
-			//		LoggerOld.Log("{0} effects priced:".Fmt(results.Unusuals.Count));
-			//		Price total = Price.Zero;
-			//		foreach (PricingCheck u in results.Unusuals)
-			//		{
-			//			LoggerOld.Log("  " + u.GetUnusualEffectString(), ConsoleColor.DarkMagenta);
-			//			total += u.Pricing.PriceMid;
-			//		}
-			//		Price avg = total / results.Unusuals.Count;
-			//		LoggerOld.Log("Averate Unusual Price: " + avg.ToString());
-			//	}
-			//}
 		}
 
 		public static PriceCheckResults GetPriceInfo(Item item)

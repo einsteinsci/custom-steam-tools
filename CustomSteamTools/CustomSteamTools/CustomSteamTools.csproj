@@ -61,10 +61,12 @@
     <Compile Include="Commands\CmdClassifiedsBase.cs" />
     <Compile Include="Commands\CmdHelp.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
+    <Compile Include="Commands\CmdKillstreak.cs" />
+    <Compile Include="Commands\CmdRefresh.cs" />
     <Compile Include="Commands\CmdSellers.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Commands\ITradeCommand.cs" />
-    <Compile Include="Commands\PriceCheck.cs" />
+    <Compile Include="Commands\CmdPriceCheck.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="Enums\AttributeEffectTypes.cs" />
     <Compile Include="Enums\ItemQualities.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Lookup\PriceReference.cs" />
     <Compile Include="Market\MarketPricing.cs" />
     <Compile Include="Price.cs" />
+    <Compile Include="PriceRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\LoggerOld.cs" />
     <Compile Include="Utils\RetrievalFailedException.cs" />

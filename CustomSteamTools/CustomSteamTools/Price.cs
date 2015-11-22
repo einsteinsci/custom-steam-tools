@@ -102,6 +102,11 @@ namespace CustomSteamTools
 			return Math.Abs(Keys) > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
 		}
 
+		public PriceRange ToPriceRange()
+		{
+			return new PriceRange(this, this);
+		}
+
 		public bool Equals(Price other)
 		{
 			return TotalRefined == other.TotalRefined;
@@ -185,6 +190,7 @@ namespace CustomSteamTools
 			return new Price(usd, CURRENCY_CASH);
 		}
 
+		#region operator overloading
 		public static bool operator==(Price a, Price b)
 		{
 			return a.Equals(b);
@@ -233,7 +239,9 @@ namespace CustomSteamTools
 		{
 			return new Price(0, a.TotalRefined / b);
 		}
+		#endregion
 
+		[Obsolete("Don't use this. Not entirely functioning correctly")]
 		public bool MatchesUnit(Price other)
 		{
 			return (other.Keys > 0) == (Keys > 0);

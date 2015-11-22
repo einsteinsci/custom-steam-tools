@@ -7,6 +7,7 @@ using CustomSteamTools.Classifieds;
 using CustomSteamTools.Json.ItemDataJson;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
+using UltimateUtil;
 
 namespace CustomSteamTools.Items
 {
@@ -152,6 +153,25 @@ namespace CustomSteamTools.Items
 			}
 
 			return false;
+		}
+
+		public string ToString(Quality quality, KillstreakType killstreak = KillstreakType.None)
+		{
+			string qs = quality.ToReadableString();
+			if (qs != "")
+			{
+				qs += " ";
+			}
+
+			string kss = killstreak.ToReadableString();
+			if (kss != "")
+			{
+				kss += " ";
+			}
+
+			string name = qs.HasItems() && kss.HasItems() ? ImproperName : Name;
+
+			return qs + kss + name;
 		}
 
 		public override string ToString()

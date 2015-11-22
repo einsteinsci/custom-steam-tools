@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Classifieds;
@@ -536,6 +537,8 @@ namespace CustomSteamTools
 				{
 					VersatileIO.Fatal("Details: " + e.ToString());
 					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
+
+					Thread.Sleep(10000);
 				}
 			}
 
@@ -590,6 +593,11 @@ namespace CustomSteamTools
 			}
 
 			RunCommand(name, args);
+		}
+
+		public static PriceRange GetPricing(ItemInstance item)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
