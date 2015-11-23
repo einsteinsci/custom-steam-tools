@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CustomSteamTools
 {
-	public struct PriceRange
+	public struct PriceRange : IEquatable<PriceRange>
 	{
 		public Price Low
 		{ get; private set; }
@@ -14,11 +14,18 @@ namespace CustomSteamTools
 		public Price High
 		{ get; private set; }
 
+		public Price Mid => new Price((High.TotalRefined + Low.TotalRefined) / 2.0);
+
+		public bool IsOnePrice => High == Low;
+
 		public PriceRange(Price low, Price high)
 		{
 			Low = low;
 			High = high;
 		}
+
+		public PriceRange(Price both) : this(both, both)
+		{ }
 
 		public PriceRange(double lowRef, double highRef) : 
 			this(Price.FromMetal(lowRef), Price.FromMetal(highRef))
@@ -33,12 +40,34 @@ namespace CustomSteamTools
 			return new PriceRange(Low, high);
 		}
 
+		public bool Contains(Price price)
+		{
+			return Low <= price && High >= price;
+		}
+		public bool Contains(PriceRange range)
+		{
+			return Low <= range.Low && High >= range.High;
+		}
+
+		public bool ContainsExclusive(Price price)
+		{
+			return Low < price && High > price;
+		}
+		public bool ContainsExclusive(PriceRange range)
+		{
+			return Low < range.Low && High > range.High;
+		}
+
+		public bool Equals(PriceRange other)
+		{
+			return other.Low == Low && other.High == High;
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj is PriceRange)
 			{
-				PriceRange other = (PriceRange)obj;
-				return other.Low == Low && other.High == High;
+				return Equals((PriceRange)obj);
 			}
 
 			return false;
@@ -57,5 +86,36 @@ namespace CustomSteamTools
 
 			return Low.ToString() + " - " + High.ToString();
 		}
+
+		#region operator overloads
+
+		public static bool operator==(PriceRange a, PriceRange b)
+		{
+			return a.Equals(b);
+		}
+		public static bool operator!=(PriceRange a, PriceRange b)
+		{
+			return !a.Equals(b);
+		}
+
+		public static PriceRange operator+(PriceRange a, PriceRange b)
+		{
+			return new PriceRange(a.Low + b.Low, a.High + b.High);
+		}
+		public static PriceRange operator-(PriceRange a, PriceRange b)
+		{
+			return new PriceRange(a.Low - b.Low, a.High - b.High);
+		}
+
+		public static PriceRange operator*(PriceRange a, double b)
+		{
+			return new PriceRange(a.Low * b, a.High * b);
+		}
+		public static PriceRange operator/(PriceRange a, double b)
+		{
+			return new PriceRange(a.Low / b, a.High / b);
+		}
+
+		#endregion operator overloads
 	}
 }

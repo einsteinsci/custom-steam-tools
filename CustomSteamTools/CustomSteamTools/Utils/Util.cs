@@ -11,51 +11,6 @@ namespace CustomSteamTools.Utils
 {
 	public static class Util
 	{
-		public static bool ParseAdvancedBool(string s)
-		{
-			try
-			{
-				bool res = bool.Parse(s.ToLower());
-				return res;
-			}
-			catch (FormatException)
-			{
-				int n = int.MaxValue;
-
-				if (int.TryParse(s, out n))
-				{
-					return n == 1;
-				}
-
-				string l = s.ToLower();
-				if (l == "yes" || l == "y" || l == "t")
-				{
-					return true;
-				}
-				else if (l == "no" || l == "n" || l == "f")
-				{
-					return false;
-				}
-			}
-
-			throw new FormatException("Invalid bool: " + s);
-		}
-
-		public static string SubstringMax(this string str, int maxLen)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			string res = "";
-			for (int i = 0; i < maxLen && i < str.Length; i++)
-			{
-				res += str[i];
-			}
-
-			return res;
-		}
 		public static string CutOffEnd(this string str, int count)
 		{
 			if (str.Length <= count)
@@ -73,17 +28,17 @@ namespace CustomSteamTools.Utils
 
 			try
 			{
-				LoggerOld.Log("  Downloading...", ConsoleColor.DarkGray);
+				VersatileIO.Verbose("  Downloading...");
 				WebClient client = new WebClient();
 				result = await client.DownloadStringTaskAsync(url);
 			}
 			catch (WebException e)
 			{
-				LoggerOld.Log("  Error downloading: " + e.Message, ConsoleColor.Red);
+				VersatileIO.Error("  Error downloading: " + e.Message);
 				return null;
 			}
 
-			LoggerOld.Log("  Download complete.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Download complete.");
 			return result;
 		}
 
@@ -133,6 +88,7 @@ namespace CustomSteamTools.Utils
 			return "new string[] { " + string.Join(", ", list.ConvertAll((s) => '"' + s + '"')) + " }";
 		}
 
+		[Obsolete("Not good for classifieds scraping")]
 		public static string Asciify(string content)
 		{
 			if (content == null)

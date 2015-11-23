@@ -32,13 +32,8 @@ namespace CustomSteamTools.Classifieds
 		public int PriceIndex
 		{ get; set; }
 
-		public Price PriceLow
+		public PriceRange Prices
 		{ get; set; }
-
-		public Price PriceHigh
-		{ get; set; }
-
-		public Price PriceMid => new Price((PriceHigh.TotalRefined + PriceLow.TotalRefined) / 2.0);
 
 		public DateTime LastUpdate
 		{ get; set; }
@@ -110,20 +105,15 @@ namespace CustomSteamTools.Classifieds
 
 			if (items.Contains(Price.RefinedMetal) && quality == Quality.Unique)
 			{
-				PriceLow = Price.OneRef;
-				PriceHigh = Price.OneRef;
+				Prices = new PriceRange(Price.OneRef);
 			}
 			else
 			{
-				PriceLow = new Price(price, currency);
+				Prices = new PriceRange(new Price(price, currency));
 
-				if (priceHigh == 0)
+				if (priceHigh != 0)
 				{
-					PriceHigh = PriceLow;
-				}
-				else
-				{
-					PriceHigh = new Price(priceHigh, currency);
+					Prices = Prices.SetHigh(new Price(priceHigh, currency));
 				}
 			}
 		}
@@ -135,12 +125,7 @@ namespace CustomSteamTools.Classifieds
 				return "Not Tradable";
 			}
 
-			if (PriceHigh != PriceLow)
-			{
-				return PriceLow.ToString() + " - " + PriceHigh.ToString();
-			}
-
-			return "~" + PriceLow.ToString();
+			return (Prices.IsOnePrice ? "~" : "") + Prices.ToString();
 		}
 
 		public override string ToString()

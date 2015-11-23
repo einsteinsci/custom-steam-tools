@@ -23,11 +23,11 @@ namespace CustomSteamTools
 
 	public enum ItemSlotPlain
 	{
+		Unused = 0,
 		Weapon,
 		Cosmetic,
 		Action,
 		Taunt,
-		Unused
 	}
 
 	public static class ItemSlots

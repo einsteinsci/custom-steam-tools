@@ -347,6 +347,7 @@ namespace CustomSteamTools.Items
 
 			return null;
 		}
+		
 
 		public bool IsCheapWeapon()
 		{
@@ -361,7 +362,7 @@ namespace CustomSteamTools.Items
 				return false;
 			}
 
-			return (int)(pricing.PriceLow.TotalRefined * 100.0) == 5;
+			return pricing.Prices.Low.TotalRefined < 0.12;
 		}
 	}
 }

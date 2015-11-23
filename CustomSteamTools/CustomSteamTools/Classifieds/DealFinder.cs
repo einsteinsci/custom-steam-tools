@@ -13,8 +13,16 @@ namespace CustomSteamTools.Classifieds
 {
 	public static class DealFinder
 	{
-		public static List<ItemSale> FindDeals(string steamid, params object[] filters)
+		public static List<ItemSale> FindDeals(string steamid, DealFilters filters, bool beep = false)
 		{
+			if (filters == null)
+			{
+				VersatileIO.Warning("Deals filters object was null. Setting to default.");
+				filters = new DealFilters();
+			}
+
+			#region oldFilters
+			/*
 			List<Quality> allowedQualities = new List<Quality>();
 			List<ItemSlotPlain> allowedSlots = new List<ItemSlotPlain>();
 			bool? craftable = true;
@@ -58,7 +66,7 @@ namespace CustomSteamTools.Classifieds
 					{
 						botkiller = false;
 					}
-					else if (s.EqualsIgnoreCase("botkiller"))
+					else if (s.EqualsIgnoreCase("/botkiller"))
 					{
 						botkiller = true;
 					}
@@ -75,7 +83,9 @@ namespace CustomSteamTools.Classifieds
 					}
 				}
 			}
+			*/
 
+			/*
 			string filtersListString = "";
 			foreach (Quality q in allowedQualities)
 			{
@@ -93,16 +103,19 @@ namespace CustomSteamTools.Classifieds
 					filtersListString += f + " ";
 				}
 			}
-			VersatileIO.Info("Filters: " + filtersListString);
+			*/
+			#endregion oldFilters
 
-			if (allowedSlots.Count == 0)
-			{
-				allowedSlots = null;
-			}
-			if (allowedQualities.Count == 0)
-			{
-				allowedQualities = null;
-			}
+			VersatileIO.Info("Filters: " + filters.ToString());
+
+			//if (allowedSlots.Count == 0)
+			//{
+			//	allowedSlots = null;
+			//}
+			//if (allowedQualities.Count == 0)
+			//{
+			//	allowedQualities = null;
+			//}
 			//if (allowedClasses.Count == 0)
 			//{
 			//	allowedClasses = null;
@@ -118,12 +131,18 @@ namespace CustomSteamTools.Classifieds
 			VersatileIO.Info("Price range: {0} - {1}.", min.ToString(), max.ToString());
 			VersatileIO.WriteLine();
 
-			List<ItemPricing> inRange = FindPricingsInRange(min, max.Value, 
-				allowedQualities, allowedSlots, craftable, halloween, botkiller);
+			List<ItemPricing> inRange = FindPricingsInRange(new PriceRange(min, max.Value), filters);
 
 			List<ItemSale> relevant = FindRelevantClassifeids(inRange);
 
-			return PickOutDeals(relevant, minProfit);
+			List<ItemSale> results = PickOutDeals(relevant, filters.MinProfit);
+
+			if (beep)
+			{
+				Console.Beep();
+			}
+
+			return results;
 		}
 
 		public static List<ItemSale> FindRelevantClassifeids(List<ItemPricing> pricings)
@@ -164,44 +183,35 @@ namespace CustomSteamTools.Classifieds
 			return results;
 		}
 
-		public static List<ItemPricing> FindPricingsInRange(Price low, Price high, 
+		public static List<ItemPricing> FindPricingsInRange(PriceRange range, 
 			List<Quality> qualitiesAllowed, List<ItemSlotPlain> slotsAllowed,
 			bool? craftable = true, bool? halloween = null, bool? botkiller = null)
+		{
+			DealFilters deals = new DealFilters()
+			{
+				Qualities = qualitiesAllowed,
+				Slots = slotsAllowed,
+				Craftable = craftable,
+				Halloween = halloween,
+				Botkiller = botkiller,
+			};
+
+			return FindPricingsInRange(range, deals);
+		}
+
+		public static List<ItemPricing> FindPricingsInRange(PriceRange range, DealFilters filters)
 		{
 			List<ItemPricing> results = new List<ItemPricing>();
 
 			VersatileIO.Info("Finding valid items in price range...");
 			foreach (ItemPricing p in DataManager.PriceData.Prices) // get ALL the datas!
 			{
-				if (p.PriceLow < low || p.PriceHigh > high)
+				if (!range.Contains(p.Prices))
 				{
 					continue;
 				}
 
-				if (craftable != null && p.Craftable != craftable.Value)
-				{
-					continue;
-				}
-
-				if (botkiller != null && p.Item.IsBotkiller() != botkiller.Value)
-				{
-					continue;
-				}
-
-				bool isHalloween = (p.Item.HalloweenOnly || (p.Item.HasHauntedVersion ?? false));
-				if (halloween != null && isHalloween != halloween.Value)
-				{
-					continue;
-				}
-
-				bool filterQualities = qualitiesAllowed != null && qualitiesAllowed.Count != 0;
-				if (filterQualities && !qualitiesAllowed.Contains(p.Quality))
-				{
-					continue;
-				}
-
-				bool filterSlots = slotsAllowed != null && slotsAllowed.Count != 0;
-				if (filterSlots && !slotsAllowed.Contains(p.Item.PlainSlot))
+				if (!filters.MatchesPricing(p))
 				{
 					continue;
 				}
@@ -287,7 +297,7 @@ namespace CustomSteamTools.Classifieds
 					continue;
 				}
 
-				Price threshold = new Price(sale.Pricing.PriceHigh.TotalRefined * 
+				Price threshold = new Price(sale.Pricing.Prices.High.TotalRefined * 
 					Settings.Instance.DealsPriceDropThresholdPriceBelow);
 				int totalBelow = 0;
 				foreach (ClassifiedsListing listing in sale.Sellers)

@@ -127,5 +127,13 @@ namespace CustomSteamTools
 					return ConsoleColor.Magenta;
 			}
 		}
+
+		public static string GetColorCode(this Quality q, char esc = '&')
+		{
+			ConsoleColor color = q.GetColor();
+			byte b = (byte)color;
+			string hex = b.ToString("X").ToLower();
+			return esc.ToString() + hex;
+		}
 	}
 }

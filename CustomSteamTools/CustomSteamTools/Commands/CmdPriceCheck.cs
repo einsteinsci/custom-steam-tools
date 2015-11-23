@@ -70,7 +70,7 @@ namespace CustomSteamTools.Commands
 					foreach (PricingCheck u in results.Unusuals)
 					{
 						VersatileIO.WriteLine("  " + u.GetUnusualEffectString(), ConsoleColor.DarkMagenta);
-						total += u.Pricing.PriceMid;
+						total += u.Pricing.Prices.Mid;
 					}
 					Price avg = total / results.Unusuals.Count;
 					VersatileIO.Info("Average Unusual Price: " + avg.ToString());

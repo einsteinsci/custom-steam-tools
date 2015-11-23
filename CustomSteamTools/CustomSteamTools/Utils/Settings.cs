@@ -21,49 +21,64 @@ namespace CustomSteamTools.Utils
 		public static Settings Instance
 		{ get; private set; }
 
+		#region settings
+
+		[Setting("Last access time (in ticks) of bp.tf price list.")]
 		[JsonProperty]
 		public long PriceListLastAccess
 		{ get; set; }
 
+		[Setting("Last access time (in ticks) of marketplace price list.")]
 		[JsonProperty]
 		public long MarketPricesLastAccess
 		{ get; set; }
 
+		[Setting("Last access time (in ticks) of TF2 item schema.")]
 		[JsonProperty]
 		public long SchemaLastAccess
 		{ get; set; }
 
+		[Setting("Last access time (in ticks) of home user's backpack.")]
 		[JsonProperty]
 		public long BackpackLastAccess
 		{ get; set; }
 
+		[Setting("Lenth of time to wait during download before timing out and giving up.")]
 		[JsonProperty]
 		public int DownloadTimeoutSeconds
 		{ get; set; }
 
+		[Setting("SteamID64 of main user. Used for 'home' backpack caching.")]
 		[JsonProperty]
 		public string HomeSteamID64
 		{ get; set; }
 
+		[Setting("Steam persona name of main user. Used to denote home user apart from others.")]
 		[JsonProperty]
 		public string SteamPersonaName
 		{ get; set; }
 
+		[Setting("API key supplied by backpack.tf.")]
 		[JsonProperty]
 		public string BackpackTFAPIKey
 		{ get; set; }
 
+		[Setting("API key supplied by Steam dev.")]
 		[JsonProperty]
 		public string SteamAPIKey
 		{ get; set; }
 
+		[Setting("Number of listings during deal-finding that are below threshold before marking as 'falling price'.")]
 		[JsonProperty]
 		public int DealsPriceDropThresholdListingCount
 		{ get; set; }
 
+		[Setting("Amount below bp.tf price a classified listing must be before contributing to 'falling price' threshold.")]
 		[JsonProperty]
 		public double DealsPriceDropThresholdPriceBelow
 		{ get; set; }
+
+		#endregion settings
 
 		public TimeSpan DownloadTimeout => TimeSpan.FromSeconds(DownloadTimeoutSeconds);
 
@@ -147,6 +162,18 @@ namespace CustomSteamTools.Utils
 			DownloadTimeoutSeconds = 20;
 			DealsPriceDropThresholdListingCount = 3;
 			DealsPriceDropThresholdPriceBelow = 0.97;
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+	public class SettingAttribute : Attribute
+	{
+		public string Meaning
+		{ get; private set; }
+
+		public SettingAttribute(string meaning)
+		{
+			Meaning = meaning;
 		}
 	}
 }

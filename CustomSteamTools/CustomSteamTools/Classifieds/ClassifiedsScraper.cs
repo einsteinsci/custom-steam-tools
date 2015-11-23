@@ -8,7 +8,10 @@ using CustomSteamTools.Items;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
 
+using UltimateUtil;
+
 using HtmlAgilityPack;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Classifieds
 {
@@ -33,12 +36,12 @@ namespace CustomSteamTools.Classifieds
 			url += "&australium=" + (australium ? 1 : -1).ToString();
 			url += "&killstreak_tier=0";
 			
-			LoggerOld.Log("Downloading listings from " + url.SubstringMax(100) + "...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("Downloading listings from {0}...", url.Shorten(100, ""));
 			WebClient client = new WebClient();
 			string html = client.DownloadString(url);
 			//Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
-			LoggerOld.Log("  Scraping listings from HTML...", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Scraping listings from HTML...");
 			HtmlDocument doc = new HtmlDocument();
 			doc.LoadHtml(html);
 
@@ -52,7 +55,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (sellOrderRoot == null)
 			{
-				LoggerOld.Log("  No sell orders found.", ConsoleColor.DarkGray);
+				VersatileIO.Verbose("  No sell orders found.");
 			}
 			else
 			{
@@ -99,7 +102,7 @@ namespace CustomSteamTools.Classifieds
 
 					results.Add(listing);
 				}
-				LoggerOld.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
+				VersatileIO.Verbose("  Sell order scrape complete.");
 			}
 			#endregion sells
 
@@ -109,7 +112,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (buyOrderRoot == null)
 			{
-				LoggerOld.Log("  No buy orders found.", ConsoleColor.DarkGray);
+				VersatileIO.Verbose("  No buy orders found.");
 			}
 			else
 			{
@@ -157,7 +160,7 @@ namespace CustomSteamTools.Classifieds
 					results.Add(listing);
 				}
 
-				//Logger.Log("  Buy order scrape complete.", ConsoleColor.DarkGray);
+				VersatileIO.Verbose("  Buy order scrape complete.");
 			}
 			#endregion buys
 

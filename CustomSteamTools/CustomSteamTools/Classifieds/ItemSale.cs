@@ -5,30 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Items;
+using UltimateUtil;
 
 namespace CustomSteamTools.Classifieds
 {
-    public class ItemSale
-    {
-        public ItemPricing Pricing
-        { get; private set; }
+	public class ItemSale
+	{
+		public ItemPricing Pricing
+		{ get; private set; }
 
-        public Item Item => Pricing.Item;
+		public Item Item => Pricing.Item;
 
-        public List<ClassifiedsListing> Sellers
-        { get; private set; }
+		public List<ClassifiedsListing> Sellers
+		{ get; private set; }
 
 		public List<ClassifiedsListing> Buyers
 		{ get; private set; }
 
-        public bool HasQuickDeal
-        { get; set; }
+		public bool HasQuickDeal
+		{ get; set; }
 
 		public Price Profit
 		{
 			get
 			{
-				return Pricing.PriceMid - CheapestSeller.Price;
+				return Pricing.Prices.Mid - CheapestSeller.Price;
 			}
 		}
 
@@ -70,15 +71,15 @@ namespace CustomSteamTools.Classifieds
 			}
 		}
 
-        public ItemSale(ItemPricing pricing)
-        {
-            Pricing = pricing;
+		public ItemSale(ItemPricing pricing)
+		{
+			Pricing = pricing;
 
 			HasQuickDeal = false;
 
 			Sellers = new List<ClassifiedsListing>();
 			Buyers = new List<ClassifiedsListing>();
-        }
+		}
 
 		public override string ToString()
 		{
@@ -98,7 +99,30 @@ namespace CustomSteamTools.Classifieds
 			return res;
 		}
 
-		public object[] ToComplexOutput(string prefix = "", string suffix = "")
+		/// <summary>
+		/// Converts to complex string for <see cref="VersatileIO.WriteComplex(string, char)"/>
+		/// </summary>
+		/// <param name="esc">Escape code to use in formatted string</param>
+		/// <returns>A formatted string for formatted colored output</returns>
+		public string ToComplexString()
+		{
+			string res = "";
+
+			if (HasQuickDeal)
+			{
+				res += "&a[QUICK] ";
+			}
+
+			ClassifiedsListing cheapest = CheapestSeller;
+			res += "{0}{1} &8> Starting at &7{2} (&f{3} profit&7) from &8{4}".Fmt(Pricing.Quality.GetColorCode(),
+				Pricing.ToUnpricedString(), cheapest.Price, Profit,
+				(cheapest.ListerNickname ?? cheapest.ListerSteamID64));
+
+			return res;
+		}
+
+		[Obsolete]
+		public object[] ToComplexOutputOld(string prefix = "", string suffix = "")
 		{
 			List<object> res = new List<object>();
 			res.Add(prefix);
@@ -125,7 +149,7 @@ namespace CustomSteamTools.Classifieds
 			res.Add(ConsoleColor.Gray);
 			res.Add(") from ");
 
-			res.Add(ConsoleColor.Gray);
+			res.Add(ConsoleColor.DarkGray);
 			res.Add(cheapest.ListerNickname ?? cheapest.ListerSteamID64);
 
 			res.Add(suffix);

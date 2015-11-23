@@ -242,7 +242,7 @@ namespace CustomSteamTools
 					string sA = LoggerOld.GetInput("Australium? ");
 					try
 					{
-						australium = Util.ParseAdvancedBool(sA);
+						australium = BooleanUtil.ParseLoose(sA);
 					}
 					catch (FormatException)
 					{
@@ -263,7 +263,7 @@ namespace CustomSteamTools
 						string sCr = LoggerOld.GetInput("Craftable? ");
 						try
 						{
-							craftable = Util.ParseAdvancedBool(sCr);
+							craftable = BooleanUtil.ParseLoose(sCr);
 						}
 						catch (FormatException)
 						{
@@ -280,7 +280,7 @@ namespace CustomSteamTools
 						string sTr = LoggerOld.GetInput("Tradable? ");
 						try
 						{
-							tradable = Util.ParseAdvancedBool(sTr);
+							tradable = BooleanUtil.ParseLoose(sTr);
 						}
 						catch (FormatException)
 						{
@@ -325,7 +325,7 @@ namespace CustomSteamTools
 					ConsoleColor.White, c.Price.ToString(),
 					ConsoleColor.Gray, " from ",
 					ConsoleColor.White, c.ListerNickname ?? c.ListerSteamID64,
-					ConsoleColor.Gray, c.Comment == null ? "" : ": " + c.Comment.SubstringMax(100)
+					ConsoleColor.Gray, c.Comment == null ? "" : ": " + c.Comment.Shorten(100)
 				};
 
 				LoggerOld.LogComplex(logLine);
@@ -373,7 +373,7 @@ namespace CustomSteamTools
 			double avg = 0;
 			foreach (ItemPricing p in validPrices)
 			{
-				avg += (p.PriceHigh.TotalRefined + p.PriceLow.TotalRefined) / 2.0;
+				avg += p.Prices.Mid.TotalRefined;
 			}
 			avg /= (double)validPrices.Count;
 			Price estimate = new Price(0, avg);
@@ -658,7 +658,7 @@ namespace CustomSteamTools
 					continue;
 				}
 
-				if (p.PriceHigh <= max && p.PriceLow >= min)
+				if (p.Prices.Contains(new PriceRange(min, max)))
 				{
 					results.Add(p);
 				}
@@ -875,8 +875,8 @@ namespace CustomSteamTools
 					LoggerOld.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), color);
 				}
 
-				lowNetWorth += pricing.PriceLow;
-				highNetWorth += pricing.PriceHigh;
+				lowNetWorth += pricing.Prices.Low;
+				highNetWorth += pricing.Prices.High;
 			}
 
 			if (lowNetWorth == highNetWorth)
@@ -945,7 +945,7 @@ namespace CustomSteamTools
 			object[] filtersRes = buf.ToArray();
 			#endregion filters
 
-			List<ItemSale> res = DealFinder.FindDeals(steamID, filtersRes);
+			List<ItemSale> res = DealFinder.FindDeals(steamID, null);
 			if (res == null) // failed
 			{
 				return;
@@ -957,7 +957,7 @@ namespace CustomSteamTools
 			LoggerOld.Log(res.Count.ToString() + " deals found:", ConsoleColor.White);
 			foreach (ItemSale sale in res)
 			{
-				LoggerOld.LogComplex(sale.ToComplexOutput("  "));
+				LoggerOld.LogComplex(sale.ToComplexOutputOld("  "));
 			}
 
 			Console.Beep();
@@ -1125,12 +1125,12 @@ namespace CustomSteamTools
 				{
 					if (priciestValue == null)
 					{
-						priciestValue = p.PriceHigh;
+						priciestValue = p.Prices.High;
 						priciestWeapon = i;
 					}
-					else if (p.PriceHigh > priciestValue)
+					else if (p.Prices.High > priciestValue)
 					{
-						priciestValue = p.PriceHigh;
+						priciestValue = p.Prices.High;
 						priciestWeapon = i;
 					}
 				}

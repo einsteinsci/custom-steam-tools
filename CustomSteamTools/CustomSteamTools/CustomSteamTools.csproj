@@ -53,12 +53,14 @@
     <Compile Include="Classifieds\ClassifiedsListing.cs" />
     <Compile Include="Classifieds\ClassifiedsScraper.cs" />
     <Compile Include="Classifieds\DealFinder.cs" />
+    <Compile Include="Classifieds\DealFilters.cs" />
     <Compile Include="Classifieds\ItemPricing.cs" />
     <Compile Include="Classifieds\ItemSale.cs" />
     <Compile Include="Classifieds\ListingProperties.cs" />
     <Compile Include="CommandHandlerOld.cs" />
     <Compile Include="Commands\CmdBuyers.cs" />
     <Compile Include="Commands\CmdClassifiedsBase.cs" />
+    <Compile Include="Commands\CmdDeals.cs" />
     <Compile Include="Commands\CmdHelp.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
     <Compile Include="Commands\CmdKillstreak.cs" />

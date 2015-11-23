@@ -25,14 +25,14 @@ namespace BackpackTFConsole
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0); // strange orange
-			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122); // vintage blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0); // collector's red
-			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172); // unusual purple
-			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171); // haunted teal
-			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255); // "this is where you come in" blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);	// darken verbose gray
-			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);		// to set apart debug gray
+			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0);		// strange orange
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122);		// vintage blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0);			// collector's red
+			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172);	// unusual purple
+			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171);			// haunted teal
+			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255);			// "this is where you come in" blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);		// darken verbose gray
+			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);			//   to differentiate from debug gray
 
 			Console.Title = "Trade Helper Console";
 
@@ -54,6 +54,7 @@ namespace BackpackTFConsole
 			CommandHandler.Instance.OnPreCommand += PreCommand;
 
 			DataManager.AutoSetup(true);
+			CmdDeals.DoBeepOnFinished = true;
 
 			string input = "";
 			while (input.ToLower() != "exit")
@@ -76,19 +77,6 @@ namespace BackpackTFConsole
 				if (e.Args.Count == 0)
 				{
 					e.Args.Add(Settings.Instance.HomeSteamID64);
-					return false;
-				}
-
-				if (e.Args[0].ToLower() == "me")
-				{
-					e.Args[0] = Settings.Instance.HomeSteamID64;
-				}
-			}
-			if (e.Name.ToLower() == "deals")
-			{
-				if (e.Args.Count == 0)
-				{
-					e.Args.Insert(0, Settings.Instance.HomeSteamID64);
 					return false;
 				}
 
