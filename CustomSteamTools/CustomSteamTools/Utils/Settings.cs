@@ -39,6 +39,10 @@ namespace CustomSteamTools.Utils
 		public int DownloadTimeoutSeconds
 		{ get; set; }
 
+		[JsonProperty]
+		public string HomeSteamID64
+		{ get; set; }
+
 		public TimeSpan DownloadTimeout => TimeSpan.FromSeconds(DownloadTimeoutSeconds);
 
 		public static void Load()

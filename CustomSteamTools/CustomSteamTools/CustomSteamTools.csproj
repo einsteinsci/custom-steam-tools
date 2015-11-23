@@ -64,6 +64,8 @@
     <Compile Include="Commands\CmdKillstreak.cs" />
     <Compile Include="Commands\CmdRefresh.cs" />
     <Compile Include="Commands\CmdSellers.cs" />
+    <Compile Include="Commands\CmdSettings.cs" />
+    <Compile Include="Commands\CmdSkins.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="Commands\ITradeCommand.cs" />
     <Compile Include="Commands\CmdPriceCheck.cs" />

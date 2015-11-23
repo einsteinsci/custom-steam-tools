@@ -66,6 +66,26 @@ namespace CustomSteamTools.Items
 		{
 			return g.ToString() + " Grade";
 		}
+		public static ConsoleColor GetColor(this SkinGrade g)
+		{
+			switch (g)
+			{
+			case SkinGrade.Civilian:
+				return ConsoleColor.White;
+			case SkinGrade.Freelance:
+				return ConsoleColor.DarkBlue;
+			case SkinGrade.Mercenary:
+				return ConsoleColor.Blue;
+			case SkinGrade.Commando:
+				return ConsoleColor.DarkMagenta;
+			case SkinGrade.Assassin:
+				return ConsoleColor.Magenta;
+			case SkinGrade.Elite:
+				return ConsoleColor.Red;
+			default:
+				return ConsoleColor.Gray;
+			}
+		}
 
 		public static string GetPrefixString(this GunMettleCase c)
 		{
