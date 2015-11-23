@@ -25,11 +25,6 @@ namespace CustomSteamTools
 	// the "main" class in this DLL
 	public static class DataManager
 	{
-		public const string BPTF_API_KEY = "5612f911ba8d880424a41d01";
-		public const string STEAM_API_KEY = "692BC909FAF4C20E94B49A0DD7CCBC23";
-		public const string TF2_APP_ID = "440";
-		public const string SEALEDINTERFACE_STEAMID = "76561198111510726";
-
 		public static string PriceDataUrl
 		{ get; set; }
 		public static string SchemaUrl
@@ -87,14 +82,14 @@ namespace CustomSteamTools
 		public static MarketReference MarketPrices
 		{ get; private set; }
 
-		public static void Initialize(bool fancyJson)
+		public static void Initialize()
 		{
-			string _cachelocation = Environment.GetEnvironmentVariable("TEMP") + "\\BACKPACK.TF-PRICELIST\\";
+			string _cachelocation = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "CUSTOM-STEAM-TOOLS");
 			string _bptffilename = "bptf-pricedata.json";
 			string _itemfilename = "tf2-itemdata.json";
-			string _bpdatafilename = "steam-backpackdata-sealedinterface.json";
+			string _bpdatafilename = "steam-backpackdata-homeuser.json";
 			string _marketfilename = "bptf-marketdata.json";
-			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename, fancyJson);
+			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename);
 
 			BackpackCaches = new Dictionary<string, string>();
 			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
@@ -102,26 +97,18 @@ namespace CustomSteamTools
 		}
 		
 		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
-			string backpackFilename, string marketFilename, bool fancyJson)
+			string backpackFilename, string marketFilename)
 		{
-			PriceDataUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + BPTF_API_KEY;
+			PriceDataUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + 
+				Settings.Instance.BackpackTFAPIKey + "&format=pretty";
 
-			if (fancyJson)
-			{
-				PriceDataUrl += "&format=pretty";
-			}
+			SchemaUrl = "http://api.steampowered.com/IEconItems_440/GetSchema/v0001/?key=" + 
+				Settings.Instance.SteamAPIKey + "&language=en_US";
 
-			SchemaUrl = "http://api.steampowered.com/IEconItems_" + TF2_APP_ID + 
-				"/GetSchema/v0001/?key=" + STEAM_API_KEY + "&language=en_US";
+			MyBackpackDataUrl = GetBackbackUrl(Settings.Instance.HomeSteamID64);
 
-			MyBackpackDataUrl = GetBackbackUrl(SEALEDINTERFACE_STEAMID);
-
-			MarketPricesUrl = "http://backpack.tf/api/IGetMarketPrices/v1/?key=" + BPTF_API_KEY;
-
-			if (fancyJson)
-			{
-				MarketPricesUrl += "&format=pretty";
-			}
+			MarketPricesUrl = "http://backpack.tf/api/IGetMarketPrices/v1/?key=" + 
+				Settings.Instance.BackpackTFAPIKey + "&format=pretty";
 
 			if (!Directory.Exists(cacheLocation))
 			{
@@ -138,8 +125,8 @@ namespace CustomSteamTools
 
 		public static string GetBackbackUrl(string steamID64)
 		{
-			return "http://api.steampowered.com/IEconItems_" + TF2_APP_ID +
-				"/GetPlayerItems/v0001/?key=" + STEAM_API_KEY + "&steamid=" + steamID64;
+			return "http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key=" + 
+				Settings.Instance.SteamAPIKey + "&steamid=" + steamID64;
 		}
 
 		public static void LoadItemSchema(bool forceOffline)
@@ -219,10 +206,10 @@ namespace CustomSteamTools
 			bool failed = false;
 			if (!offline)
 			{
-				VersatileIO.Debug("Downloading backpack data for 'sealed interface'...");
+				VersatileIO.Debug("Downloading backpack data for '{0}'...", Settings.Instance.SteamPersonaName);
 				try
 				{
-					MyBackpackCache = Util.DownloadString(GetBackbackUrl(SEALEDINTERFACE_STEAMID), 
+					MyBackpackCache = Util.DownloadString(GetBackbackUrl(Settings.Instance.HomeSteamID64), 
 						Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
@@ -465,7 +452,7 @@ namespace CustomSteamTools
 
 		public static TF2BackpackJson ParseBackpackJson()
 		{
-			VersatileIO.Verbose("Parsing steam backpack data for 'sealed interface'...");
+			VersatileIO.Verbose("Parsing steam backpack data for '{0}'...", Settings.Instance.SteamPersonaName);
 			MyBackpackDataRaw = JsonConvert.DeserializeObject<TF2BackpackJson>(MyBackpackCache);
 			VersatileIO.Verbose("  Parse complete.");
 
@@ -515,11 +502,12 @@ namespace CustomSteamTools
 
 		#endregion JSON stuff
 
-		public static void AutoSetup(bool fancy = false, bool force = true)
+		public static void AutoSetup(bool force = true)
 		{
 			Settings.Load();
+			Settings.Instance.GetNecessaryInfo();
 
-			Initialize(fancy);
+			Initialize();
 
 			bool success = false;
 			while (!success)
@@ -542,7 +530,7 @@ namespace CustomSteamTools
 				}
 			}
 
-			Settings.Save();
+			Settings.Instance.Save();
 
 			FixHauntedItems();
 		}

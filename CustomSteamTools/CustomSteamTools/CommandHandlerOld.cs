@@ -306,7 +306,7 @@ namespace CustomSteamTools
 
 			LoggerOld.Log("Getting classifieds for " + searchedItemInfo + "...");
 			List<ClassifiedsListing> classifieds = ClassifiedsScraper.GetClassifieds(
-				item, quality, verify, craftable.Value, tradable.Value, australium.Value);
+				item, quality, craftable.Value, tradable.Value, australium.Value);
 			classifieds.RemoveAll((c) => c.OrderType != orderType);
 
 			if (classifieds == null || classifieds.Count == 0)
@@ -401,7 +401,7 @@ namespace CustomSteamTools
 		// refresh
 		public static void ForceRefresh(List<string> args)
 		{
-			DataManager.AutoSetup(true, true);
+			DataManager.AutoSetup(true);
 			ClassifiedsScraper.SteamBackpackDown = false;
 
 			DataManager.BackpackCaches.Clear();
@@ -772,7 +772,7 @@ namespace CustomSteamTools
 			}
 			
 			string id = args[0];
-			if (id == DataManager.SEALEDINTERFACE_STEAMID)
+			if (id == Settings.Instance.HomeSteamID64)
 			{
 				backpackData = DataManager.MyBackpackData;
 			}
@@ -801,7 +801,7 @@ namespace CustomSteamTools
 				}
 			}
 			
-			LoggerOld.Log("Backpack for user " + (id == DataManager.SEALEDINTERFACE_STEAMID ? 
+			LoggerOld.Log("Backpack for user " + (id == Settings.Instance.HomeSteamID64 ? 
 				"'sealed interface'" : "#" + id) + " (" +
 				backpackData.SlotCount.ToString() + " slots):", ConsoleColor.White);
 
@@ -1008,7 +1008,7 @@ namespace CustomSteamTools
 				{
 					excludeBpSteamID = str.Substring("exclude=".Length);
 
-					if (excludeBpSteamID == DataManager.SEALEDINTERFACE_STEAMID)
+					if (excludeBpSteamID == Settings.Instance.HomeSteamID64)
 					{
 						excludeBp = DataManager.MyBackpackData;
 					}

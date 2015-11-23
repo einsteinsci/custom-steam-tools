@@ -35,7 +35,7 @@ namespace CustomSteamTools
 			{
 				if (_refinedPerKey == -1)
 				{
-					DataManager.AutoSetup(true, false);
+					DataManager.AutoSetup(false);
 				}
 
 				return _refinedPerKey;

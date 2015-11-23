@@ -18,7 +18,7 @@ namespace CustomSteamTools.Commands
 		public abstract string RegistryName // "buyers" or "sellers"
 		{ get; }
 
-		public virtual string Syntax => RegistryName + " [/verify | /v] [/q=Quality] [/c] [/uc | /nc] [/t] [/nt]" +
+		public virtual string Syntax => RegistryName + " [/q=Quality] [/c] [/uc | /nc] [/t] [/nt]" +
 			" [/aus] [/noaus] {defindex | itemName | searchQuery}";
 
 		public virtual string Description => "Gets a list of backpack.tf " + RegistryName + " for an item";
@@ -28,7 +28,6 @@ namespace CustomSteamTools.Commands
 		public void RunCommand(CommandHandler handler, List<string> args, OrderType orderType)
 		{
 			#region args
-			bool verify = false;
 			bool? preCraftable = null, preTradable = null, preAus = null;
 			Quality? preQuality = null;
 			while (args.Exists((s) => s.StartsWith("/")))
@@ -36,11 +35,7 @@ namespace CustomSteamTools.Commands
 				string a = args[0].TrimStart('/').ToLower();
 				args.RemoveAt(0);
 
-				if (a == "verify" || a == "v")
-				{
-					verify = true;
-				}
-				else if (a.StartsWith("q="))
+				if (a.StartsWith("q="))
 				{
 					string qStr = a.Substring("q=".Length);
 					preQuality = ItemQualities.ParseNullable(qStr);
@@ -156,7 +151,7 @@ namespace CustomSteamTools.Commands
 			props.Craftable = craftable;
 			props.Tradable = tradable;
 
-			List<ClassifiedsListing> res = GetListings(item, props, orderType, verify);
+			List<ClassifiedsListing> res = GetListings(item, props, orderType);
 
 			if (res.IsEmpty())
 			{
@@ -186,10 +181,10 @@ namespace CustomSteamTools.Commands
 		}
 
 		public static List<ClassifiedsListing> GetListings(Item item, ListingProperties props, 
-			OrderType orderType, bool verify = false)
+			OrderType orderType)
 		{
 			VersatileIO.Info("Searching bp.tf classifieds for {0}...", props.ToString(item));
-			List<ClassifiedsListing> all = ClassifiedsScraper.GetClassifieds(item, props, verify);
+			List<ClassifiedsListing> all = ClassifiedsScraper.GetClassifieds(item, props);
 
 			List<ClassifiedsListing> res = new List<ClassifiedsListing>();
 			foreach (ClassifiedsListing c in all)

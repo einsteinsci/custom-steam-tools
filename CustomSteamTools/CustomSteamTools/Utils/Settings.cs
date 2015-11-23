@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using UltimateUtil.UserInteraction;
+using UltimateUtil;
 
 namespace CustomSteamTools.Utils
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class Settings
 	{
-		public static readonly string LOCATION = Environment.GetEnvironmentVariable("appdata") + "\\CustomSteamTools\\";
-		public static readonly string FILEPATH = LOCATION + "settings.json";
+		public static readonly string LOCATION = Path.Combine(
+			Environment.GetEnvironmentVariable("appdata"), "CustomSteamTools");
+		public static readonly string FILEPATH = Path.Combine(LOCATION, "settings.json");
 
 		public static Settings Instance
 		{ get; private set; }
@@ -43,11 +45,33 @@ namespace CustomSteamTools.Utils
 		public string HomeSteamID64
 		{ get; set; }
 
+		[JsonProperty]
+		public string SteamPersonaName
+		{ get; set; }
+
+		[JsonProperty]
+		public string BackpackTFAPIKey
+		{ get; set; }
+
+		[JsonProperty]
+		public string SteamAPIKey
+		{ get; set; }
+
+		[JsonProperty]
+		public int DealsPriceDropThresholdListingCount
+		{ get; set; }
+
+		[JsonProperty]
+		public double DealsPriceDropThresholdPriceBelow
+		{ get; set; }
+
 		public TimeSpan DownloadTimeout => TimeSpan.FromSeconds(DownloadTimeoutSeconds);
 
-		public static void Load()
+		public static Settings Load(bool affectInstance = true)
 		{
-			VersatileIO.Debug("Loading settings...");
+			Settings res = null;
+
+			VersatileIO.Debug("Loading settings");
 
 			if (!Directory.Exists(LOCATION))
 			{
@@ -57,34 +81,72 @@ namespace CustomSteamTools.Utils
 			if (File.Exists(FILEPATH))
 			{
 				string contents = File.ReadAllText(FILEPATH);
-				Instance = JsonConvert.DeserializeObject<Settings>(contents);
+				res = JsonConvert.DeserializeObject<Settings>(contents);
 			}
 			else
 			{
-				Instance = new Settings();
+				res = new Settings();
 			}
 
-			LoggerOld.Log("  Settings loaded.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Settings loaded.");
+
+			if (affectInstance)
+			{
+				Instance = res;
+			}
+
+			return res;
 		}
 
-		public static void Save()
+		public void GetNecessaryInfo()
 		{
-			LoggerOld.Log("Saving settings...", ConsoleColor.DarkGray);
+			bool save = false;
+
+			if (HomeSteamID64.IsNullOrEmpty())
+			{
+				HomeSteamID64 = VersatileIO.GetString("Enter your SteamID64: ");
+				SteamPersonaName = VersatileIO.GetString("Enter your Steam persona name: ");
+				save = true;
+			}
+
+			if (BackpackTFAPIKey.IsNullOrEmpty())
+			{
+				BackpackTFAPIKey = VersatileIO.GetString("Enter your backpack.tf API key: ");
+				save = true;
+			}
+
+			if (SteamAPIKey.IsNullOrEmpty())
+			{
+				SteamAPIKey = VersatileIO.GetString("Enter your steam API key: ");
+				save = true;
+			}
+
+			if (save)
+			{
+				Save();
+			}
+		}
+
+		public void Save()
+		{
+			VersatileIO.Debug("Saving settings");
 			
 			if (!Directory.Exists(LOCATION))
 			{
 				Directory.CreateDirectory(LOCATION);
 			}
 
-			string contents = JsonConvert.SerializeObject(Instance, Formatting.Indented);
+			string contents = JsonConvert.SerializeObject(this, Formatting.Indented);
 			File.WriteAllText(FILEPATH, contents);
 
-			LoggerOld.Log("  Settings saved.", ConsoleColor.DarkGray);
+			VersatileIO.Verbose("  Settings saved.");
 		}
 
 		public Settings()
 		{
 			DownloadTimeoutSeconds = 20;
+			DealsPriceDropThresholdListingCount = 3;
+			DealsPriceDropThresholdPriceBelow = 0.97;
 		}
 	}
 }

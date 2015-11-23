@@ -17,8 +17,8 @@ namespace BackpackTFConsole
 {
 	public class Program
 	{
-		public static readonly string logFolder = Environment.GetEnvironmentVariable("TEMP") +
-			"\\BACKPACK.TF-PRICELIST\\logs\\";
+		public static readonly string logFolder = Path.Combine(Environment.GetEnvironmentVariable("TEMP"),
+			"BACKPACK.TF-PRICELIST", "logs");
 		public static readonly string logFile = logFolder + "log-" + 
 			DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss") + ".txt";
 
@@ -53,7 +53,7 @@ namespace BackpackTFConsole
 			CommandHandler.Initialize();
 			CommandHandler.Instance.OnPreCommand += PreCommand;
 
-			DataManager.AutoSetup(true, true);
+			DataManager.AutoSetup(true);
 
 			string input = "";
 			while (input.ToLower() != "exit")
@@ -75,26 +75,26 @@ namespace BackpackTFConsole
 			{
 				if (e.Args.Count == 0)
 				{
-					e.Args.Add(DataManager.SEALEDINTERFACE_STEAMID);
+					e.Args.Add(Settings.Instance.HomeSteamID64);
 					return false;
 				}
 
 				if (e.Args[0].ToLower() == "me")
 				{
-					e.Args[0] = DataManager.SEALEDINTERFACE_STEAMID;
+					e.Args[0] = Settings.Instance.HomeSteamID64;
 				}
 			}
 			if (e.Name.ToLower() == "deals")
 			{
 				if (e.Args.Count == 0)
 				{
-					e.Args.Insert(0, DataManager.SEALEDINTERFACE_STEAMID);
+					e.Args.Insert(0, Settings.Instance.HomeSteamID64);
 					return false;
 				}
 
 				if (e.Args[0].ToLower() == "me")
 				{
-					e.Args[0] = DataManager.SEALEDINTERFACE_STEAMID;
+					e.Args[0] = Settings.Instance.HomeSteamID64;
 				}
 			}
 			if (e.Name.ToLower() == "weapons")
@@ -103,7 +103,7 @@ namespace BackpackTFConsole
 				{
 					if (e.Args[i].ToLower() == "exclude=me")
 					{
-						e.Args[i] = "exclude=" + DataManager.SEALEDINTERFACE_STEAMID;
+						e.Args[i] = "exclude=" + Settings.Instance.HomeSteamID64;
 						break;
 					}
 				}
@@ -130,7 +130,7 @@ namespace BackpackTFConsole
 				Console.BackgroundColor = e.Background.Value;
 			}
 
-			Console.WriteLine(e.Message);
+			Console.WriteLine("[OLD LOGGING] " + e.Message);
 
 			File.AppendAllLines(logFile, new string[] { GetTimeStamp() + e.Message });
 		}
@@ -138,6 +138,7 @@ namespace BackpackTFConsole
 		[Obsolete]
 		private static void DebugLogComplex(object sender, LogComplexEventArgs e)
 		{
+			Console.Write("[OLD LOGGING] ");
 			foreach (object obj in e.Arguments)
 			{
 				if (obj is ConsoleColor)
@@ -173,11 +174,11 @@ namespace BackpackTFConsole
 
 			if (e.NewlineAfterPrompt)
 			{
-				Console.WriteLine(e.Prompt);
+				Console.WriteLine("[OLD LOGGING] " + e.Prompt);
 			}
 			else
 			{
-				Console.Write(e.Prompt);
+				Console.Write("[OLD LOGGING] " + e.Prompt);
 			}
 
 			return Console.ReadLine();

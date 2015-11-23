@@ -17,12 +17,12 @@ namespace CustomSteamTools.Classifieds
 		public static bool SteamBackpackDown
 		{ get; set; }
 
-		public static List<ClassifiedsListing> GetClassifieds(Item item, ListingProperties props, bool verify = false)
+		public static List<ClassifiedsListing> GetClassifieds(Item item, ListingProperties props)
 		{
-			return GetClassifieds(item, props.Quality, verify, props.Craftable, props.Tradable, props.Australium);
+			return GetClassifieds(item, props.Quality, props.Craftable, props.Tradable, props.Australium);
 		}
 
-		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality, bool verifySellers = false,
+		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
 			string url = "http://backpack.tf/classifieds?item=";
@@ -97,14 +97,6 @@ namespace CustomSteamTools.Classifieds
 						continue;
 					}
 
-					if (verifySellers)
-					{
-						if (!UserHasItem(listing.ListerSteamID64, instance))
-						{
-							LoggerOld.Log("  Dead listing. Skipping.", ConsoleColor.DarkGray);
-						}
-					}
-
 					results.Add(listing);
 				}
 				LoggerOld.Log("  Sell order scrape complete.", ConsoleColor.DarkGray);
@@ -172,6 +164,7 @@ namespace CustomSteamTools.Classifieds
 			return results;
 		}
 
+		[Obsolete]
 		public static bool UserHasItem(string steamID, ItemInstance inst)
 		{
 			if (SteamBackpackDown)
@@ -181,7 +174,7 @@ namespace CustomSteamTools.Classifieds
 			}
 
 			Backpack bp = null;
-			if (steamID == DataManager.SEALEDINTERFACE_STEAMID)
+			if (steamID == Settings.Instance.HomeSteamID64)
 			{
 				bp = DataManager.MyBackpackData;
 			}
