@@ -42,12 +42,19 @@ namespace BumpTimer
 		private void timerResetBtn_Click(object sender, RoutedEventArgs e)
 		{
 			timerResetBtn.Visibility = Visibility.Hidden;
+			resetThumbBtn.Visibility = Visibility.Collapsed;
+
 			timerBar.Value = 0;
 			timerBar.Maximum = MAX_TIME.TotalSeconds;
 
 			timerText.Text = "00:00";
 
 			WorkerThread.RunWorkerAsync();
+		}
+
+		private void resetThumbBtn_Click(object sender, EventArgs e)
+		{
+			timerResetBtn_Click(sender, null);
 		}
 
 		private void Window_Initialized(object sender, EventArgs e)
@@ -76,6 +83,7 @@ namespace BumpTimer
 			timerText.Text = MAX_TIME.ToString("mm\\:ss");
 
 			timerResetBtn.Visibility = Visibility.Visible;
+			resetThumbBtn.Visibility = Visibility.Collapsed;
 
 			SystemSounds.Asterisk.Play();
 			FlashHelper.FlashApplicationWindow();

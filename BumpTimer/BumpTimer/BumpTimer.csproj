@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>8bit-timer.ico</ApplicationIcon>
+    <ApplicationIcon>clock.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -102,7 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="8bit-timer.ico" />
-    <Resource Include="8bit-timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="clock.ico" />
+    <Resource Include="refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
