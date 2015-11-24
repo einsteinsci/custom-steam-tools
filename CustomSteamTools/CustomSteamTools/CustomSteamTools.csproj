@@ -47,6 +47,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UltimateUtil, Version=1.1.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UltimateUtil.1.1.0.6\lib\UltimateUtil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backpack\Backpack.cs" />
@@ -140,12 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\ultimate-util\UltimateUtil\UltimateUtil\UltimateUtil.csproj">
-      <Project>{927cc5f4-bafb-4683-8ab4-f3eaa2fcd26f}</Project>
-      <Name>UltimateUtil</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
