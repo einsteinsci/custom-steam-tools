@@ -152,9 +152,7 @@ namespace CustomSteamTools.Commands
 				}
 				else
 				{
-					PresetVersatileConsoleIO.PromptColor = ConsoleColor.White;
 					index = VersatileIO.GetSelection("Select an item: ", possibleItems.ConvertAll((i) => i.ToString()));
-					PresetVersatileConsoleIO.PromptColor = VersatileIO.LevelColors[LogLevel.Interface];
 				}
 
 				item = possibleItems[index];

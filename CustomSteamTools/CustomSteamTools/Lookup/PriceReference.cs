@@ -8,6 +8,7 @@ using CustomSteamTools.Utils;
 using CustomSteamTools.Items;
 using CustomSteamTools.Json.PriceDataJson;
 using CustomSteamTools.Classifieds;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Lookup
 {
@@ -100,7 +101,7 @@ namespace CustomSteamTools.Lookup
 						s_ids += l.ToString() + " ";
 					}
 					s_ids += "]";
-					LoggerOld.Log("Could not find item with any ID among " + s_ids, ConsoleColor.Red);
+					VersatileIO.Error("Could not find item with any ID among " + s_ids);
 				}
 
 				bool australium = kvp0.Key.StartsWith("Australium ");

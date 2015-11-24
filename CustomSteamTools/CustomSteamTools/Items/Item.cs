@@ -278,7 +278,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					VersatileIO.Error("No target found for killstreakifier '" + UnlocalizedName + "'.");
+					VersatileIO.Error("No target found for killstreakifier '{0}'.", UnlocalizedName);
 				}
 				else
 				{
@@ -292,7 +292,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					VersatileIO.Error("No target found for killstreakifier '" + UnlocalizedName + "'.");
+					VersatileIO.Error("No target found for killstreakifier '{0}'.", UnlocalizedName);
 				}
 			}
 			else if (IsStrangifier())
@@ -312,7 +312,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					LoggerOld.Log("No target found for strangifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					VersatileIO.Error("No target found for strangifier '{0}'.", UnlocalizedName);
 				}
 				else
 				{

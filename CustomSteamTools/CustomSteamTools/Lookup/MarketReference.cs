@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CustomSteamTools.Utils;
 using CustomSteamTools.Json.MarketPricesJson;
 using CustomSteamTools.Market;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Lookup
 {
@@ -21,7 +22,7 @@ namespace CustomSteamTools.Lookup
 
 			if (json.response.success == 0)
 			{
-				LoggerOld.Log("Market price data failed: " + json.response.message, ConsoleColor.Red);
+				VersatileIO.Error("Market price data failed: " + json.response.message);
 				return;
 			}
 
