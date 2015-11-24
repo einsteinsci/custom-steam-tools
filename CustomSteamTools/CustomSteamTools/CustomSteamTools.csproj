@@ -82,6 +82,7 @@
     <Compile Include="Items\AppliedInstanceAttribute.cs" />
     <Compile Include="Items\GunMettleSkins.cs" />
     <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemPriceInfo.cs" />
     <Compile Include="Items\ItemAttribute.cs" />
     <Compile Include="Items\ItemInstance.cs" />
     <Compile Include="Items\ItemSet.cs" />

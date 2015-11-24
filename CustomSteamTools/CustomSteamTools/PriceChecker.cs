@@ -71,40 +71,48 @@ namespace CustomSteamTools
 			return new PriceRange(p.Price);
 		}
 
-		public static FlaggedResult<PriceRange?, string> GetPriceFlagged(ItemInstance item)
+		public static FlaggedResult<PriceRange?, string> GetPriceFlagged(ItemPriceInfo item)
 		{
 			List<string> flags = new List<string>();
 
 			PriceRange? res = null;
-			if (item.Item.IsSkin())
+			if (item.Skin != null)
 			{
-				res = GetSkinPrice(item.Item, item.GetSkinWear().GetValueOrDefault());
+				res = GetSkinPrice(item.Item, item.SkinWear.GetValueOrDefault());
 				flags.AddIfMissing("market");
 			}
 
-			if (res == null && item.GetKillstreak() != KillstreakType.None)
+			if (res == null && item.Killstreak != KillstreakType.None)
 			{
-				res = GetKillstreakPrice(item.Item, item.Quality, item.GetKillstreak());
+				res = GetKillstreakPrice(item.Item, item.Quality, item.Killstreak);
 				flags.AddIfMissing("market");
 			}
 
 			if (res == null)
 			{
-				res = GetNormalPrice(item.Item, item.Quality, item.Craftable, item.GetUnusual());
+				res = GetNormalPrice(item.Item, item.Quality, item.Craftable, item.Unusual);
 			}
 
 			if (res == null) // still
 			{
-				string hash = MarketPricing.GetMarketHash(item.Item, item.GetKillstreak(), item.Quality);
+				string hash = MarketPricing.GetMarketHash(item.Item, item.Killstreak, item.Quality);
 				res = GetMarketPriceRange(hash);
 				flags.AddIfMissing("market");
 			}
 
 			return new FlaggedResult<PriceRange?, string>(res, flags);
 		}
-		public static PriceRange? GetPrice(ItemInstance item)
+		public static FlaggedResult<PriceRange?, string> GetPriceFlagged(ItemInstance inst)
+		{
+			return GetPriceFlagged(new ItemPriceInfo(inst));
+		}
+		public static PriceRange? GetPrice(ItemPriceInfo item)
 		{
 			return GetPriceFlagged(item).Result;
+		}
+		public static PriceRange? GetPrice(ItemInstance inst)
+		{
+			return GetPrice(new ItemPriceInfo(inst));
 		}
 	}
 }

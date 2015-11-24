@@ -83,7 +83,7 @@ namespace BumpTimer
 			timerText.Text = MAX_TIME.ToString("mm\\:ss");
 
 			timerResetBtn.Visibility = Visibility.Visible;
-			resetThumbBtn.Visibility = Visibility.Collapsed;
+			resetThumbBtn.Visibility = Visibility.Visible;
 
 			SystemSounds.Asterisk.Play();
 			FlashHelper.FlashApplicationWindow();

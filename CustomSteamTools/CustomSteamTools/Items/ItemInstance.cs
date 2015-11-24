@@ -151,6 +151,11 @@ namespace CustomSteamTools.Items
 			return res;
 		}
 
+		public ItemPriceInfo ToPriceInfo()
+		{
+			return new ItemPriceInfo(this);
+		}
+
 		public UnusualEffect GetUnusual()
 		{
 			AppliedInstanceAttribute att = Attributes.FirstOrDefault((a) => a.ID == ItemAttribute.UNUSUAL_ID);

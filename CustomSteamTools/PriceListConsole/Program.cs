@@ -30,15 +30,52 @@ namespace BackpackTFConsole
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0);		// strange orange
-			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122);		// vintage blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0);			// collector's red
-			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172);	// unusual purple
-			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171);			// haunted teal
+			string startInput = null;
+			if (args.HasItems())
+			{
+				startInput = string.Join(" ", args);
+			}
 
-			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255);			// user blue
-			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);		// darken verbose gray
-			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);			//   to differentiate from debug gray
+			Initialize();
+
+			string input = startInput ?? "";
+			while (true)
+			{
+				Console.WriteLine();
+
+				if (input.IsNullOrWhitespace())
+				{
+					input = VersatileIO.GetString("datamgr> ");
+				}
+				else
+				{
+					VersatileIO.WriteLine("datamgr-init> " + input);
+				}
+
+				if (input.EqualsIgnoreCase("exit"))
+				{
+					break;
+				}
+
+				DataManager.RunCommand(input);
+
+				input = "";
+			}
+
+			VersatileHandler.Dispose();
+		}
+
+		private static void Initialize()
+		{
+			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0);     // strange orange
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122);       // vintage blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0);          // collector's red
+			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172);   // unusual purple
+			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171);          // haunted teal
+
+			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255);           // user blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);        // darken verbose gray
+			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);         //   to differentiate from debug gray
 
 			Console.Title = "Trade Helper Console";
 
@@ -55,18 +92,6 @@ namespace BackpackTFConsole
 
 			DataManager.AutoSetup(true);
 			CmdDeals.DoBeepOnFinished = true;
-
-			string input = "";
-			while (input.ToLower() != "exit")
-			{
-				Console.WriteLine();
-				input = VersatileIO.GetString("datamgr> ");
-
-				if (input.ToLower() != "exit")
-				{
-					DataManager.RunCommand(input);
-				}
-			}
 		}
 
 		// might be used in the future
