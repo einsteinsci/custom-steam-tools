@@ -44,7 +44,7 @@ namespace CustomSteamTools.Lookup
 			Pricing = pricing;
 			if (Quality == Quality.Unusual)
 			{
-				Unusual = DataManager.Schema.Unusuals.First((ue) => ue.ID == pricing.PriceIndex);
+				Unusual = DataManager.Schema.GetUnusual(pricing.PriceIndex);
 			}
 		}
 

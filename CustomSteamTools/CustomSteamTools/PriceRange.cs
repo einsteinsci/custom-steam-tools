@@ -79,7 +79,7 @@ namespace CustomSteamTools
 
 		public override string ToString()
 		{
-			if (Low == High)
+			if (IsOnePrice)
 			{
 				return Low.ToString();
 			}

@@ -21,5 +21,10 @@ namespace CustomSteamTools.Items
 			ID = json.id;
 			Name = json.name;
 		}
+
+		public override string ToString()
+		{
+			return "#" + ID.ToString() + ": " + Name;
+		}
 	}
 }

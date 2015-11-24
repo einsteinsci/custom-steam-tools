@@ -51,5 +51,18 @@ namespace CustomSteamTools.Lookup
 
 			return null;
 		}
+
+		public UnusualEffect GetUnusual(int id)
+		{
+			foreach (UnusualEffect fx in Unusuals)
+			{
+				if (fx.ID == id)
+				{
+					return fx;
+				}
+			}
+
+			return null;
+		}
 	}
 }

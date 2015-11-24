@@ -56,7 +56,7 @@ namespace CustomSteamTools.Commands
 			VersatileIO.Info("{0} pricings matching filters [{1}].", res.Count, filters.ToString());
 		}
 
-		public List<ItemPricing> GetInRange(PriceRange range, Filters filters)
+		public static List<ItemPricing> GetInRange(PriceRange range, Filters filters)
 		{
 			return DataManager.PriceData.Prices.FindAll((p) => filters.MatchesPricing(p) && range.Contains(p.Pricing));
 		}

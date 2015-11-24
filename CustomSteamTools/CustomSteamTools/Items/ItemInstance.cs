@@ -95,20 +95,27 @@ namespace CustomSteamTools.Items
 			Attributes = new List<AppliedInstanceAttribute>();
 		}
 
-		public string TitleQuick()
+		public string TitleQuick(bool includeKillstreak = false)
 		{
 			if (CustomName != null)
 			{
 				return "'" + CustomName + "'";
 			}
 
+			string res = Item.ToString();
+
+			if (GetKillstreak() != KillstreakType.None)
+			{
+				res = GetKillstreak().ToReadableString() + " " + res;
+			}
+
 			string q = Quality.ToReadableString();
 			if (q != "")
 			{
-				return q + " " + Item.Name;
+				res = q + " " + res;
 			}
 
-			return Item.Name;
+			return res;
 		}
 
 		public string GetSubtext()
@@ -213,7 +220,7 @@ namespace CustomSteamTools.Items
 
 		public override string ToString()
 		{
-			string result = TitleQuick();
+			string result = TitleQuick(true);
 			if (CustomName != null)
 			{
 				result += " (" + Item.ImproperName + ")";

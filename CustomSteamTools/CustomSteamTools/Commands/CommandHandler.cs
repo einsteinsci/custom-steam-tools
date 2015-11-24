@@ -88,7 +88,7 @@ namespace CustomSteamTools.Commands
 				VersatileIO.Error("There was an error running command '{0}': {1}",
 					cmd.RegistryName, e.GetType().Name);
 				VersatileIO.Error(e.ToString());
-				throw;
+				//throw;
 			}
 		}
 
