@@ -8,6 +8,7 @@ using CustomSteamTools.Json.ItemDataJson;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Items
 {
@@ -277,7 +278,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					LoggerOld.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					VersatileIO.Error("No target found for killstreakifier '" + UnlocalizedName + "'.");
 				}
 				else
 				{
@@ -291,7 +292,7 @@ namespace CustomSteamTools.Items
 						}
 					}
 
-					LoggerOld.Log("No target found for killstreakifier '" + UnlocalizedName + "'.", ConsoleColor.Red);
+					VersatileIO.Error("No target found for killstreakifier '" + UnlocalizedName + "'.");
 				}
 			}
 			else if (IsStrangifier())
