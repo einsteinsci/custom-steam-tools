@@ -53,7 +53,7 @@ namespace BackpackTFConsole
 
 		#region io
 
-		public override void OnLogLine(string line, ConsoleColor color)
+		public override void LogLine(string line, ConsoleColor color)
 		{
 			Console.ForegroundColor = color;
 			Console.WriteLine(line);
@@ -61,7 +61,7 @@ namespace BackpackTFConsole
 			LogLineToFile(line);
 		}
 
-		public override void OnLogPart(string text, ConsoleColor? color)
+		public override void LogPart(string text, ConsoleColor? color)
 		{
 			if (color != null)
 			{
@@ -74,7 +74,7 @@ namespace BackpackTFConsole
 
 		public override string GetString(string prompt)
 		{
-			OnLogPart(prompt, ConsoleColor.Blue);
+			LogPart(prompt, ConsoleColor.Blue);
 
 			string res = Console.ReadLine();
 			LogLineToFile(res);
@@ -115,7 +115,7 @@ namespace BackpackTFConsole
 		{
 			foreach (KeyValuePair<string, object> kvp in options)
 			{
-				OnLogLine("  [{0}]: {1}".Fmt(kvp.Key, kvp.Value), ConsoleColor.White);
+				LogLine("  [{0}]: {1}".Fmt(kvp.Key, kvp.Value), ConsoleColor.White);
 			}
 
 			while (true)
@@ -143,7 +143,7 @@ namespace BackpackTFConsole
 		{
 			foreach (KeyValuePair<string, object> kvp in options)
 			{
-				OnLogLine("  [{0}]: {1}".Fmt(kvp.Key, kvp.Value), ConsoleColor.White);
+				LogLine("  [{0}]: {1}".Fmt(kvp.Key, kvp.Value), ConsoleColor.White);
 			}
 			
 			string input = GetString(prompt);
