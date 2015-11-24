@@ -582,10 +582,5 @@ namespace CustomSteamTools
 
 			RunCommand(name, args);
 		}
-
-		public static PriceRange GetPricing(ItemInstance item)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

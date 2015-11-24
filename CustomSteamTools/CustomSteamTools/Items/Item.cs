@@ -176,6 +176,11 @@ namespace CustomSteamTools.Items
 
 		public override string ToString()
 		{
+			if (IsSkin())
+			{
+				return "[Skin] " + GetSkin()?.Name ?? "UNKNOWN";
+			}
+
 			return Name;
 		}
 
@@ -362,7 +367,7 @@ namespace CustomSteamTools.Items
 				return false;
 			}
 
-			return pricing.Prices.Low.TotalRefined < 0.12;
+			return pricing.Pricing.Low.TotalRefined < 0.12;
 		}
 	}
 }

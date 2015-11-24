@@ -373,7 +373,7 @@ namespace CustomSteamTools
 			double avg = 0;
 			foreach (ItemPricing p in validPrices)
 			{
-				avg += p.Prices.Mid.TotalRefined;
+				avg += p.Pricing.Mid.TotalRefined;
 			}
 			avg /= (double)validPrices.Count;
 			Price estimate = new Price(0, avg);
@@ -592,10 +592,11 @@ namespace CustomSteamTools
 				if (noAllClass)
 				{
 					res += "Limited classes: ";
-				}
-				foreach (PlayerClass c in allowedClasses)
-				{
-					res += c.ToString() + " ";
+
+					foreach (PlayerClass c in allowedClasses)
+					{
+						res += c.ToString() + " ";
+					}
 				}
 
 				if (onlyCraftable)
@@ -658,7 +659,7 @@ namespace CustomSteamTools
 					continue;
 				}
 
-				if (p.Prices.Contains(new PriceRange(min, max)))
+				if (p.Pricing.Contains(new PriceRange(min, max)))
 				{
 					results.Add(p);
 				}
@@ -875,8 +876,8 @@ namespace CustomSteamTools
 					LoggerOld.Log("  " + item.ToFullString() + ": " + pricing.GetPriceString(), color);
 				}
 
-				lowNetWorth += pricing.Prices.Low;
-				highNetWorth += pricing.Prices.High;
+				lowNetWorth += pricing.Pricing.Low;
+				highNetWorth += pricing.Pricing.High;
 			}
 
 			if (lowNetWorth == highNetWorth)
@@ -1125,12 +1126,12 @@ namespace CustomSteamTools
 				{
 					if (priciestValue == null)
 					{
-						priciestValue = p.Prices.High;
+						priciestValue = p.Pricing.High;
 						priciestWeapon = i;
 					}
-					else if (p.Prices.High > priciestValue)
+					else if (p.Pricing.High > priciestValue)
 					{
-						priciestValue = p.Prices.High;
+						priciestValue = p.Pricing.High;
 						priciestWeapon = i;
 					}
 				}
@@ -1146,8 +1147,5 @@ namespace CustomSteamTools
 			LoggerOld.Log("Most expensive weapon: " + priciestWeapon + " at " + 
 				priciestValue.ToString(), ConsoleColor.White);
 		}
-
-		// >> helper function
-		
 	}
 }

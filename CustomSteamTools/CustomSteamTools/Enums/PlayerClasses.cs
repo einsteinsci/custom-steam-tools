@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltimateUtil;
 
 namespace CustomSteamTools
 {
@@ -26,8 +27,11 @@ namespace CustomSteamTools
 		public const string PYRO = "Pyro";
 
 		public const string DEMOMAN = "Demoman";
+		public const string DEMOMAN_ALT = "Demo";
 		public const string HEAVY = "Heavy";
+		public const string HEAVY_ALT = "HWG";
 		public const string ENGINEER = "Engineer";
+		public const string ENGINEER_ALT = "Engie";
 
 		public const string MEDIC = "Medic";
 		public const string SNIPER = "Sniper";
@@ -80,44 +84,68 @@ namespace CustomSteamTools
 
 		public static PlayerClass Parse(string s)
 		{
-			if (s.ToLower() == SCOUT.ToLower())
+			if (s.EqualsIgnoreCase(SCOUT))
 			{
 				return PlayerClass.Scout;
 			}
-			if (s.ToLower() == SOLDIER.ToLower())
+			if (s.EqualsIgnoreCase(SOLDIER))
 			{
 				return PlayerClass.Soldier;
 			}
-			if (s.ToLower() == PYRO.ToLower())
+			if (s.EqualsIgnoreCase(PYRO))
 			{
 				return PlayerClass.Pyro;
 			}
-			if (s.ToLower() == DEMOMAN.ToLower())
+			if (s.EqualsIgnoreCase(DEMOMAN) || s.EqualsIgnoreCase(DEMOMAN_ALT))
 			{
 				return PlayerClass.Demoman;
 			}
-			if (s.ToLower() == HEAVY.ToLower())
+			if (s.EqualsIgnoreCase(HEAVY) || s.EqualsIgnoreCase(HEAVY_ALT))
 			{
 				return PlayerClass.Heavy;
 			}
-			if (s.ToLower() == ENGINEER.ToLower())
+			if (s.EqualsIgnoreCase(ENGINEER) || s.EqualsIgnoreCase(ENGINEER_ALT))
 			{
 				return PlayerClass.Engineer;
 			}
-			if (s.ToLower() == MEDIC.ToLower())
+			if (s.EqualsIgnoreCase(MEDIC))
 			{
 				return PlayerClass.Medic;
 			}
-			if (s.ToLower() == SNIPER.ToLower())
+			if (s.EqualsIgnoreCase(SNIPER))
 			{
 				return PlayerClass.Sniper;
 			}
-			if (s.ToLower() == SPY.ToLower())
+			if (s.EqualsIgnoreCase(SPY))
 			{
 				return PlayerClass.Spy;
 			}
 
-			return 0;
+			throw new FormatException("Invalid PlayerClass: " + s);
+		}
+		public static PlayerClass? ParseNullable(string s)
+		{
+			try
+			{
+				return Parse(s);
+			}
+			catch (FormatException)
+			{
+				return null;
+			}
+		}
+		public static bool TryParse(string s, out PlayerClass result)
+		{
+			try
+			{
+				result = Parse(s);
+				return true;
+			}
+			catch (FormatException)
+			{
+				result = default(PlayerClass);
+				return false;
+			}
 		}
 
 		public static bool IsAllClass(this IEnumerable<PlayerClass> list)

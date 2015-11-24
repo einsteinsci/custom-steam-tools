@@ -29,7 +29,7 @@ namespace CustomSteamTools.Classifieds
 		{
 			get
 			{
-				return Pricing.Prices.Mid - CheapestSeller.Price;
+				return Pricing.Pricing.Mid - CheapestSeller.Price;
 			}
 		}
 

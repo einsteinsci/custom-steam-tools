@@ -8,6 +8,7 @@ using CustomSteamTools.Utils;
 using CustomSteamTools.Items;
 using CustomSteamTools.Json.MarketPricesJson;
 using CustomSteamTools.Lookup;
+using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Market
 {
@@ -122,7 +123,7 @@ namespace CustomSteamTools.Market
 
 			if (Wear != null)
 			{
-				LoggerOld.Log("No skin was found for skin '" + hashPreSkin + "'.", ConsoleColor.Red);
+				VersatileIO.Error("No skin was found for skin '{0}'.", hashPreSkin);
 				return true;
 			}
 			#endregion
@@ -183,7 +184,7 @@ namespace CustomSteamTools.Market
 			{
 
 				// nice goin valve...
-				if (hash.StartsWith("The"))
+				if (hash.StartsWith("The "))
 				{
 					hash = hash.Substring("The ".Length);
 
@@ -196,7 +197,7 @@ namespace CustomSteamTools.Market
 						}
 					}
 
-					LoggerOld.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
+					VersatileIO.Error("No item was found matching '{0}'.", hashStart);
 					return true;
 				}
 				if (hash.EndsWith("Strangifier") || hashStart == "Strange Bacon Grease")
@@ -292,7 +293,7 @@ namespace CustomSteamTools.Market
 				}
 				else
 				{
-					LoggerOld.Log("No item was found matching '" + hashStart + "'.", ConsoleColor.Red);
+					VersatileIO.Error("No item was found matching '{0}'.", hashStart);
 					return true;
 				}
 			}
@@ -335,6 +336,11 @@ namespace CustomSteamTools.Market
 			{
 				resq = Quality.Haunted;
 				hash = hash.Substring(Quality.Haunted.ToReadableString().Length + 1);
+			}
+			else if (hash.StartsWith(Quality.SelfMade.ToReadableString())) // it happens
+			{
+				resq = Quality.SelfMade;
+				hash = hash.Substring(Quality.SelfMade.ToReadableString().Length + 1);
 			}
 			else if (hash.StartsWith(Quality.Unusual.ToReadableString()))
 			{

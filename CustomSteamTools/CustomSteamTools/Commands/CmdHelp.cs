@@ -28,7 +28,7 @@ namespace CustomSteamTools.Commands
 			{
 				foreach (ITradeCommand cmd in sender.Commands)
 				{
-					VersatileIO.WriteComplex("&f - {0}: &7{1}".Fmt(cmd.RegistryName, cmd.Description), '&');
+					VersatileIO.WriteComplex("&f  {0}: &7{1}".Fmt(cmd.RegistryName, cmd.Description));
 				}
 			}
 			else
@@ -42,11 +42,11 @@ namespace CustomSteamTools.Commands
 
 				bool hasAliases = cmd.Aliases.Length > 1;
 				string aliases = cmd.Aliases.ToReadableString((s) => "'" + s + "'", includeBraces: false);
-				VersatileIO.WriteComplex("&fCommand {0}: &7{1}".Fmt(cmd.RegistryName, cmd.Description), '&');
-				VersatileIO.WriteLine(" - Syntax: " + cmd.Syntax, ConsoleColor.Gray);
+				VersatileIO.WriteComplex("&fCommand '{0}': &7{1}".Fmt(cmd.RegistryName, cmd.Description));
+				VersatileIO.WriteComplex("&f  Syntax: &7" + cmd.Syntax);
 				if (hasAliases)
 				{
-					VersatileIO.WriteLine(" - Aliases: " + aliases, ConsoleColor.Gray);
+					VersatileIO.WriteComplex("&f  Aliases: &7" + aliases);
 				}
 			}
 		}

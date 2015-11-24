@@ -39,27 +39,32 @@ namespace CustomSteamTools.Commands
 			}
 
 			VersatileIO.WriteLine(item.ToString(), ConsoleColor.White);
-			VersatileIO.WriteLine(" - Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "", ConsoleColor.Gray);
-			VersatileIO.WriteLine(" - Defindex: " + item.ID, ConsoleColor.Gray);
-			VersatileIO.WriteLine(" - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
-			VersatileIO.WriteLine(" - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
-			VersatileIO.WriteLine(" - " + item.GetSubtext());
-			VersatileIO.WriteComplex(" - Default Quality: {0}" + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
+			VersatileIO.WriteLine("  Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "", ConsoleColor.Gray);
+			VersatileIO.WriteLine("  Defindex: " + item.ID, ConsoleColor.Gray);
+			VersatileIO.WriteLine("  Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
+			VersatileIO.WriteLine("  Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
+			VersatileIO.WriteLine("  " + item.GetSubtext());
+			VersatileIO.WriteComplex("  Default Quality: {0}" + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
 			if (!item.Styles.IsNullOrEmpty())
 			{
-				VersatileIO.WriteLine(" - Styles: " + item.Styles.ToReadableString(includeBraces: false));
+				VersatileIO.WriteLine("  Styles: " + item.Styles.ToReadableString(includeBraces: false));
+			}
+			if (item.IsSkin())
+			{
+				Skin skin = item.GetSkin();
+				VersatileIO.WriteLine("  " + skin.Description, skin.Grade.GetColor());
 			}
 			if (item.CanBeAustralium())
 			{
-				VersatileIO.WriteLine(" - Can be Australium", ConsoleColor.Yellow);
+				VersatileIO.WriteLine("  Can be Australium", ConsoleColor.Yellow);
 			}
 			if (item.IsCheapWeapon())
 			{
-				VersatileIO.WriteLine(" - Drop weapon", ConsoleColor.Gray);
+				VersatileIO.WriteLine("  Drop weapon", ConsoleColor.Gray);
 			}
 			if (item.HalloweenOnly || item.HasHauntedVersion == true)
 			{
-				VersatileIO.WriteLine(" - Halloween only", ConsoleColor.Cyan);
+				VersatileIO.WriteLine("  Halloween only", ConsoleColor.Cyan);
 			}
 		}
 
@@ -90,11 +95,20 @@ namespace CustomSteamTools.Commands
 					}
 					else
 					{
-						if (i.Name.ToLower() == query.ToLower())
+						if (i.Name.EqualsIgnoreCase(query))
 						{
 							item = i;
 							break;
 						}
+					}
+				}
+
+				foreach (Skin s in GunMettleSkins.Skins)
+				{
+					if (s.Name.EqualsIgnoreCase(query))
+					{
+						item = s.GetItemForm(DataManager.Schema);
+						break;
 					}
 				}
 			}
@@ -105,10 +119,27 @@ namespace CustomSteamTools.Commands
 			{
 				VersatileIO.WriteLine("Searching items...", ConsoleColor.Gray);
 
-				List<Item> possibleItems = DataManager.Schema.Items.FindAll(
-					(i) => i.Name.ContainsIgnoreCase(query) || i.UnlocalizedName.ContainsIgnoreCase(query));
+				List<Item> possibleItems = new List<Item>();
+				foreach (Item i in DataManager.Schema.Items)
+				{
+					if (i.Name.ContainsIgnoreCase(query) || i.UnlocalizedName.ContainsIgnoreCase(query))
+					{
+						possibleItems.Add(i);
+						continue;
+					}
 
-				if (possibleItems.Count == 0)
+					if (i.IsSkin())
+					{
+						Skin s = i.GetSkin();
+
+						if (s.Name.ContainsIgnoreCase(query) || s.Name.ContainsIgnoreCase(query))
+						{
+							possibleItems.Add(i);
+						}
+					}
+				}
+
+				if (possibleItems.IsEmpty())
 				{
 					VersatileIO.WriteLine("No items found matching '{0}'.".Fmt(query), ConsoleColor.Red);
 					return null;
@@ -122,7 +153,7 @@ namespace CustomSteamTools.Commands
 				else
 				{
 					PresetVersatileConsoleIO.PromptColor = ConsoleColor.White;
-					index = VersatileIO.GetSelection("Select an item: ", possibleItems.ConvertAll((i) => i.Name));
+					index = VersatileIO.GetSelection("Select an item: ", possibleItems.ConvertAll((i) => i.ToString()));
 					PresetVersatileConsoleIO.PromptColor = VersatileIO.LevelColors[LogLevel.Interface];
 				}
 

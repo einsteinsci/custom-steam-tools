@@ -13,12 +13,12 @@ namespace CustomSteamTools.Classifieds
 {
 	public static class DealFinder
 	{
-		public static List<ItemSale> FindDeals(string steamid, DealFilters filters, bool beep = false)
+		public static List<ItemSale> FindDeals(string steamid, Filters filters, bool beep = false)
 		{
 			if (filters == null)
 			{
 				VersatileIO.Warning("Deals filters object was null. Setting to default.");
-				filters = new DealFilters();
+				filters = new Filters();
 			}
 
 			#region oldFilters
@@ -135,7 +135,7 @@ namespace CustomSteamTools.Classifieds
 
 			List<ItemSale> relevant = FindRelevantClassifeids(inRange);
 
-			List<ItemSale> results = PickOutDeals(relevant, filters.MinProfit);
+			List<ItemSale> results = PickOutDeals(relevant, filters.DealsMinProfit);
 
 			if (beep)
 			{
@@ -187,7 +187,7 @@ namespace CustomSteamTools.Classifieds
 			List<Quality> qualitiesAllowed, List<ItemSlotPlain> slotsAllowed,
 			bool? craftable = true, bool? halloween = null, bool? botkiller = null)
 		{
-			DealFilters deals = new DealFilters()
+			Filters deals = new Filters()
 			{
 				Qualities = qualitiesAllowed,
 				Slots = slotsAllowed,
@@ -199,14 +199,14 @@ namespace CustomSteamTools.Classifieds
 			return FindPricingsInRange(range, deals);
 		}
 
-		public static List<ItemPricing> FindPricingsInRange(PriceRange range, DealFilters filters)
+		public static List<ItemPricing> FindPricingsInRange(PriceRange range, Filters filters)
 		{
 			List<ItemPricing> results = new List<ItemPricing>();
 
 			VersatileIO.Info("Finding valid items in price range...");
 			foreach (ItemPricing p in DataManager.PriceData.Prices) // get ALL the datas!
 			{
-				if (!range.Contains(p.Prices))
+				if (!range.Contains(p.Pricing))
 				{
 					continue;
 				}
@@ -297,7 +297,7 @@ namespace CustomSteamTools.Classifieds
 					continue;
 				}
 
-				Price threshold = new Price(sale.Pricing.Prices.High.TotalRefined * 
+				Price threshold = new Price(sale.Pricing.Pricing.High.TotalRefined * 
 					Settings.Instance.DealsPriceDropThresholdPriceBelow);
 				int totalBelow = 0;
 				foreach (ClassifiedsListing listing in sale.Sellers)

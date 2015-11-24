@@ -15,23 +15,21 @@ namespace CustomSteamTools.Commands
 	{
 		public string[] Aliases => new string[] { "deals", "getdeals", "profitable" };
 
-		public string Description => "Lists the best 'deals' currently available to a user on bp.tf.";
+		public string Description => "Lists the best 'deals' currently available to a user on bp.tf. Can take a while.";
 
 		public string RegistryName => "deals";
 
-		public string Syntax => "deals [steamID64] [/q=QUALITY x?] [/s=PLAINSLOT x?] [/minprofit=MINPROFITREF] " +
-			"[/nohw | /hw] [/ac | /nc | /uc] [/nobot | /bot]";
+		public string Syntax => "deals [steamID64] " + Filters.GetSyntax(true);
 
 		public static bool DoBeepOnFinished
 		{ get; set; }
 
 		public void RunCommand(CommandHandler sender, List<string> args)
 		{
-			DealFilters filters = new DealFilters();
+			Filters filters = new Filters();
 
 			string steamid = Settings.Instance.HomeSteamID64;
-
-			#region args
+			
 			foreach (string s in args)
 			{
 				if (!s.StartsWith("/"))
@@ -40,75 +38,8 @@ namespace CustomSteamTools.Commands
 					continue;
 				}
 
-				if (s.StartsWithIgnoreCase("/q="))
-				{
-					string sq = s.Substring("/q=");
-					Quality? q = ItemQualities.ParseNullable(sq);
-
-					if (q != null)
-					{
-						filters.Qualities.Add(q.Value);
-					}
-				}
-
-				if (s.StartsWithIgnoreCase("/s="))
-				{
-					string ss = s.Substring("/s=");
-					ItemSlotPlain sp = ItemSlots.Plain.Parse(ss);
-
-					if (sp != ItemSlotPlain.Unused)
-					{
-						filters.Slots.Add(sp);
-					}
-				}
-
-				if (s.StartsWithIgnoreCase("/minprofit="))
-				{
-					string mps = s.Substring("/minprofit=");
-					if (mps.EndsWith("ref"))
-					{
-						mps = mps.CutOffEnd("ref".Length);
-					}
-
-					double d;
-					if (double.TryParse(mps, out d))
-					{
-						filters.MinProfit = new Price(d);
-					}
-					else
-					{
-						VersatileIO.Warning("Invalid number: {0}. Ignoring.", mps);
-					}
-				}
-
-				if (s.EqualsIgnoreCase("/nohw"))
-				{
-					filters.Halloween = false;
-				}
-				else if (s.EqualsIgnoreCase("/hw"))
-				{
-					filters.Halloween = true;
-				}
-
-				if (s.EqualsIgnoreCase("/ac"))
-				{
-					filters.Craftable = null;
-				}
-				else if (s.EqualsIgnoreCase("/nc") || s.EqualsIgnoreCase("/uc"))
-				{
-					filters.Craftable = false;
-				}
-
-				if (s.EqualsIgnoreCase("/nobot"))
-				{
-					filters.Botkiller = false;
-				}
-				else if (s.EqualsIgnoreCase("/bot"))
-				{
-					filters.Botkiller = true;
-				}
+				filters.HandleArg(s);
 			}
-			#endregion args
 
 			List<ItemSale> sales = DealFinder.FindDeals(steamid, filters);
 			if (sales == null)

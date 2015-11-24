@@ -79,7 +79,17 @@ namespace CustomSteamTools.Commands
 				}
 			}
 
-			cmd.RunCommand(this, largs);
+			try
+			{
+				cmd.RunCommand(this, largs);
+			}
+			catch (Exception e)
+			{
+				VersatileIO.Error("There was an error running command '{0}': {1}",
+					cmd.RegistryName, e.GetType().Name);
+				VersatileIO.Error(e.ToString());
+				throw;
+			}
 		}
 
 		public ITradeCommand FindCommand(string command)
