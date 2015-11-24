@@ -20,6 +20,8 @@ namespace CustomSteamTools.Market
 		public string MarketHash
 		{ get; private set; }
 
+		public string AsciiHash => Util.Asciify(MarketHash);
+
 		public Item Item
 		{ get; private set; }
 
@@ -57,7 +59,7 @@ namespace CustomSteamTools.Market
 		{
 			Failed = false;
 
-			MarketHash = Util.Asciify(hash);
+			MarketHash = hash;
 			LastUpdated = lastUpdated;
 			Volume = volume;
 			PriceUSD = priceUSD;

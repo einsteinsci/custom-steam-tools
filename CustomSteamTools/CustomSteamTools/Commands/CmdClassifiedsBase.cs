@@ -162,11 +162,12 @@ namespace CustomSteamTools.Commands
 			string seller = "{UNKNOWN}";
 			foreach (ClassifiedsListing listing in res)
 			{
-				VersatileIO.WriteComplex(listing.ToString(true, 100, '\u00A7'), '\u00A7');
+				VersatileIO.WriteComplex(listing.ToString(true, 90, '\u00A7'), '\u00A7');
 
 				if (best == null)
 				{
 					best = listing.Price;
+					seller = listing.ListerNickname ?? listing.ListerSteamID64;
 					continue;
 				}
 

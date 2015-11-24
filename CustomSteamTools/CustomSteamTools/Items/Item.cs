@@ -20,6 +20,8 @@ namespace CustomSteamTools.Items
 		public string Name
 		{ get; set; }
 
+		public string AsciiName => Util.Asciify(Name);
+
 		public string ImproperName
 		{ get; set; }
 

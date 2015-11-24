@@ -175,8 +175,6 @@ namespace CustomSteamTools
 				}
 			}
 
-			SchemaCache = Util.Asciify(SchemaCache);
-
 			ParseItemsJson();
 			TranslateItemsData();
 
@@ -233,8 +231,6 @@ namespace CustomSteamTools
 					throw new RetrievalFailedException(RetrievalType.BackpackContents);
 				}
 			}
-
-			MyBackpackCache = Util.Asciify(MyBackpackCache);
 
 			ParseBackpackJson();
 			TranslateBackpackData();
@@ -293,7 +289,6 @@ namespace CustomSteamTools
 			}
 
 			PricesCache = PricesCache.Replace("    ", "\t");
-			PricesCache = Util.Asciify(PricesCache);
 
 			ParsePricesJson();
 			TranslatePricingData();
@@ -352,7 +347,6 @@ namespace CustomSteamTools
 			}
 
 			MarketPricesCache = MarketPricesCache.Replace("    ", "\t");
-			MarketPricesCache = Util.Asciify(MarketPricesCache);
 
 			ParseMarketJson();
 			TranslateMarketPrices();

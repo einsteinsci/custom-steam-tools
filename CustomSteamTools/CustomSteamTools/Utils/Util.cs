@@ -88,7 +88,7 @@ namespace CustomSteamTools.Utils
 			return "new string[] { " + string.Join(", ", list.ConvertAll((s) => '"' + s + '"')) + " }";
 		}
 
-		[Obsolete("Not good for classifieds scraping")]
+		//[Obsolete("Not good for classifieds scraping")]
 		public static string Asciify(string content)
 		{
 			if (content == null)

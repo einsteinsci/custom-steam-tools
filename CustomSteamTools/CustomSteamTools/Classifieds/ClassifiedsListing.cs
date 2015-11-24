@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,7 +47,13 @@ namespace CustomSteamTools.Classifieds
 			Price = price;
 			ListerSteamID64 = steamID;
 			ListerNickname = nickname;
+
 			Comment = comment;
+			if (!Comment.IsNullOrWhitespace())
+			{
+				Comment = WebUtility.HtmlDecode(Comment);
+			}
+
 			OrderType = order;
 			OfferURL = url;
 		}
@@ -65,9 +72,16 @@ namespace CustomSteamTools.Classifieds
 				res += ItemInstance.ToString() + " at " + Price.ToString() + " from " + (ListerNickname ?? ListerSteamID64);
 			}
 
-			if (commentLength != -1)
+			if (commentLength != -1 && Comment != null)
 			{
-				res += ": " + Comment.Shorten(commentLength);
+				if (complex)
+				{
+					res += ": " + esc + "7" + Comment.UnifyWhitespace().Shorten(commentLength);
+				}
+				else
+				{
+					res += ": " + Comment.UnifyWhitespace().Shorten(commentLength);
+				}
 			}
 
 			return res;
