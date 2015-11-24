@@ -76,11 +76,11 @@ namespace CustomSteamTools.Classifieds
 			{
 				if (complex)
 				{
-					res += ": " + esc + "7" + Comment.UnifyWhitespace().Shorten(commentLength);
+					res += ": " + esc + "7" + Comment.NewlinesToSpaces().Shorten(commentLength);
 				}
 				else
 				{
-					res += ": " + Comment.UnifyWhitespace().Shorten(commentLength);
+					res += ": " + Comment.NewlinesToSpaces().Shorten(commentLength);
 				}
 			}
 
