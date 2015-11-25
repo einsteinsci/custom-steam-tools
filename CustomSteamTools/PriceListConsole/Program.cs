@@ -68,12 +68,12 @@ namespace BackpackTFConsole
 		private static void Initialize()
 		{
 			CustomConsoleColors.SetColor(ConsoleColor.DarkYellow, 219, 102, 0);     // strange orange
-			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 18, 49, 122);       // vintage blue
+			CustomConsoleColors.SetColor(ConsoleColor.DarkBlue, 41, 76, 158);       // vintage blue
 			CustomConsoleColors.SetColor(ConsoleColor.DarkRed, 128, 0, 0);          // collector's red
 			CustomConsoleColors.SetColor(ConsoleColor.DarkMagenta, 134, 80, 172);   // unusual purple
 			CustomConsoleColors.SetColor(ConsoleColor.Cyan, 56, 243, 171);          // haunted teal
 
-			CustomConsoleColors.SetColor(ConsoleColor.Blue, 0, 131, 255);           // user blue
+			CustomConsoleColors.SetColor(ConsoleColor.Blue, 48, 155, 255);           // user blue
 			CustomConsoleColors.SetColor(ConsoleColor.DarkGray, 80, 80, 80);        // darken verbose gray
 			CustomConsoleColors.SetColor(ConsoleColor.Gray, 140, 140, 140);         //   to differentiate from debug gray
 

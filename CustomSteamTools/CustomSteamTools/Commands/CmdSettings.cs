@@ -34,7 +34,7 @@ namespace CustomSteamTools.Commands
 			List<PropertyInfo> props = new List<PropertyInfo>();
 			foreach (PropertyInfo p in settingsType.GetProperties())
 			{
-				if (p.HasAttribute<JsonPropertyAttribute>())
+				if (!p.HasAttribute<JsonIgnoreAttribute>())
 				{
 					props.Add(p);
 				}

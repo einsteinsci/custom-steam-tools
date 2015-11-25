@@ -14,6 +14,12 @@ namespace CustomSteamTools.Backpacks
 {
 	public class ItemInstance
 	{
+		public ushort BackpackSlot
+		{ get; set; }
+
+		public bool IsNewToBackpack
+		{ get; private set; }
+
 		public ulong InstanceID
 		{ get; private set; }
 
@@ -67,6 +73,10 @@ namespace CustomSteamTools.Backpacks
 			CustomDescription = json.custom_desc;
 			Style = json.style;
 
+			InventoryLocationFlags flags = (InventoryLocationFlags)json.inventory;
+			BackpackSlot = flags.GetBackpackPos();
+			IsNewToBackpack = flags.IsNewItem();
+
 			Attributes = new List<AppliedInstanceAttribute>();
 			if (json.attributes != null)
 			{
@@ -94,6 +104,8 @@ namespace CustomSteamTools.Backpacks
 			CustomName = customName;
 			CustomDescription = customDesc;
 			OriginalInstanceID = originalInstance.HasValue ? originalInstance.Value : instanceID;
+			IsNewToBackpack = true;
+			BackpackSlot = 0;
 
 			Attributes = new List<AppliedInstanceAttribute>();
 		}

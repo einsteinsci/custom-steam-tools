@@ -36,6 +36,19 @@ namespace CustomSteamTools.Friends
 		public string AvatarLargeURL
 		{ get; private set; }
 
+		// minor
+		public string ProfileURL
+		{ get; private set; }
+
+		public string RealName
+		{ get; private set; }
+
+		public string PrimaryClanID
+		{ get; private set; }
+
+		public string CurrentGameServer
+		{ get; private set; }
+
 		public Player(string steamid, string name, byte personaState, string smallAvatar,
 			string medAvatar, string largeAvatar)
 		{
@@ -49,7 +62,12 @@ namespace CustomSteamTools.Friends
 
 		public Player(PlayerSummaryJson j) : 
 			this(j.steamid, j.personaname, j.personastate, j.avatar, j.avatarmedium, j.avatarfull)
-		{ }
+		{
+			ProfileURL = j.profileurl;
+			RealName = j.realname;
+			PrimaryClanID = j.primaryclanid;
+			CurrentGameServer = j.gameserverip;
+		}
 
 		public override string ToString()
 		{

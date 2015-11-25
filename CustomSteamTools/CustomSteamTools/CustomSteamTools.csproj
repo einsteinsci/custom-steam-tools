@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backpacks\Backpack.cs" />
+    <Compile Include="Backpacks\BackpackPage.cs" />
+    <Compile Include="Backpacks\InventoryLocations.cs" />
     <Compile Include="Classifieds\ClassifiedsListing.cs" />
     <Compile Include="Classifieds\ClassifiedsScraper.cs" />
     <Compile Include="Classifieds\DealFinder.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Commands\CmdHelp.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
     <Compile Include="Commands\CmdKillstreak.cs" />
+    <Compile Include="Commands\CmdPlayer.cs" />
     <Compile Include="Commands\CmdRange.cs" />
     <Compile Include="Commands\CmdRefresh.cs" />
     <Compile Include="Commands\CmdSellers.cs" />

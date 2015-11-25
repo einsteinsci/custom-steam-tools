@@ -51,6 +51,7 @@ namespace CustomSteamTools.Commands
 
 			list.Sort(new PlayerList.PlayerGameStateComparer());
 
+			VersatileIO.WriteLine();
 			VersatileIO.Info("{0} friends ({1} online):", list.Count, list.GetOnline().Count());
 			foreach (Player p in list)
 			{
@@ -65,6 +66,11 @@ namespace CustomSteamTools.Commands
 
 		public PlayerList GetFriendsList(string steamid, bool force)
 		{
+			if (steamid == Settings.Instance.HomeSteamID64)
+			{
+				return DataManager.MyFriendsList;
+			}
+
 			bool success = DataManager.LoadOtherFriendsList(steamid, force);
 			if (!success)
 			{

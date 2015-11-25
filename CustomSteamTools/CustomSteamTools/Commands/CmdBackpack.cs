@@ -55,7 +55,7 @@ namespace CustomSteamTools.Commands
 
 			PriceRange netWorth = new PriceRange(Price.Zero);
 			Price totalPure = Price.Zero;
-			foreach (ItemInstance item in bp.Items)
+			foreach (ItemInstance item in bp.GetAllItems())
 			{
 				if (!item.Tradable)
 				{
@@ -100,14 +100,20 @@ namespace CustomSteamTools.Commands
 
 				if (item.Item.IsCurrency())
 				{
-					qualityMarker = "&7";
+					qualityMarker = "&f";
 					priceString = qualityMarker + item.Item.GetCurrencyPrice().ToString();
 
 					totalPure += item.Item.GetCurrencyPrice();
 				}
 				#endregion formatting
 
-				VersatileIO.WriteComplex("  " + qualityMarker + item.ToString() + "&7: " + priceString);
+				string prefix = "  ";
+				if (item.IsNewToBackpack)
+				{
+					prefix += "&a[New] ";
+				}
+
+				VersatileIO.WriteComplex(prefix + qualityMarker + item.ToString() + "&7: " + priceString);
 			}
 
 			VersatileIO.Info("Net worth: " + netWorth.ToString());

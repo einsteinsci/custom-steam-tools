@@ -25,6 +25,10 @@ namespace CustomSteamTools.Utils
 		public static Settings Instance
 		{ get; private set; }
 
+		[JsonIgnore]
+		public bool Initialized
+		{ get; private set; }
+
 		#region settings
 
 		[Setting("Last access time (in ticks) of bp.tf price list.")]
@@ -108,6 +112,8 @@ namespace CustomSteamTools.Utils
 				Instance = res;
 			}
 
+			res.Initialized = true;
+
 			return res;
 		}
 
@@ -160,6 +166,7 @@ namespace CustomSteamTools.Utils
 			DownloadTimeoutSeconds = 20;
 			DealsPriceDropThresholdListingCount = 3;
 			DealsPriceDropThresholdPriceBelow = 0.97;
+			Initialized = false;
 		}
 	}
 

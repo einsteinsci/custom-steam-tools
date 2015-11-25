@@ -9,12 +9,24 @@ using CustomSteamTools.Utils;
 using UltimateUtil;
 using UltimateUtil.UserInteraction;
 using CustomSteamTools.Backpacks;
+using UltimateUtil.Fluid;
+using System.ComponentModel;
 
 namespace CustomSteamTools.Classifieds
 {
 	public static class DealFinder
 	{
-		public static List<ItemSale> FindDeals(string steamid, Filters filters, bool beep = false)
+		public static double Progress
+		{ get; private set; }
+
+		/// <summary>
+		/// Fired during classified scraping, progress out of total classifieds to scrape.
+		/// UserState is set to a <see cref="List{ItemSale}"/> for what's current.
+		/// </summary>
+		public static event ProgressChangedEventHandler OnProgressChanged;
+
+		public static FlaggedResult<List<ItemSale>, KeyValuePair<ItemSale, string>> FindDealsFlagged(
+			string steamid, Filters filters, bool beep = false)
 		{
 			if (filters == null)
 			{
@@ -23,20 +35,7 @@ namespace CustomSteamTools.Classifieds
 			}
 			
 			VersatileIO.Info("Filters: " + filters.ToString());
-
-			//if (allowedSlots.Count == 0)
-			//{
-			//	allowedSlots = null;
-			//}
-			//if (allowedQualities.Count == 0)
-			//{
-			//	allowedQualities = null;
-			//}
-			//if (allowedClasses.Count == 0)
-			//{
-			//	allowedClasses = null;
-			//}
-
+			
 			Price? max = GetMaxPrice();
 			if (max == null)
 			{
@@ -51,7 +50,7 @@ namespace CustomSteamTools.Classifieds
 
 			List<ItemSale> relevant = FindRelevantClassifeids(inRange);
 
-			List<ItemSale> results = PickOutDeals(relevant, filters.DealsMinProfit);
+			var results = PickOutDealsFlagged(relevant, filters.DealsMinProfit);
 
 			if (beep)
 			{
@@ -60,13 +59,26 @@ namespace CustomSteamTools.Classifieds
 
 			return results;
 		}
+		public static List<ItemSale> FindDeals(string steamid, Filters filters, bool beep = false)
+		{
+			return FindDealsFlagged(steamid, filters, beep).Result;
+		}
 
 		public static List<ItemSale> FindRelevantClassifeids(List<ItemPricing> pricings)
 		{
 			List<ItemSale> results = new List<ItemSale>();
 
-			foreach (ItemPricing p in pricings)
+			Progress = 0;
+			for (int pindex = 0; pindex < pricings.Count; pindex++)
 			{
+				Progress = (double)pindex / pricings.Count;
+				if (OnProgressChanged != null && Progress != 0.0)
+				{
+					int pct = Progress.ToPercentInt();
+					OnProgressChanged(null, new ProgressChangedEventArgs(pct, results));
+				}
+
+				ItemPricing p = pricings[pindex];
 				ItemSale set = new ItemSale(p);
 
 				VersatileIO.Debug("Searching classifieds for {0}...", p.ToUnpricedString());
@@ -167,7 +179,7 @@ namespace CustomSteamTools.Classifieds
 			}
 
 			Price totalPure = Price.Zero;
-			foreach (ItemInstance i in backpack.Items)
+			foreach (ItemInstance i in backpack.GetAllItems())
 			{
 				if (i.Item.IsCurrency())
 				{
@@ -187,8 +199,11 @@ namespace CustomSteamTools.Classifieds
 			return new Price(0, min);
 		}
 
-		public static List<ItemSale> PickOutDeals(List<ItemSale> relevant, Price? minProfit)
+		public static FlaggedResult<List<ItemSale>, KeyValuePair<ItemSale, string>> PickOutDealsFlagged(
+			List<ItemSale> relevant, Price? minProfit)
 		{
+			var fres = new FlaggedResult<List<ItemSale>, KeyValuePair<ItemSale, string>>();
+
 			List<ItemSale> results = new List<ItemSale>();
 
 			VersatileIO.Info("Trimming deals...");
@@ -210,6 +225,7 @@ namespace CustomSteamTools.Classifieds
 				if (profit.TotalRefined < 0.1)
 				{
 					VersatileIO.Warning("  No real profit seen in {0}. Excluded.", sale.Pricing.ToUnpricedString());
+					fres.Add(new KeyValuePair<ItemSale, string>(sale, "NOPROFIT"));
 					continue;
 				}
 
@@ -227,6 +243,7 @@ namespace CustomSteamTools.Classifieds
 				if (totalBelow >= Settings.Instance.DealsPriceDropThresholdListingCount)
 				{
 					VersatileIO.Warning("  The price is dropping for {0}. Excluded.", sale.Pricing.ToUnpricedString());
+					fres.Add(new KeyValuePair<ItemSale, string>(sale, "PRICEDROPPING"));
 					continue;
 				}
 
@@ -234,13 +251,19 @@ namespace CustomSteamTools.Classifieds
 				{
 					VersatileIO.Warning("  Profit ({0}) does not meet specified threshold of {1}. Excluded.",
 						profit, minProfit.Value);
+					fres.Add(new KeyValuePair<ItemSale, string>(sale, "LOWPROFIT"));
 					continue;
 				}
 
 				results.Add(sale);
 			}
 
-			return results;
+			fres.Result = results;
+			return fres;
+		}
+		public static List<ItemSale> PickOutDeals(List<ItemSale> relevant, Price? minprofit)
+		{
+			return PickOutDealsFlagged(relevant, minprofit).Result;
 		}
 	}
 }

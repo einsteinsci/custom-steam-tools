@@ -85,16 +85,18 @@ namespace CustomSteamTools.Classifieds
 					string sellOriginalID = sellData.Attributes["data-original-id"]?.Value;
 					string sellCustomName = sellData.Attributes["data-custom-name"]?.Value;
 					string sellCustomDesc = sellData.Attributes["data-custom-desc"]?.Value;
+					string sellBuyoutOnly = sellData.Attributes["data-listing-buyout"]?.Value ?? "0";
 
 					ulong id = ulong.Parse(sellID); // really funky syntax down here -v
 					ulong? originalID = sellOriginalID != null ? new ulong?(ulong.Parse(sellOriginalID)) : null;
 					Price price = Price.ParseFancy(sellPrice);
 					int level = int.Parse(sellLevel);
+					bool buyoutOnly = BooleanUtil.ParseLoose(sellBuyoutOnly);
 
 					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
 						sellCustomName, sellCustomDesc, originalID, tradable);
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, 
-						sellerNickname, sellOfferUrl, sellComment, OrderType.Sell);
+						sellerNickname, sellOfferUrl, sellComment, buyoutOnly, OrderType.Sell);
 
 					if (string.IsNullOrWhiteSpace(listing.OfferURL))
 					{
@@ -142,16 +144,18 @@ namespace CustomSteamTools.Classifieds
 					string buyOriginalID = buyData.Attributes["data-original-id"]?.Value;
 					string buyCustomName = buyData.Attributes["data-custom-name"]?.Value;
 					string buyCustomDesc = buyData.Attributes["data-custom-desc"]?.Value;
+					string buyBuyoutOnly = buyData.Attributes["data-listing-buyout"]?.Value ?? "0";
 
 					ulong id = ulong.Parse(buyID == "" ? "0" : buyID); // really funky syntax down here -v
 					ulong? originalID = buyOriginalID != null ? new ulong?(ulong.Parse(buyOriginalID == "" ? "0" : buyOriginalID)) : null;
 					Price price = Price.ParseFancy(buyPrice);
 					int level = int.Parse(buyLevel);
+					bool buyoutOnly = BooleanUtil.ParseLoose(buyBuyoutOnly);
 
 					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
 						buyCustomName, buyCustomDesc, originalID, tradable);
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname, 
-						buyOfferUrl, buyComment, OrderType.Buy);
+						buyOfferUrl, buyComment, buyoutOnly, OrderType.Buy);
 
 					if (string.IsNullOrWhiteSpace(listing.OfferURL))
 					{

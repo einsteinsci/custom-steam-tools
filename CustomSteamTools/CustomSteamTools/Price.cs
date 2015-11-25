@@ -33,7 +33,7 @@ namespace CustomSteamTools
 		{
 			get
 			{
-				if (_refinedPerKey == -1)
+				if (double.IsNaN(_refinedPerKey))
 				{
 					DataManager.AutoSetup(false);
 				}
@@ -45,7 +45,7 @@ namespace CustomSteamTools
 				_refinedPerKey = value;
 			}
 		}
-		private static double _refinedPerKey = -1;
+		private static double _refinedPerKey = double.NaN;
 
 		// this is what is actually stored
 		public double TotalRefined

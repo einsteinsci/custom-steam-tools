@@ -40,13 +40,19 @@ namespace CustomSteamTools.Classifieds
 		public string OfferURL
 		{ get; set; }
 
+		public bool BuyoutOnly
+		{ get; set; }
+
+		public bool IsAddOnly => OfferURL.IsNullOrEmpty();
+
 		public ClassifiedsListing(ItemInstance inst, Price price, string steamID, string nickname,
-			string url, string comment = "", OrderType order = OrderType.Sell)
+			string url, string comment = "", bool buyoutOnly = true, OrderType order = OrderType.Sell)
 		{
 			ItemInstance = inst;
 			Price = price;
 			ListerSteamID64 = steamID;
 			ListerNickname = nickname;
+			BuyoutOnly = buyoutOnly;
 
 			Comment = comment;
 			if (!Comment.IsNullOrWhitespace())

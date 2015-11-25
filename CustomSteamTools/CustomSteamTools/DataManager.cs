@@ -23,12 +23,14 @@ using CustomSteamTools.Backpacks;
 using CustomSteamTools.Json.FriendsJson;
 using CustomSteamTools.Friends;
 using UltimateUtil;
+using System.ComponentModel;
 
 namespace CustomSteamTools
 {
 	// the "main" class in this DLL
 	public static class DataManager
 	{
+		#region urls
 		public static string PriceDataUrl
 		{ get; set; }
 		public static string SchemaUrl
@@ -39,7 +41,9 @@ namespace CustomSteamTools
 		{ get; set; }
 		public static string MyFriendsListUrl
 		{ get; set; }
+		#endregion urls
 
+		#region filenames
 		public static string PriceDataFilename
 		{ get; set; }
 		public static string SchemaFilename
@@ -50,10 +54,12 @@ namespace CustomSteamTools
 		{ get; set; }								//   steam community market
 		public static string MyFriendsListFilename
 		{ get; set; }
+		#endregion filenames
 
 		public static string CacheLocation
 		{ get; set; }
 
+		#region caches
 		public static string PricesCache
 		{ get; private set; }
 		public static string SchemaCache
@@ -66,7 +72,9 @@ namespace CustomSteamTools
 		{ get; private set; }
 		public static string MyFriendsListCache
 		{ get; private set; }
+		#endregion caches
 
+		#region stored data
 		public static TF2DataJson SchemaRaw
 		{ get; private set; }
 		public static GameSchema Schema
@@ -100,6 +108,14 @@ namespace CustomSteamTools
 		public static Dictionary<string, PlayerList> FriendsLists
 		{ get; private set; }
 		public static PlayerList AllLoadedPlayers
+		{ get; private set; }
+		#endregion stored data
+
+		/// <summary>
+		/// Fired during <see cref="AutoSetup(bool)"/>. UserState is a <see cref="bool"/>
+		/// indicating if the setup has failed and will have to restart.
+		/// </summary>
+		public static ProgressChangedEventHandler OnProgressChanged
 		{ get; private set; }
 
 		public static void Initialize()
@@ -780,21 +796,39 @@ namespace CustomSteamTools
 
 		public static void AutoSetup(bool force = true)
 		{
-			Settings.Load();
-			Settings.Instance.GetNecessaryInfo();
+			if (Settings.Instance == null || !Settings.Instance.Initialized)
+			{
+				Settings.Load();
+				Settings.Instance.GetNecessaryInfo();
+			}
 
 			Initialize();
 
 			bool success = false;
 			while (!success)
 			{
+				int pct = 0;
 				try
 				{
 					LoadItemSchema(!force);
+					pct += 20;
+					FireProgressChanged(pct);
+
 					LoadMyBackpackData(!force);
+					pct += 20;
+					FireProgressChanged(pct);
+
 					LoadPriceData(!force);
+					pct += 20;
+					FireProgressChanged(pct);
+
 					LoadMarketData(!force);
+					pct += 20;
+					FireProgressChanged(pct);
+
 					LoadMyFriendsList(!force);
+					pct += 20;
+					FireProgressChanged(pct);
 
 					success = true;
 				}
@@ -802,6 +836,7 @@ namespace CustomSteamTools
 				{
 					VersatileIO.Fatal("Details: " + e.ToString());
 					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
+					FireProgressChanged(pct, true);
 
 					Thread.Sleep(10000);
 				}
@@ -810,6 +845,14 @@ namespace CustomSteamTools
 			Settings.Instance.Save();
 
 			FixHauntedItems();
+		}
+
+		public static void FireProgressChanged(int pct, bool fail = false)
+		{
+			if (OnProgressChanged != null)
+			{
+				OnProgressChanged(null, new ProgressChangedEventArgs(pct, fail));
+			}
 		}
 
 		public static void FixHauntedItems()
