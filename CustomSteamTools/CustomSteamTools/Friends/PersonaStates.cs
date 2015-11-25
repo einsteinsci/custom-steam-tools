@@ -70,5 +70,48 @@ namespace CustomSteamTools.Friends
 				return true;
 			}
 		}
+
+		public static bool IsPresent(this PersonaState state)
+		{
+			switch (state)
+			{
+			case PersonaState.Offline:
+				return false;
+			case PersonaState.Online:
+				return true;
+			case PersonaState.Busy:
+			case PersonaState.Away:
+			case PersonaState.Snooze:
+				return false;
+			case PersonaState.LookingToTrade:
+			case PersonaState.LookingToPlay:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		public static int GetTier(this PersonaState state)
+		{
+			switch (state)
+			{
+			case PersonaState.Offline:
+				return 0;
+			case PersonaState.Online:
+				return 3;
+			case PersonaState.Busy:
+				return 1;
+			case PersonaState.Away:
+				return 1;
+			case PersonaState.Snooze:
+				return 2;
+			case PersonaState.LookingToTrade:
+				return 3;
+			case PersonaState.LookingToPlay:
+				return 4;
+			default:
+				return 0;
+			}
+		}
 	}
 }

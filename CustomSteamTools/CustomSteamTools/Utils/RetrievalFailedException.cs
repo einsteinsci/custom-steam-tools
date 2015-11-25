@@ -13,6 +13,7 @@ namespace CustomSteamTools.Utils
 		PriceData,
 		MarketData,
 		BackpackContents,
+		FriendsList,
 	}
 
 	[Serializable]

@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Json.FriendsJson;
+using CustomSteamTools.Utils;
 using UltimateUtil;
 
 namespace CustomSteamTools.Friends
 {
-	public sealed class Friend
+	public sealed class Player
 	{
 		public string SteamID64
 		{ get; private set; }
@@ -19,8 +20,12 @@ namespace CustomSteamTools.Friends
 		public PersonaState PersonaState
 		{ get; private set; }
 
+		public bool IsOnline => PersonaState != PersonaState.Offline || IsInGame;
+
 		public int CurrentGame
 		{ get; set; }
+
+		public bool IsInGame => CurrentGame != 0;
 
 		public string AvatarSmallURL
 		{ get; private set; }
@@ -31,7 +36,7 @@ namespace CustomSteamTools.Friends
 		public string AvatarLargeURL
 		{ get; private set; }
 
-		public Friend(string steamid, string name, byte personaState, string smallAvatar,
+		public Player(string steamid, string name, byte personaState, string smallAvatar,
 			string medAvatar, string largeAvatar)
 		{
 			SteamID64 = steamid;
@@ -42,7 +47,7 @@ namespace CustomSteamTools.Friends
 			AvatarLargeURL = largeAvatar;
 		}
 
-		public Friend(PlayerJson j) : 
+		public Player(PlayerSummaryJson j) : 
 			this(j.steamid, j.personaname, j.personastate, j.avatar, j.avatarmedium, j.avatarfull)
 		{ }
 
@@ -54,6 +59,35 @@ namespace CustomSteamTools.Friends
 			}
 
 			return "{0} (#{1})".Fmt(Name, SteamID64);
+		}
+
+		public string ToComplexString(char esc = '\u00a7')
+		{
+			ConsoleColor stateColor = ConsoleColor.Gray;
+
+			if (CurrentGame != 0)
+			{
+				stateColor = ConsoleColor.Green;
+			}
+			else if (PersonaState != PersonaState.Offline)
+			{
+				stateColor = ConsoleColor.Blue;
+			}
+			string stateCode = stateColor.ToCode(esc);
+
+			string res = stateCode + "[";
+			if (CurrentGame != 0)
+			{
+				res += "In-Game: " + CurrentGame.ToString() + "] " + esc.ToString() + "f";
+			}
+			else
+			{
+				res += PersonaState.ToReadableString() + "] " + esc.ToString() + "f";
+			}
+
+			res += Name + " " + esc.ToString() + "7(#" + SteamID64 + ")";
+
+			return res;
 		}
 	}
 }

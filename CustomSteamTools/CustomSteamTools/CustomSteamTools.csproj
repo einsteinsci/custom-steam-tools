@@ -67,6 +67,7 @@
     <Compile Include="Commands\CmdBuyers.cs" />
     <Compile Include="Commands\CmdClassifiedsBase.cs" />
     <Compile Include="Commands\CmdDeals.cs" />
+    <Compile Include="Commands\CmdFriends.cs" />
     <Compile Include="Commands\CmdHelp.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
     <Compile Include="Commands\CmdKillstreak.cs" />
@@ -79,12 +80,12 @@
     <Compile Include="Commands\ITradeCommand.cs" />
     <Compile Include="Commands\CmdPriceCheck.cs" />
     <Compile Include="DataManager.cs" />
-    <Compile Include="Friends\Friend.cs" />
-    <Compile Include="Friends\FriendsList.cs" />
+    <Compile Include="Friends\Player.cs" />
+    <Compile Include="Friends\PlayerList.cs" />
     <Compile Include="Json\FriendsJson\FriendJson.cs" />
     <Compile Include="Json\FriendsJson\FriendsListJson.cs" />
-    <Compile Include="Json\FriendsJson\PlayerInfoJson.cs" />
-    <Compile Include="Json\FriendsJson\PlayerJson.cs" />
+    <Compile Include="Json\FriendsJson\PlayerSummariesJson.cs" />
+    <Compile Include="Json\FriendsJson\PlayerSummaryJson.cs" />
     <Compile Include="Schema\AttributeEffectTypes.cs" />
     <Compile Include="Schema\ItemQualities.cs" />
     <Compile Include="Schema\ItemSlots.cs" />

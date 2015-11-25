@@ -22,6 +22,47 @@ namespace CustomSteamTools.Utils
 			return str.Substring(0, str.Length - count);
 		}
 
+		public static string ToCode(this ConsoleColor col, char esc = '&')
+		{
+			switch (col)
+			{
+			case ConsoleColor.Black:
+				return esc.ToString() + "0";
+			case ConsoleColor.DarkBlue:
+				return esc.ToString() + "1";
+			case ConsoleColor.DarkGreen:
+				return esc.ToString() + "2";
+			case ConsoleColor.DarkCyan:
+				return esc.ToString() + "3";
+			case ConsoleColor.DarkRed:
+				return esc.ToString() + "4";
+			case ConsoleColor.DarkMagenta:
+				return esc.ToString() + "5";
+			case ConsoleColor.DarkYellow:
+				return esc.ToString() + "6";
+			case ConsoleColor.Gray:
+				return esc.ToString() + "7";
+			case ConsoleColor.DarkGray:
+				return esc.ToString() + "8";
+			case ConsoleColor.Blue:
+				return esc.ToString() + "9";
+			case ConsoleColor.Green:
+				return esc.ToString() + "a";
+			case ConsoleColor.Cyan:
+				return esc.ToString() + "b";
+			case ConsoleColor.Red:
+				return esc.ToString() + "c";
+			case ConsoleColor.Magenta:
+				return esc.ToString() + "d";
+			case ConsoleColor.Yellow:
+				return esc.ToString() + "e";
+			case ConsoleColor.White:
+				return esc.ToString() + "f";
+			default:
+				return esc.ToString() + "?";
+			}
+		}
+
 		public static async Task<string> DownloadStringAsync(string url)
 		{
 			string result = null;

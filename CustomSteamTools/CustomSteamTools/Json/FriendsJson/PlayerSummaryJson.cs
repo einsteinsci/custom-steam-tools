@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace CustomSteamTools.Json.FriendsJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public sealed class PlayerJson
+	public sealed class PlayerSummaryJson
 	{
 		public string steamid
 		{ get; set; }

@@ -20,6 +20,9 @@ using CustomSteamTools.Utils;
 using Newtonsoft.Json;
 using UltimateUtil.UserInteraction;
 using CustomSteamTools.Backpacks;
+using CustomSteamTools.Json.FriendsJson;
+using CustomSteamTools.Friends;
+using UltimateUtil;
 
 namespace CustomSteamTools
 {
@@ -34,6 +37,8 @@ namespace CustomSteamTools
 		{ get; set; }
 		public static string MarketPricesUrl
 		{ get; set; }
+		public static string MyFriendsListUrl
+		{ get; set; }
 
 		public static string PriceDataFilename
 		{ get; set; }
@@ -43,6 +48,8 @@ namespace CustomSteamTools
 		{ get; set; }
 		public static string MarketPricesFilename	// Downloaded from an official bp.tf API, not scraped off
 		{ get; set; }								//   steam community market
+		public static string MyFriendsListFilename
+		{ get; set; }
 
 		public static string CacheLocation
 		{ get; set; }
@@ -56,6 +63,8 @@ namespace CustomSteamTools
 		public static Dictionary<string, string> BackpackCaches
 		{ get; private set; }
 		public static string MarketPricesCache
+		{ get; private set; }
+		public static string MyFriendsListCache
 		{ get; private set; }
 
 		public static TF2DataJson SchemaRaw
@@ -83,6 +92,16 @@ namespace CustomSteamTools
 		public static MarketReference MarketPrices
 		{ get; private set; }
 
+		public static PlayerSummariesJson MyFriendsListRaw
+		{ get; private set; }
+		public static PlayerList MyFriendsList
+		{ get; private set; }
+
+		public static Dictionary<string, PlayerList> FriendsLists
+		{ get; private set; }
+		public static PlayerList AllLoadedPlayers
+		{ get; private set; }
+
 		public static void Initialize()
 		{
 			string _cachelocation = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "CUSTOM-STEAM-TOOLS");
@@ -90,15 +109,18 @@ namespace CustomSteamTools
 			string _itemfilename = "tf2-itemdata.json";
 			string _bpdatafilename = "steam-backpackdata-homeuser.json";
 			string _marketfilename = "bptf-marketdata.json";
-			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename);
+			string _friendsfilename = "friendslist-homeuser.json";
+			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename, _friendsfilename);
 
 			BackpackCaches = new Dictionary<string, string>();
 			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
 			BackpackData = new Dictionary<string, Backpack>();
+			FriendsLists = new Dictionary<string, PlayerList>();
+			AllLoadedPlayers = new PlayerList();
 		}
 		
 		public static void Initialize(string cacheLocation, string bptfFilename, string itemFilename, 
-			string backpackFilename, string marketFilename)
+			string backpackFilename, string marketFilename, string friendslistFilename)
 		{
 			PriceDataUrl = "http://backpack.tf/api/IGetPrices/v4/?key=" + 
 				Settings.Instance.BackpackTFAPIKey + "&format=pretty";
@@ -111,6 +133,8 @@ namespace CustomSteamTools
 			MarketPricesUrl = "http://backpack.tf/api/IGetMarketPrices/v1/?key=" + 
 				Settings.Instance.BackpackTFAPIKey + "&format=pretty";
 
+			MyFriendsListUrl = GetFriendsListUrl(Settings.Instance.HomeSteamID64);
+
 			if (!Directory.Exists(cacheLocation))
 			{
 				Directory.CreateDirectory(cacheLocation);
@@ -122,6 +146,7 @@ namespace CustomSteamTools
 			SchemaFilename = itemFilename;
 			MyBackpackDataFilename = backpackFilename;
 			MarketPricesFilename = marketFilename;
+			MyFriendsListFilename = friendslistFilename;
 		}
 
 		public static string GetBackbackUrl(string steamID64)
@@ -129,6 +154,22 @@ namespace CustomSteamTools
 			return "http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key=" + 
 				Settings.Instance.SteamAPIKey + "&steamid=" + steamID64;
 		}
+
+		public static string GetPlayerInfoUrl(IEnumerable<string> steamids)
+		{
+			string ids = string.Join(",", steamids);
+
+			return "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" +
+				Settings.Instance.SteamAPIKey + "&steamids=" + ids;
+		}
+		public static string GetFriendsListUrl(string steamid)
+		{
+			return "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=" +
+				Settings.Instance.SteamAPIKey + "&steamid=" +
+				steamid + "&relationship=friend";
+		}
+
+		#region loading
 
 		public static void LoadItemSchema(bool forceOffline)
 		{
@@ -183,6 +224,7 @@ namespace CustomSteamTools
 			{
 				File.WriteAllText(CacheLocation + SchemaFilename, SchemaCache, Encoding.UTF8);
 				Settings.Instance.SchemaLastAccess = currentAccess.Ticks;
+				Settings.Instance.Save();
 			}
 		}
 
@@ -208,8 +250,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Downloading backpack data for '{0}'...", Settings.Instance.SteamPersonaName);
 				try
 				{
-					MyBackpackCache = Util.DownloadString(GetBackbackUrl(Settings.Instance.HomeSteamID64), 
-						Settings.Instance.DownloadTimeout);
+					MyBackpackCache = Util.DownloadString(MyBackpackDataUrl, Settings.Instance.DownloadTimeout);
 				}
 				catch (WebException)
 				{
@@ -240,6 +281,114 @@ namespace CustomSteamTools
 			{
 				File.WriteAllText(CacheLocation + MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
 				Settings.Instance.BackpackLastAccess = currentAccess.Ticks;
+				Settings.Instance.Save();
+			}
+		}
+
+		// Uses a slightly different structure, as it downloads from two sources, and stores its data differently.
+		public static void LoadMyFriendsList(bool forceOffline)
+		{
+			bool offline = forceOffline;
+
+			DateTime lastAccess = new DateTime(Settings.Instance.FriendsListLastAccess);
+			if (DateTime.Now.Subtract(lastAccess).TotalMinutes < 2)
+			{
+				offline = true;
+			}
+
+			if (!File.Exists(CacheLocation + MyFriendsListFilename))
+			{
+				offline = false;
+			}
+
+			DateTime currentAccess = DateTime.Now;
+			bool failed = false;
+			string friendsListCache = null;
+			if (!offline)
+			{
+				VersatileIO.Debug("Downloading friends list data for '{0}'...", Settings.Instance.SteamPersonaName);
+				try
+				{
+					friendsListCache = Util.DownloadString(MyFriendsListUrl, Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					VersatileIO.Error("  Download failed.");
+					failed = true;
+				}
+			}
+
+
+			if (friendsListCache != null)
+			{
+				FriendsListJson listjson = null;
+				try
+				{
+					listjson = JsonConvert.DeserializeObject<FriendsListJson>(friendsListCache);
+				}
+				catch (Exception e)
+				{
+					VersatileIO.Fatal("  Friends list conversion failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.FriendsList);
+				}
+
+				if (listjson == null)
+				{
+					VersatileIO.Fatal("  Friends list conversion faile: FriendsListJson converted is null");
+					throw new RetrievalFailedException(RetrievalType.FriendsList);
+				}
+
+				List<string> friendids = new List<string>();
+				foreach (FriendJson f in listjson.friendslist.friends)
+				{
+					friendids.Add(f.steamid);
+				}
+
+				VersatileIO.Verbose("  Downloading player data for friends...");
+				try
+				{
+					string url = GetPlayerInfoUrl(friendids);
+					MyFriendsListCache = Util.DownloadString(url, Settings.Instance.DownloadTimeout);
+				}
+				catch (WebException)
+				{
+					VersatileIO.Error("  Download failed.");
+					failed = true;
+				}
+			}
+
+			if (friendsListCache == null || MyFriendsListCache == null) // offline, load full friends data from cache
+			{
+				VersatileIO.Debug("Retrieving friends list cache...");
+				try
+				{
+					MyFriendsListCache = File.ReadAllText(CacheLocation + MyFriendsListFilename, Encoding.UTF8);
+					VersatileIO.Verbose("  Retrieval complete.");
+				}
+				catch (Exception e)
+				{
+					VersatileIO.Fatal("  Friends list retrieval failed: " + e.Message);
+					throw new RetrievalFailedException(RetrievalType.FriendsList);
+				}
+			}
+
+			VersatileIO.Verbose("Parsing friend info data...");
+			MyFriendsListRaw = JsonConvert.DeserializeObject<PlayerSummariesJson>(MyFriendsListCache);
+			VersatileIO.Verbose("  Parse complete.");
+
+			MyFriendsList = new PlayerList();
+			foreach (var fj in MyFriendsListRaw.response.players)
+			{
+				Player p = new Player(fj);
+				AllLoadedPlayers.Add(p);
+				MyFriendsList.Add(p);
+			}
+
+			if (!failed && !offline)
+			{
+				File.WriteAllText(CacheLocation + MyFriendsListFilename, MyFriendsListCache, Encoding.UTF8);
+				Settings.Instance.FriendsListLastAccess = lastAccess.Ticks;
+				Settings.Instance.Save();
 			}
 		}
 
@@ -298,6 +447,7 @@ namespace CustomSteamTools
 			{
 				File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache, Encoding.UTF8);
 				Settings.Instance.PriceListLastAccess = currentAccess.Ticks;
+				Settings.Instance.Save();
 			}
 		}
 
@@ -356,15 +506,15 @@ namespace CustomSteamTools
 			{
 				File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
 				Settings.Instance.MarketPricesLastAccess = currentAccess.Ticks;
+				Settings.Instance.Save();
 			}
 		}
 
 		public static bool LoadOtherBackpack(string steamID64)
 		{
-			TimeSpan TIMEOUT = TimeSpan.FromSeconds(20);
-
 			VersatileIO.Debug("Requesting backpack data for user #{0} from Steam...", steamID64);
-			string result = Util.DownloadString(GetBackbackUrl(steamID64), TIMEOUT);
+			string result = Util.DownloadString(GetBackbackUrl(steamID64), 
+				Settings.Instance.DownloadTimeout);
 			if (result == null)
 			{
 				return false;
@@ -392,6 +542,137 @@ namespace CustomSteamTools
 			VersatileIO.Verbose("  Parse complete.");
 
 			return true;
+		}
+
+		public static bool LoadOtherFriendsList(string steamID64, bool force)
+		{
+			if (FriendsLists.ContainsKey(steamID64))
+			{
+				return true;
+			}
+
+			VersatileIO.Debug("Requesting friends list for user #{0} from Steam...", steamID64);
+			string url = GetFriendsListUrl(steamID64);
+			string data = Util.DownloadString(url, Settings.Instance.DownloadTimeout);
+			if (data == null)
+			{
+				return false;
+			}
+
+			VersatileIO.Verbose("  Parsing friends list...");
+			FriendsListJson json = JsonConvert.DeserializeObject<FriendsListJson>(data);
+
+			if (json == null)
+			{
+				VersatileIO.Fatal("  Error parsing friends list for user #{0}.", steamID64);
+				return false;
+			}
+
+			List<string> friendids = new List<string>();
+			if (json.friendslist != null)
+			{
+				foreach (FriendJson f in json.friendslist.friends)
+				{
+					friendids.Add(f.steamid);
+				}
+			}
+
+			PlayerList friends = GetPlayerInfos(friendids, force);
+			FriendsLists.Add(steamID64, friends);
+			VersatileIO.Verbose("  Parse complete.");
+
+			return true;
+		}
+
+		public static bool LoadPlayerInfo(string steamid)
+		{
+			VersatileIO.Debug("Requesting player data for user #{0}...", steamid);
+			string url = GetPlayerInfoUrl(steamid.Once<string>());
+			string data = Util.DownloadString(url, Settings.Instance.DownloadTimeout);
+			if (data == null)
+			{
+				return false;
+			}
+
+			VersatileIO.Verbose("  Parsing player data...");
+			PlayerSummariesJson json = JsonConvert.DeserializeObject<PlayerSummariesJson>(data);
+			if (json == null || json.response == null || json.response.players.IsNullOrEmpty())
+			{
+				VersatileIO.Error("  Error parsing player data: JSON data was null");
+				return false;
+			}
+
+			PlayerSummaryJson psj = json.response.players.FirstOrDefault();
+			Player p = new Player(psj);
+			
+			if (AllLoadedPlayers.Contains(steamid))
+			{
+				int i = AllLoadedPlayers.IndexOf((_p) => _p.SteamID64 == steamid);
+				if (i != -1)
+				{
+					AllLoadedPlayers[i] = p;
+					return true;
+				}
+
+				return false;
+			}
+			else
+			{
+				AllLoadedPlayers.Add(p);
+				return true;
+			}
+		}
+
+		#endregion loading
+
+		public static PlayerList GetPlayerInfos(List<string> steamids, bool force)
+		{
+			PlayerList res = new PlayerList();
+
+			List<string> toDownload = new List<string>();
+
+			if (force)
+			{
+				AllLoadedPlayers.RemoveAll((p) => steamids.Contains(p.SteamID64));
+				toDownload.AddRange(steamids);
+			}
+			else
+			{
+				foreach (string id in steamids)
+				{
+					if (AllLoadedPlayers.Contains(id))
+					{
+						res.Add(AllLoadedPlayers.GetFriendBySteamID(id));
+					}
+					else
+					{
+						toDownload.Add(id);
+					}
+				}
+			}
+
+			VersatileIO.Debug("Requesting player data for {0} players...", toDownload.Count);
+			string url = GetPlayerInfoUrl(toDownload);
+			string data = Util.DownloadString(url, Settings.Instance.DownloadTimeout);
+			if (data == null)
+			{
+				return res;
+			}
+			PlayerSummariesJson json = JsonConvert.DeserializeObject<PlayerSummariesJson>(data);
+			if (json == null || json.response == null)
+			{
+				VersatileIO.Error("  Error parsing player data: JSON data was null");
+				return res;
+			}
+
+			foreach (PlayerSummaryJson psj in json.response.players)
+			{
+				Player p = new Player(psj);
+				AllLoadedPlayers.Add(p);
+				res.Add(p);
+			}
+
+			return res;
 		}
 
 		#region JSON stuff
@@ -513,6 +794,7 @@ namespace CustomSteamTools
 					LoadMyBackpackData(!force);
 					LoadPriceData(!force);
 					LoadMarketData(!force);
+					LoadMyFriendsList(!force);
 
 					success = true;
 				}
