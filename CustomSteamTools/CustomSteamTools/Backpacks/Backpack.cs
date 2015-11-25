@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Json.BackpackDataJson;
 using CustomSteamTools.Lookup;
+using CustomSteamTools.Schema;
 
 namespace CustomSteamTools.Backpacks
 {

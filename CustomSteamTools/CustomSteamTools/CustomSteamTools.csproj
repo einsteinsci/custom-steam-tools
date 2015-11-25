@@ -141,7 +141,7 @@
     <Compile Include="Json\PriceDataJson\QualityPriceDataJson.cs" />
     <Compile Include="Json\PriceDataJson\TradabilityJson.cs" />
     <Compile Include="Json\PriceDataJson\TypeIndexPricingJson.cs" />
-    <Compile Include="Lookup\GameSchema.cs" />
+    <Compile Include="Schema\GameSchema.cs" />
     <Compile Include="Lookup\MarketReference.cs" />
     <Compile Include="Lookup\PriceCheckResults.cs" />
     <Compile Include="Lookup\PriceReference.cs" />

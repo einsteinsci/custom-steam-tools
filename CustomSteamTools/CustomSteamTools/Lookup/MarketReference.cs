@@ -8,6 +8,7 @@ using CustomSteamTools.Utils;
 using CustomSteamTools.Json.MarketPricesJson;
 using CustomSteamTools.Market;
 using UltimateUtil.UserInteraction;
+using CustomSteamTools.Schema;
 
 namespace CustomSteamTools.Lookup
 {

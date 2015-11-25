@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Json.ItemDataJson;
-using CustomSteamTools.Schema;
 
-namespace CustomSteamTools.Lookup
+namespace CustomSteamTools.Schema
 {
 	public class GameSchema
 	{
+		const string ACCOUNT_FLAGGED_ITEM_SUBSTRING = "Your account has been flagged for circumventing the " +
+			"item distribution system. We have removed the items that were illegally obtained.";
+
 		// the big one
 		public List<Item> Items
 		{ get; set; }
@@ -30,7 +32,18 @@ namespace CustomSteamTools.Lookup
 		public GameSchema(TF2DataResultJson json)
 		{
 			Attributes = json.attributes.ConvertAll((j) => new ItemAttribute(j));
-			Items = json.items.ConvertAll((j) => new Item(j, Attributes));
+
+			Items = new List<Item>();
+			foreach (var j in json.items)
+			{
+				if (j.name.Contains(ACCOUNT_FLAGGED_ITEM_SUBSTRING))
+				{
+					continue;
+				}
+
+				Items.Add(new Item(j, Attributes));
+			}
+			
 			ItemSets = json.item_sets.ConvertAll((j) => new ItemSet(j, Items, Attributes));
 			Unusuals = json.attribute_controlled_attached_particles.ConvertAll((j) => new UnusualEffect(j));
 			StrangeParts = json.kill_eater_score_types.ConvertAll((j) => new StrangePart(j));

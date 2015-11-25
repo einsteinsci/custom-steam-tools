@@ -52,7 +52,7 @@ namespace CustomSteamTools.Utils
 		{ get; set; }
 
 		[Setting("Lenth of time to wait (in seconds) during download before timing out and giving up.")]
-		public int DownloadTimeoutSeconds
+		public double DownloadTimeoutSeconds
 		{ get; set; }
 
 		[Setting("SteamID64 of main user. Used for 'home' backpack caching.")]
