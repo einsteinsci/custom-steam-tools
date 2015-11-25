@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CustomSteamTools.Backpacks;
 using CustomSteamTools.Commands;
-using CustomSteamTools.Items;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Market;
+using CustomSteamTools.Schema;
+using CustomSteamTools.Skins;
 using UltimateUtil;
 using UltimateUtil.Fluid;
 

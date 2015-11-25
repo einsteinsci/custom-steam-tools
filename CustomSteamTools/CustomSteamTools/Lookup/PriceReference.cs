@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Utils;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Json.PriceDataJson;
 using CustomSteamTools.Classifieds;
 using UltimateUtil.UserInteraction;

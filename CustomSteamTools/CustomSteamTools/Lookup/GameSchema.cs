@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CustomSteamTools.Items;
 using CustomSteamTools.Json.ItemDataJson;
+using CustomSteamTools.Schema;
 
 namespace CustomSteamTools.Lookup
 {

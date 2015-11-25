@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CustomSteamTools.Backpacks;
+using CustomSteamTools.Market;
+using CustomSteamTools.Schema;
+using CustomSteamTools.Skins;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Lookup
 {
 	public sealed class ItemPriceInfo
 	{
@@ -47,6 +51,8 @@ namespace CustomSteamTools.Items
 
 		public SkinWear? SkinWear
 		{ get; private set; }
+
+		public bool IsSkin => Item.IsSkin();
 
 		public ItemPriceInfo(Item item, Quality quality = Quality.Unique)
 		{

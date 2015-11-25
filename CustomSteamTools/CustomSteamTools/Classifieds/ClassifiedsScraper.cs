@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
 
@@ -12,6 +12,7 @@ using UltimateUtil;
 
 using HtmlAgilityPack;
 using UltimateUtil.UserInteraction;
+using CustomSteamTools.Backpacks;
 
 namespace CustomSteamTools.Classifieds
 {

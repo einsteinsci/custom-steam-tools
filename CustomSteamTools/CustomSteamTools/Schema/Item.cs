@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using CustomSteamTools.Classifieds;
 using CustomSteamTools.Json.ItemDataJson;
 using CustomSteamTools.Lookup;
+using CustomSteamTools.Market;
+using CustomSteamTools.Skins;
 using CustomSteamTools.Utils;
 using UltimateUtil;
 using UltimateUtil.UserInteraction;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Schema
 {
 	public class Item
 	{

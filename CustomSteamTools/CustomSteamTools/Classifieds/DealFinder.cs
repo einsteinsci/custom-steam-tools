@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Utils;
 using UltimateUtil;
 using UltimateUtil.UserInteraction;
+using CustomSteamTools.Backpacks;
 
 namespace CustomSteamTools.Classifieds
 {
@@ -20,92 +21,7 @@ namespace CustomSteamTools.Classifieds
 				VersatileIO.Warning("Deals filters object was null. Setting to default.");
 				filters = new Filters();
 			}
-
-			#region oldFilters
-			/*
-			List<Quality> allowedQualities = new List<Quality>();
-			List<ItemSlotPlain> allowedSlots = new List<ItemSlotPlain>();
-			bool? craftable = true;
-			bool? halloween = null;
-			bool? botkiller = null;
-			Price? minProfit = null;
-
-			foreach (object obj in filters)
-			{
-				if (obj is Quality)
-				{
-					allowedQualities.Add((Quality)obj);
-				}
-
-				if (obj is ItemSlotPlain)
-				{
-					allowedSlots.Add((ItemSlotPlain)obj);
-				}
-
-				if (obj is string)
-				{
-					string s = obj as string;
-					
-					if (s.EqualsIgnoreCase("/nohalloween"))
-					{
-						halloween = false;
-					}
-					else if (s.EqualsIgnoreCase("/halloween"))
-					{
-						halloween = true;
-					}
-					else if (s.EqualsIgnoreCase("/anycraftable"))
-					{
-						craftable = null;
-					}
-					else if (s.EqualsIgnoreCase("/uncraftable"))
-					{
-						craftable = false;
-					}
-					else if (s.EqualsIgnoreCase("/nobotkiller"))
-					{
-						botkiller = false;
-					}
-					else if (s.EqualsIgnoreCase("/botkiller"))
-					{
-						botkiller = true;
-					}
-					else if (s.ToLower().StartsWith("/minprofit="))
-					{
-						string smin = s.ToLower().Substring("/minprofit=".Length);
-						Price buf;
-						if (!Price.TryParse(smin, out buf))
-						{
-							VersatileIO.Error("Invalid minProfit: " + smin);
-							return null;
-						}
-						minProfit = buf;
-					}
-				}
-			}
-			*/
-
-			/*
-			string filtersListString = "";
-			foreach (Quality q in allowedQualities)
-			{
-				filtersListString += q.ToString() + " ";
-			}
-			foreach (ItemSlotPlain s in allowedSlots)
-			{
-				filtersListString += s.ToString() + " ";
-			}
-			foreach (object obj in filters)
-			{
-				string f = obj as string;
-				if (f != null)
-				{
-					filtersListString += f + " ";
-				}
-			}
-			*/
-			#endregion oldFilters
-
+			
 			VersatileIO.Info("Filters: " + filters.ToString());
 
 			//if (allowedSlots.Count == 0)

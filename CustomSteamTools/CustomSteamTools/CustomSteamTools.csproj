@@ -40,7 +40,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,7 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backpack\Backpack.cs" />
+    <Compile Include="Backpacks\Backpack.cs" />
     <Compile Include="Classifieds\ClassifiedsListing.cs" />
     <Compile Include="Classifieds\ClassifiedsScraper.cs" />
     <Compile Include="Classifieds\DealFinder.cs" />
@@ -77,22 +79,29 @@
     <Compile Include="Commands\ITradeCommand.cs" />
     <Compile Include="Commands\CmdPriceCheck.cs" />
     <Compile Include="DataManager.cs" />
-    <Compile Include="Enums\AttributeEffectTypes.cs" />
-    <Compile Include="Enums\ItemQualities.cs" />
-    <Compile Include="Enums\ItemSlots.cs" />
-    <Compile Include="Enums\KillstreakTypes.cs" />
-    <Compile Include="Enums\PlayerClasses.cs" />
-    <Compile Include="Enums\SkinWears.cs" />
-    <Compile Include="Items\AppliedInstanceAttribute.cs" />
-    <Compile Include="Items\GunMettleSkins.cs" />
-    <Compile Include="Items\Item.cs" />
-    <Compile Include="Items\ItemPriceInfo.cs" />
-    <Compile Include="Items\ItemAttribute.cs" />
-    <Compile Include="Items\ItemInstance.cs" />
-    <Compile Include="Items\ItemSet.cs" />
-    <Compile Include="Items\Skin.cs" />
-    <Compile Include="Items\StrangePart.cs" />
-    <Compile Include="Items\UnusualEffect.cs" />
+    <Compile Include="Friends\Friend.cs" />
+    <Compile Include="Friends\FriendsList.cs" />
+    <Compile Include="Json\FriendsJson\FriendJson.cs" />
+    <Compile Include="Json\FriendsJson\FriendsListJson.cs" />
+    <Compile Include="Json\FriendsJson\PlayerInfoJson.cs" />
+    <Compile Include="Json\FriendsJson\PlayerJson.cs" />
+    <Compile Include="Schema\AttributeEffectTypes.cs" />
+    <Compile Include="Schema\ItemQualities.cs" />
+    <Compile Include="Schema\ItemSlots.cs" />
+    <Compile Include="Market\KillstreakTypes.cs" />
+    <Compile Include="Friends\PersonaStates.cs" />
+    <Compile Include="Schema\PlayerClasses.cs" />
+    <Compile Include="Skins\SkinWears.cs" />
+    <Compile Include="Backpacks\AppliedInstanceAttribute.cs" />
+    <Compile Include="Skins\GunMettleSkins.cs" />
+    <Compile Include="Schema\Item.cs" />
+    <Compile Include="Lookup\ItemPriceInfo.cs" />
+    <Compile Include="Schema\ItemAttribute.cs" />
+    <Compile Include="Backpacks\ItemInstance.cs" />
+    <Compile Include="Schema\ItemSet.cs" />
+    <Compile Include="Skins\Skin.cs" />
+    <Compile Include="Schema\StrangePart.cs" />
+    <Compile Include="Schema\UnusualEffect.cs" />
     <Compile Include="Json\BackpackDataJson\AppliedItemInstanceAttributeJson.cs" />
     <Compile Include="Json\BackpackDataJson\EquipInfoJson.cs" />
     <Compile Include="Json\BackpackDataJson\ItemInstanceJson.cs" />
@@ -145,6 +154,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using CustomSteamTools.Classifieds;
 using CustomSteamTools.Commands;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Json.BackpackDataJson;
 using CustomSteamTools.Json.ItemDataJson;
 using CustomSteamTools.Json.MarketPricesJson;
@@ -19,6 +19,7 @@ using CustomSteamTools.Utils;
 
 using Newtonsoft.Json;
 using UltimateUtil.UserInteraction;
+using CustomSteamTools.Backpacks;
 
 namespace CustomSteamTools
 {

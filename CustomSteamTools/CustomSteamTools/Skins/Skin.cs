@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Lookup;
+using CustomSteamTools.Schema;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Skins
 {
 	public class Skin
 	{

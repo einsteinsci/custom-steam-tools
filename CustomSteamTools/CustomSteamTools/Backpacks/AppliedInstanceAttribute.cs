@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CustomSteamTools.Json.BackpackDataJson;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Backpacks
 {
 	public class AppliedInstanceAttribute
 	{

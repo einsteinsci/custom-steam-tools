@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Market;
 using UltimateUtil;
 using UltimateUtil.UserInteraction;

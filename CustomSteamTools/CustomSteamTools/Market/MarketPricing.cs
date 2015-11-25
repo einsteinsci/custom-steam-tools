@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CustomSteamTools.Utils;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using CustomSteamTools.Json.MarketPricesJson;
 using CustomSteamTools.Lookup;
 using UltimateUtil.UserInteraction;
+using CustomSteamTools.Skins;
+using CustomSteamTools.Backpacks;
 
 namespace CustomSteamTools.Market
 {

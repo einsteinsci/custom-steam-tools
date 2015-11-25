@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CustomSteamTools.Items;
 using CustomSteamTools.Json.BackpackDataJson;
 using CustomSteamTools.Lookup;
 
-namespace CustomSteamTools
+namespace CustomSteamTools.Backpacks
 {
 	public class Backpack
 	{

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UltimateUtil;
 
-namespace CustomSteamTools
+namespace CustomSteamTools.Schema
 {
 	public enum Quality
 	{

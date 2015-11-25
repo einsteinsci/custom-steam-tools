@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CustomSteamTools
+namespace CustomSteamTools.Market
 {
 	public enum KillstreakType
 	{

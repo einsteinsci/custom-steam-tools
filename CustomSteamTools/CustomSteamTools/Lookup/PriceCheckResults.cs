@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Classifieds;
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
+using CustomSteamTools.Skins;
 
 namespace CustomSteamTools.Lookup
 {

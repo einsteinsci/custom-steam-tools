@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CustomSteamTools.Json.ItemDataJson;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Schema
 {
 	public class UnusualEffect
 	{

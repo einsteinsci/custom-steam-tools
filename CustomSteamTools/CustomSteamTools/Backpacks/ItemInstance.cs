@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using CustomSteamTools.Classifieds;
 using CustomSteamTools.Json.BackpackDataJson;
 using CustomSteamTools.Lookup;
+using CustomSteamTools.Market;
+using CustomSteamTools.Schema;
+using CustomSteamTools.Skins;
 
-namespace CustomSteamTools.Items
+namespace CustomSteamTools.Backpacks
 {
 	public class ItemInstance
 	{

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CustomSteamTools.Items;
+using CustomSteamTools.Schema;
 using UltimateUtil;
 
 namespace CustomSteamTools.Classifieds

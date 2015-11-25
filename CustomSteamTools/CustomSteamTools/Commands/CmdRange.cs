@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Classifieds;
+using CustomSteamTools.Schema;
 using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Commands
