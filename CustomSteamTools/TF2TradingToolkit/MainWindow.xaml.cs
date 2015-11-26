@@ -20,9 +20,40 @@ namespace TF2TradingToolkit
 	/// </summary>
 	public partial class MainWindow : Elysium.Controls.Window
 	{
+		InitWindow _initializerWindow;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+		}
+
+		private void RefreshDropDownBtn_Click(object sender, RoutedEventArgs e)
+		{
+			RefreshDropDownBtn.ContextMenu.IsOpen = true;
+		}
+
+		private void RefreshDropDownBtn_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			e.Handled = true;
+		}
+
+		private void Window_Initialized(object sender, EventArgs e)
+		{
+			if (RefreshDropDownBtn.ContextMenu == null)
+			{
+				RefreshDropDownBtn.ContextMenu = FindResource("K_RefreshMenu") as ContextMenu;
+			}
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			_initializerWindow = new InitWindow();
+			bool? loaded = _initializerWindow.ShowDialog();
+
+			if (loaded != true)
+			{
+
+			}
 		}
 	}
 }

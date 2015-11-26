@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>assets\smallnflat_wrench-screwdriver.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Elysium, Version=2.0.1042.4, Culture=neutral, PublicKeyToken=afa220db249e5b15, processorArchitecture=MSIL">
       <HintPath>..\packages\Elysium.Theme.2.0.4\lib\net45\Elysium.dll</HintPath>
@@ -87,6 +90,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UltimateUtil, Version=1.1.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UltimateUtil.1.1.0.6\lib\UltimateUtil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -96,6 +103,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="InitWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -103,6 +114,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InitWindow.xaml.cs">
+      <DependentUpon>InitWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -147,12 +161,41 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\Anger.png" />
+    <Resource Include="assets\Anger.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\BackpackExpander.png" />
-    <Resource Include="resources\Nametag.png" />
-    <Resource Include="resources\StrangeFilter.png" />
+    <Resource Include="assets\BackpackExpander.png" />
+    <Resource Include="assets\Nametag.png" />
+    <Resource Include="assets\StrangeFilter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_cloud-sync-24x.png" />
+    <Resource Include="assets\smallnflat_filter.png" />
+    <Resource Include="assets\smallnflat_tag.png" />
+    <Resource Include="assets\smallnflat_terminal-24x.png" />
+    <Resource Include="assets\smallnflat_user.png" />
+    <Resource Include="assets\smallnflat_wrench-24x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\TriangleDown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_wrench-screwdriver.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_wrench-screwdriver-16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_wrench-screwdriver-32x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_wrench-screwdriver-24x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\smallnflat_wrench-screwdriver-24x-buf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

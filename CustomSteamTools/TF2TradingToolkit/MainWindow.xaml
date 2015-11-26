@@ -5,74 +5,155 @@
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:e="http://schemas.codeplex.com/elysium"
           xmlns:ep="http://schemas.codeplex.com/elysium/params"
+          xmlns:ex="http://schemas.extra.com/ui"
           xmlns:local="clr-namespace:TF2TradingToolkit"
           mc:Ignorable="d"
           ep:Design.Theme="Light"
           ep:Manager.Theme="Light"
           ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
           ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-          Title="TF2 Trading Toolkit"
+          BorderBrush="{x:Static e:AccentBrushes.Orange}"
           Height="768"
-          Width="1365">
+          Width="1365"
+          Title="TF2 Trading Toolkit"
+          WindowStartupLocation="CenterScreen"
+          ResizeMode="CanResizeWithGrip"
+          HasDropShadow="True"
+          Initialized="Window_Initialized"
+          Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
+          Loaded="Window_Loaded">
+  <Window.Resources>
+    <ContextMenu x:Key="K_RefreshMenu"
+                 ep:Manager.Theme="Light">
+      <MenuItem Header="TF2 Game Schema" />
+      <MenuItem Header="backpack.tf Prices" />
+      <MenuItem Header="Backpacks">
+        <MenuItem Header="My Backpack" />
+        <MenuItem Header="Others' Backpacks" />
+      </MenuItem>
+      <MenuItem Header="Steam Marketplace" />
+      <MenuItem Header="Player Info">
+        <MenuItem Header="Friends" />
+        <MenuItem Header="All Loaded Players" />
+      </MenuItem>
+    </ContextMenu>
+  </Window.Resources>
+
   <Grid>
     <TabControl x:Name="MainTabControl"
                 Margin="10 ">
-      <TabItem x:Name="ItemsTab">
+      <TabItem x:Name="ItemsTab"
+               FontSize="24">
         <TabItem.Header>
-          <StackPanel Orientation="Horizontal">
-            <Image Source="resources/Anger.png"
-                   MinWidth="40.1"
-                   MinHeight="40" />
+          <StackPanel Orientation="Horizontal"
+                      Margin="5,0">
+            <Image Source="assets/smallnflat_search.png"
+                   Width="24"
+                   Height="24" />
             <TextBlock Text="Items"
-                       FontSize="32"
                        VerticalAlignment="Top"
-                       Margin="5,0,0,0"
+                       Margin="10,0,0,0"
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
       </TabItem>
-      <TabItem x:Name="BackpackTab">
+      <TabItem x:Name="BackpackTab"
+               FontSize="24">
         <TabItem.Header>
-          <StackPanel Orientation="Horizontal">
-            <Image Source="resources/BackpackExpander.png"
-                   MinWidth="40.1"
-                   MinHeight="40" />
+          <StackPanel Orientation="Horizontal"
+                      Margin="5,0">
+            <Image Source="assets/smallnflat_user.png"
+                   Width="24"
+                   Height="24" />
             <TextBlock Text="Backpack"
-                       FontSize="32"
                        VerticalAlignment="Top"
-                       Margin="5,0,0,0"
+                       Margin="10,0,0,0"
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
       </TabItem>
-      <TabItem x:Name="ClassifiedsTab">
+      <TabItem x:Name="ClassifiedsTab"
+               FontSize="24">
         <TabItem.Header>
-          <StackPanel Orientation="Horizontal">
-            <Image Source="resources/Nametag.png"
-                   MinWidth="40.1"
-                   MinHeight="40" />
+          <StackPanel Orientation="Horizontal"
+                      Margin="5,0">
+            <Image Source="assets/smallnflat_tag.png"
+                   Width="24"
+                   Height="24" />
             <TextBlock Text="Classifieds"
-                       FontSize="32"
-                       VerticalAlignment="Top"
-                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
       </TabItem>
-      <TabItem x:Name="RangeTab">
+      <TabItem x:Name="RangeTab"
+               FontSize="24">
         <TabItem.Header>
-          <StackPanel Orientation="Horizontal">
-            <Image Source="resources/StrangeFilter.png"
-                   MinWidth="40.1"
-                   MinHeight="40" />
+          <StackPanel Orientation="Horizontal"
+                      Margin="5,0">
+            <Image Source="assets/smallnflat_filter.png"
+                   Width="24"
+                   Height="24" />
             <TextBlock Text="Range"
-                       FontSize="32"
-                       VerticalAlignment="Top"
-                       Margin="5,0,0,0"
-                       FontWeight="SemiBold" />
+                       Margin="10,0,0,0"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
           </StackPanel>
         </TabItem.Header>
       </TabItem>
     </TabControl>
+    
+    <!--Side Buttons-->
+    <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Top"
+                Margin="10"
+                HorizontalAlignment="Right"
+                MaxHeight="32">
+      <Button x:Name="RefreshAllBtn"
+              FontSize="14"
+              ContextMenu="{DynamicResource K_RefreshMenu}">
+        <StackPanel Orientation="Horizontal">
+          <Image Source="assets/smallnflat_cloud-sync-24x.png"
+                 Width="16"
+                 Height="16"
+                 Margin="0,0,5,0" />
+          <TextBlock Text="Refresh"
+                     Margin="5,0" />
+        </StackPanel>
+      </Button>
+      <Button x:Name="RefreshDropDownBtn"
+              Margin="1,0,10,0"
+              MinWidth="16"
+              Click="RefreshDropDownBtn_Click"
+              MouseRightButtonUp="RefreshDropDownBtn_MouseRightButtonUp">
+        <Image Source="assets/TriangleDown.png"
+               Width="8"
+               Height="8" />
+      </Button>
+      <Button x:Name="SettingsBtn"
+              FontSize="14"
+              Margin="0,0,5,0">
+        <StackPanel Orientation="Horizontal">
+          <Image Source="assets/smallnflat_wrench-24x.png"
+                 Width="16"
+                 Height="16"
+                 Margin="0,0,5,0" />
+          <TextBlock Text="Settings"
+                     Margin="5,0" />
+        </StackPanel>
+      </Button>
+      <Button x:Name="ConsoleBtn"
+              FontSize="14">
+        <StackPanel Orientation="Horizontal">
+          <Image Source="assets/smallnflat_terminal-24x.png"
+                 Width="16"
+                 Height="16"
+                 Margin="0,0,5,0" />
+          <TextBlock Text="Console"
+                     Margin="5,0" />
+        </StackPanel>
+      </Button>
+    </StackPanel>
   </Grid>
 </e:Window>
