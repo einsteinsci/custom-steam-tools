@@ -55,7 +55,7 @@ namespace TF2TradingToolkit
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			_initializerWindow = new InitWindow();
+			_initializerWindow = new InitWindow(false);
 			bool? loaded = _initializerWindow.ShowDialog();
 
 			if (loaded != true)
@@ -69,13 +69,45 @@ namespace TF2TradingToolkit
 
 		private void RefreshAllBtn_Click(object sender, RoutedEventArgs e)
 		{
-			if (AutoExiting)
+			_initializerWindow = new InitWindow(true);
+			bool? loaded = _initializerWindow.ShowDialog();
+
+			if (loaded != true)
+			{
+				AutoExiting = true;
+				Close();
+			}
+
+			ItemsView.PostLoad();
+		}
+
+		private void RefreshItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			if (item == null)
 			{
 				return;
 			}
 
-			InputNumberWindow num = new InputNumberWindow("Prompt");
-			num.ShowDialog();
+			switch (item.Tag as string)
+			{
+			case "SchemaRefreshItem":
+				break;
+			case "PricesRefreshItem":
+				break;
+			case "BackpackMyRefreshItem":
+				break;
+			case "BackpackOtherRefreshItem":
+				break;
+			case "MarketRefreshItem":
+				break;
+			case "PlayerFriendsRefreshItem":
+				break;
+			case "PlayerAllRefreshItem":
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

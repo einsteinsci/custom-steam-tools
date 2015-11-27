@@ -25,17 +25,35 @@
   <Window.Resources>
     <ContextMenu x:Key="K_RefreshMenu"
                  ep:Manager.Theme="Light">
-      <MenuItem Header="TF2 Game Schema" />
-      <MenuItem Header="backpack.tf Prices" />
-      <MenuItem Header="Backpacks">
-        <MenuItem Header="My Backpack" />
-        <MenuItem Header="Others' Backpacks" />
+      <MenuItem Tag="SchemaRefreshItem"
+                Header="Refresh TF2 Game Schema"
+                Click="RefreshItem_Click" />
+      <MenuItem Tag="PricesRefreshItem"
+                Header="Refresh backpack.tf Prices"
+                Click="RefreshItem_Click" />
+      <MenuItem Header="Refresh Backpacks">
+        <MenuItem Tag="BackpackMyRefreshItem"
+                  Header="My Backpack"
+                  Click="RefreshItem_Click" />
+        <MenuItem Tag="BackpackOtherRefreshItem"
+                  Header="Others' Backpacks"
+                  Click="RefreshItem_Click" />
       </MenuItem>
-      <MenuItem Header="Steam Marketplace" />
-      <MenuItem Header="Player Info">
-        <MenuItem Header="Friends" />
-        <MenuItem Header="All Loaded Players" />
+      <MenuItem Tag="MarketRefreshItem"
+                Header="Refresh Steam Marketplace"
+                Click="RefreshItem_Click" />
+      <MenuItem Header="Refresh Player Data">
+        <MenuItem Tag="PlayerFriendsRefreshItem"
+                  Header="Friends"
+                  Click="RefreshItem_Click" />
+        <MenuItem Tag="PlayerAllRefreshItem"
+                  Header="All Loaded Players"
+                  Click="RefreshItem_Click" />
       </MenuItem>
+      <Separator />
+      <MenuItem x:Name="AllRefreshItem"
+                Header="Refresh All Data"
+                Click="RefreshItem_Click" />
     </ContextMenu>
   </Window.Resources>
 
@@ -125,7 +143,8 @@
         </StackPanel>
       </Button>
       <Button x:Name="RefreshDropDownBtn"
-              Margin="1,0,10,0"
+              Margin="1,0,0,0"
+              Visibility="Collapsed"
               MinWidth="16"
               Click="RefreshDropDownBtn_Click"
               MouseRightButtonUp="RefreshDropDownBtn_MouseRightButtonUp">
@@ -135,7 +154,7 @@
       </Button>
       <Button x:Name="SettingsBtn"
               FontSize="14"
-              Margin="0,0,5,0">
+              Margin="10,0">
         <StackPanel Orientation="Horizontal">
           <Image Source="assets/smallnflat_wrench-24x.png"
                  Width="16"

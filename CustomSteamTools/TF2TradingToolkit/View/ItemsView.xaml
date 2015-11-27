@@ -14,6 +14,20 @@
              mc:Ignorable="d"
              d:DesignHeight="667"
              d:DesignWidth="1337">
+  <UserControl.InputBindings>
+    <KeyBinding Key="Delete"
+                Command="{Binding DeleteCalcCmd}" />
+  </UserControl.InputBindings>
+  <UserControl.Resources>
+    <ContextMenu x:Key="ItemContextMenu">
+      <MenuItem Header="Add to Calculator"
+                Click="CalcAddItem_Click" />
+    </ContextMenu>
+    <ContextMenu x:Key="CalcItemContextMenu">
+      <MenuItem Header="Edit" />
+      <MenuItem Header="Remove" />
+    </ContextMenu>
+  </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition />
@@ -21,7 +35,8 @@
     </Grid.ColumnDefinitions>
 
     <Grid Tag="Lookup Column"
-          Grid.Column="0">
+          Grid.Column="0"
+          Margin="0,0,10,0">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -34,10 +49,12 @@
       <TextBox x:Name="ItemSearchBox"
                Text=""
                FontSize="24"
-               TextChanged="ItemSearchBox_TextChanged"
-               Margin="0,10,10,0" />
+               Margin="0,10,10,0"
+               TextChanged="ItemSearchBox_TextChanged" />
       <ListBox x:Name="ItemSearchResultList"
                Grid.Row="1"
+               HorizontalContentAlignment="Stretch"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                SelectionChanged="ItemSearchResultList_SelectionChanged"
                Margin="0,10,10,10"
                BorderThickness="1">
@@ -50,7 +67,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              
+
               <Image Source="{Binding ImageURL}"
                      Height="48"
                      Width="48" />
@@ -79,7 +96,7 @@
                    FontSize="16" />
         <local:QualitySelector x:Name="Qualities"
                                Grid.Column="1"
-                               QualityChanged="Qualities_QualityChanged"/>
+                               QualityChanged="Qualities_QualityChanged" />
       </Grid>
       <Grid Grid.Row="3"
             Margin="0,0,10,10">
@@ -94,8 +111,10 @@
                   VerticalAlignment="Center"
                   Margin="5,0,0,0"
                   HorizontalAlignment="Left"
-                  Checked="AustraliumCheckbox_Checked" />
+                  Checked="AustraliumCheckbox_Checked"
+                  IsEnabled="False" />
         <Label x:Name="KillstreakLbl"
+               IsEnabled="{Binding ElementName=Killstreaks, Path=IsEnabled}"
                Content="Killstreak Tier:"
                VerticalAlignment="Center"
                FontSize="16"
@@ -105,7 +124,8 @@
         <local:KillstreakSelector x:Name="Killstreaks"
                                   Grid.Column="2"
                                   SelectedKillstreak="None"
-                                  KillstreakChanged="Killstreaks_KillstreakChanged" />
+                                  KillstreakChanged="Killstreaks_KillstreakChanged"
+                                  IsEnabled="False" />
       </Grid>
       <Grid Grid.Row="4"
             Margin="5,0,10,10">
@@ -120,16 +140,19 @@
                   Content="Craftable"
                   IsChecked="True"
                   VerticalAlignment="Center"
-                  Click="CraftableCheckbox_Click" />
+                  Click="CraftableCheckbox_Click"
+                  IsEnabled="False" />
         <CheckBox x:Name="TradableCheckbox"
                   Content="Tradable"
                   IsChecked="True"
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   Margin="10,0,0,0"
-                  Click="TradableCheckbox_Click" />
+                  Click="TradableCheckbox_Click"
+                  IsEnabled="False" />
         <Label x:Name="UnusualLbl"
                Content="Unusual Effect:"
+               IsEnabled="{Binding ElementName=UnusualEffectsDropdown, Path=IsEnabled}"
                VerticalAlignment="Center"
                FontSize="14"
                Grid.Column="2"
@@ -137,15 +160,26 @@
         <ComboBox x:Name="UnusualEffectsDropdown"
                   Grid.Column="3"
                   Margin="5,0,0,0"
-                  SelectionChanged="UnusualEffectsDropdown_SelectionChanged">
+                  SelectionChanged="UnusualEffectsDropdown_SelectionChanged"
+                  IsEnabled="False">
           <ComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding Name}" />
+              <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding BpTfURL}"
+                       Width="24"
+                       Height="24"
+                       Margin="5,0,0,0" />
+                <TextBlock Text="{Binding Name}"
+                           VerticalAlignment="Center"
+                           Margin="5,0,0,0" />
+              </StackPanel>
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
       </Grid>
-      <Grid Grid.Row="5">
+      <Grid Grid.Row="5"
+            ContextMenu="{StaticResource ItemContextMenu}"
+            Margin="0,0,10,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="Auto" />
@@ -155,13 +189,124 @@
                    Text="Price:"
                    VerticalAlignment="Center"
                    FontSize="32"
-                   Margin="0,0,0,10" />
+                   Margin="0,0,0,10"
+                   FontWeight="SemiBold" />
         <TextBlock x:Name="PriceActualText"
-                   Text="-"
+                   Text=""
                    VerticalAlignment="Center"
                    Grid.Column="1"
                    FontSize="28"
-                   ToolTip="-"/>
+                   Margin="0,0,10,0" />
+        <TextBlock x:Name="PriceUSDText"
+                   Text=""
+                   VerticalAlignment="Center"
+                   Grid.Column="2"
+                   FontSize="24"
+                   FontWeight="Light" />
+      </Grid>
+    </Grid>
+    <Grid Tag="Calculator Column"
+          Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <Grid Margin="0,10,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Calculator:"
+                   FontSize="28"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold" />
+        <TextBlock x:Name="CalcRefText"
+                   Text="0.00 ref"
+                   FontSize="24"
+                   VerticalAlignment="Center"
+                   Grid.Column="1"
+                   Margin="15,0"
+                   ToolTip="Combined value of items"
+                   HorizontalAlignment="Right" />
+
+        <Button x:Name="AddBtn"
+                Content="Add Selected"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Grid.Column="2"
+                Click="CalcAddItem_Click"
+                ToolTip="Add the item and on the left to the calculator"
+                Padding="20,6" />
+      </Grid>
+
+      <ListBox x:Name="CalcList"
+               Grid.Row="1"
+               HorizontalContentAlignment="Stretch"
+               BorderThickness="1"
+               Margin="0,10,0,0"
+               SelectionChanged="CalcList_SelectionChanged">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ContextMenu="{StaticResource CalcItemContextMenu}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+
+              <Image Source="{Binding ImageURL}"
+                     Width="64"
+                     Margin="5,0,10,0"
+                     Height="64" />
+              <TextBlock Text="{Binding ItemString}"
+                         Grid.Column="1"
+                         FontSize="24"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Left" />
+              <Label Content="{Binding PriceTag}"
+                     VerticalAlignment="Center"
+                     Grid.Column="2" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Grid Grid.Row="2"
+            Margin="0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+          <ColumnDefinition />
+          <!--<ColumnDefinition />
+          <ColumnDefinition />-->
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="CalcEditBtn"
+                Content="Edit"
+                ToolTip="Edit the item with the selection panel at left"
+                IsEnabled="False"
+                Click="CalcEditBtn_Click" />
+        <Button x:Name="CalcRemoveBtn"
+                Grid.Column="1"
+                Content="Remove"
+                ToolTip="Remove the item from the calculator"
+                Margin="10,0,0,0"
+                Click="CalcRemoveBtn_Click"
+                IsEnabled="{Binding IsEnabled, ElementName=CalcEditBtn}" />
+        <Button x:Name="CalcClearBtn"
+                Grid.Column="2"
+                Content="Clear"
+                ToolTip="Clear all items from the calculator"
+                Margin="10,0,0,0"
+                Click="CalcClearBtn_Click"
+                IsEnabled="False" />
+        <!--<Button x:Name="CalcSaveBtn"
+                Content="Save"
+                ToolTip="Saves this calculator list to a file" />-->
       </Grid>
     </Grid>
   </Grid>

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CustomSteamTools.Schema;
+using UltimateUtil;
 
 namespace TF2TradingToolkit.View
 {
@@ -84,6 +85,8 @@ namespace TF2TradingToolkit.View
 		public QualitySelector()
 		{
 			InitializeComponent();
+
+			AvailableQualities = new HashSet<Quality>();
 		}
 
 		public void DisableQuality(Quality q)
@@ -150,6 +153,14 @@ namespace TF2TradingToolkit.View
 			AvailableQualities.Add(q);
 		}
 
+		public void ClearAllQualities()
+		{
+			for (Quality q = Quality.Stock; q <= Quality.Decorated; q++)
+			{
+				DisableQuality(q);
+			}
+		}
+
 		private void UniqueBtn_Click(object sender, RoutedEventArgs e)
 		{
 			SelectedQuality = Quality.Unique;
@@ -183,6 +194,16 @@ namespace TF2TradingToolkit.View
 		private void UnusualBtn_Click(object sender, RoutedEventArgs e)
 		{
 			SelectedQuality = Quality.Unusual;
+		}
+
+		public void SelectFirstAvailable()
+		{
+			if (AvailableQualities.IsNullOrEmpty())
+			{
+				SelectedQuality = Quality.Unique;
+			}
+
+			SelectedQuality = AvailableQualities.FirstOrDefault();
 		}
 	}
 }

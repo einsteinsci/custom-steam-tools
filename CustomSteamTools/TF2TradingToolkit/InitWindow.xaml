@@ -22,7 +22,8 @@
           Topmost="True"
           Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
           SizeToContent="Height"
-          Loaded="Window_Loaded">
+          Loaded="Window_Loaded"
+          WindowStartupLocation="CenterScreen">
   <e:Window.TaskbarItemInfo>
     <TaskbarItemInfo x:Name="TaskbarInfo"
                      ProgressState="Normal"

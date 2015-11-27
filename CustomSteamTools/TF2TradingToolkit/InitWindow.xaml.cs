@@ -107,9 +107,16 @@ namespace TF2TradingToolkit
 
 		private bool _cancelled = false;
 
-		public InitWindow()
+		private string _retrieval;
+
+		public bool Force
+		{ get; private set; }
+
+		public InitWindow(bool force, string ret = null)
 		{
 			InitializeComponent();
+			_retrieval = ret;
+			Force = force;
 
 			Handler = new InitVersatileHandler(this);
 
@@ -133,7 +140,15 @@ namespace TF2TradingToolkit
 			VersatileIO.MinLogLevel = UltimateUtil.Logging.LogLevel.Verbose;
 
 			CommandHandler.Initialize();
-			DataManager.AutoSetup(false, InitWorker);
+
+			if (_retrieval == null)
+			{
+				DataManager.AutoSetup(Force, InitWorker);
+			}
+			else if (_retrieval == "schema")
+			{
+
+			}
 		}
 
 		private void InitWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)

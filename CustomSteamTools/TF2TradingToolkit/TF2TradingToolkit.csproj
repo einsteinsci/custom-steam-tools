@@ -105,6 +105,8 @@
     </ApplicationDefinition>
     <Compile Include="Util.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
+    <Compile Include="ViewModel\PricedViewModel.cs" />
+    <Compile Include="ViewModel\UnusualViewModel.cs" />
     <Compile Include="View\ItemsView.xaml.cs">
       <DependentUpon>ItemsView.xaml</DependentUpon>
     </Compile>

@@ -67,7 +67,7 @@ namespace TF2TradingToolkit
 			case Quality.Collectors:
 				return Colors.DarkRed;
 			case Quality.Decorated:
-				return Colors.Navy;
+				return Colors.SlateBlue;
 			default:
 				return Colors.Black;
 			}

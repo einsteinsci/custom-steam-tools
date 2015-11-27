@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using CustomSteamTools;
 using CustomSteamTools.Commands;
 using CustomSteamTools.Lookup;
+using CustomSteamTools.Market;
 using CustomSteamTools.Schema;
 using CustomSteamTools.Skins;
 using TF2TradingToolkit.View;
@@ -36,17 +37,13 @@ namespace TF2TradingToolkit.ViewModel
 		public ObservableCollection<CheckedPrice> PriceListings
 		{ get; private set; }
 
-		public Grid QualityPriceUI => GetPriceStamp(QualitySelector.SelectedQuality);
+		public WrapPanel QualityPriceUI => GetPriceStamps();
 
 		public string Tooltip => GetItemTooltip();
-
-		public QualitySelector QualitySelector
-		{ get; private set; }
 
 		public ItemViewModel(Item item, QualitySelector selector)
 		{
 			Item = item;
-			QualitySelector = selector;
 
 			PriceCheck = CmdPriceCheck.GetPriceCheckResults(item);
 			PriceListings = new ObservableCollection<CheckedPrice>();
@@ -78,7 +75,7 @@ namespace TF2TradingToolkit.ViewModel
 		{
 			string nl = Environment.NewLine;
 
-			string res = Item.ToString(QualitySelector.SelectedQuality);
+			string res = Item.ToString();
 			res += nl + "  " + Item.GetSubtext();
 			res += nl + "  Description: " + Item.Description?.Shorten(120).Replace('\n', ' ') ?? "";
 			res += nl + "  Defindex: " + Item.ID;
@@ -105,64 +102,46 @@ namespace TF2TradingToolkit.ViewModel
 			return res;
 		}
 
-		public Grid GetPriceStamp(Quality q)
+		public WrapPanel GetPriceStamps()
 		{
-			#region search
-			CheckedPrice cp = null;
-			if (q == Quality.Unusual)
-			{
-				cp = PriceCheck.Unusuals.FirstOrDefault((_cp) => _cp.Unusual.ID == 11);
-				if (cp == null)
-				{
-					cp = PriceCheck.Unusuals.FirstOrDefault();
-				}
+			WrapPanel res = new WrapPanel();
+			res.Orientation = Orientation.Horizontal;
 
-				if (cp == null)
-				{
-					bool goingUnique = PriceCheck.Uniques.HasItems();
-					if (goingUnique)
-					{
-						q = Quality.Unique;
-						cp = PriceCheck.Uniques.FirstOrDefault((_cp) => _cp.Craftable);
-						if (cp == null)
-						{
-							cp = PriceCheck.Uniques.FirstOrDefault();
-						}
-					}
-					else
-					{
-						cp = PriceCheck.All.FirstOrDefault();
-					}
-				}
-			}
-			else if (q == Quality.Unique)
-			{
-				cp = PriceCheck.Uniques.FirstOrDefault((_cp) => _cp.Craftable);
-				if (cp == null)
-				{
-					cp = PriceCheck.Uniques.FirstOrDefault();
-				}
+			CheckedPrice uniqueCraftable = PriceCheck.All.FirstOrDefault(
+				(_cp) => _cp.Craftable && _cp.Quality == Quality.Unique);
+			CheckedPrice uniqueUncraftable = PriceCheck.All.FirstOrDefault(
+				(_cp) => !_cp.Craftable && _cp.Quality == Quality.Unique);
 
-				if (cp == null)
-				{
-					cp = PriceCheck.All.FirstOrDefault();
-				}
-			}
-			else
+			if (uniqueCraftable != null)
 			{
-				cp = PriceCheck.Others.FirstOrDefault((_cp) => _cp.Quality == q);
-				if (cp == null)
-				{
-					cp = PriceCheck.All.FirstOrDefault();
-				}
+				Grid stamp = GetPriceStamp(uniqueCraftable);
+				res.Children.Add(stamp);
 			}
-			#endregion
+			if (uniqueUncraftable != null)
+			{
+				Grid stamp = GetPriceStamp(uniqueUncraftable);
+				res.Children.Add(stamp);
+			}
 
+			foreach (CheckedPrice cp in PriceCheck.Others)
+			{
+				Grid stamp = GetPriceStamp(cp);
+				res.Children.Add(stamp);
+			}
+
+			return res;
+		}
+
+		public Grid GetPriceStamp(CheckedPrice cp)
+		{
 			Grid res = new Grid();
+			res.ToolTip = Item.ToString(cp.Quality, cp.Pricing?.Australium ?? false) + 
+				":\n  " + cp.Price.ToString() + "\n  (" + cp.Price.ToStringUSD() + ")";
+			res.Margin = new Thickness(2);
 
-			string priceText = cp?.Price.ToString() ?? "???";
-			bool craftable = cp?.Craftable ?? true;
-			Quality actualQuality = cp?.Quality ?? q;
+			string priceText = cp.Price.ToString();
+			bool craftable = cp.Craftable;
+			Quality actualQuality = cp.Quality;
 
 			TextBlock textBlock = new TextBlock();
 			textBlock.Text = priceText;
@@ -170,8 +149,8 @@ namespace TF2TradingToolkit.ViewModel
 			textBlock.Foreground = new SolidColorBrush(Colors.White);
 			textBlock.HorizontalAlignment = HorizontalAlignment.Center;
 			textBlock.VerticalAlignment = VerticalAlignment.Center;
-			textBlock.Margin = new Thickness(6, 4, 6, 4);
-			textBlock.FontSize = 16;
+			textBlock.Margin = new Thickness(3);
+			textBlock.FontSize = 10;
 
 			Rectangle rect = new Rectangle();
 			rect.StrokeThickness = 2;
@@ -179,7 +158,7 @@ namespace TF2TradingToolkit.ViewModel
 			rect.Stroke = new SolidColorBrush(actualQuality.ToWPFBorderColor());
 			if (!craftable)
 			{
-				rect.StrokeDashArray = new DoubleCollection(new double[] { 0, 3, 0 });
+				rect.StrokeDashArray = new DoubleCollection(new double[] { 0, 2, 0 });
 			}
 
 			res.Children.Add(rect);

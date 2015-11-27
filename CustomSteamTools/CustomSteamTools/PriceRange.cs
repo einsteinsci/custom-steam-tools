@@ -9,6 +9,8 @@ namespace CustomSteamTools
 {
 	public struct PriceRange : IEquatable<PriceRange>
 	{
+		public static PriceRange Zero => new PriceRange(Price.Zero);
+
 		public Price Low
 		{ get; private set; }
 

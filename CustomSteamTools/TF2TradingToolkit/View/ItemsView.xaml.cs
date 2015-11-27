@@ -27,7 +27,34 @@ namespace TF2TradingToolkit.View
 	/// </summary>
 	public partial class ItemsView : UserControl
 	{
-		public ObservableCollection<UnusualEffect> Unusuals
+		public sealed class DeleteCalcCommand : ICommand
+		{
+			public ItemsView View
+			{ get; private set; }
+
+			public event EventHandler CanExecuteChanged;
+
+			public DeleteCalcCommand(ItemsView view)
+			{
+				View = view;
+			}
+
+			public bool CanExecute(object parameter)
+			{
+				return View.CalcList.SelectedIndex != -1;
+			}
+
+			public void Execute(object parameter)
+			{
+				if (CanExecute(null))
+				{
+					View.CalculatorContents.RemoveAt(View.CalcList.SelectedIndex);
+				}
+				View.RefreshCalcLabels();
+			}
+		}
+
+		public ObservableCollection<UnusualViewModel> Unusuals
 		{ get; private set; }
 
 		public ObservableCollection<ItemViewModel> AvailableItems
@@ -38,7 +65,29 @@ namespace TF2TradingToolkit.View
 		public ItemPriceInfo Info
 		{ get; private set; }
 
-		public UnusualEffect ActiveUnusual => UnusualEffectsDropdown.SelectedItem as UnusualEffect;
+		public UnusualViewModel ActiveUnusual => UnusualEffectsDropdown.SelectedItem as UnusualViewModel;
+
+		public ObservableCollection<PricedViewModel> CalculatorContents
+		{ get; private set; }
+
+		public DeleteCalcCommand DeleteCalcCmd
+		{ get; private set; }
+
+		public PriceRange CalcTotalPrice
+		{
+			get
+			{
+				PriceRange res = new PriceRange(Price.Zero);
+				foreach (PricedViewModel pvm in CalculatorContents)
+				{
+					res += pvm.Price;
+				}
+
+				return res;
+			}
+		}
+		public string CalcTotalPriceString => CalcTotalPrice.ToString();
+		public string CalcTotalPriceUSD => "USD: " + CalcTotalPrice.ToStringUSD();
 
 		private bool _loaded = false;
 
@@ -66,22 +115,29 @@ namespace TF2TradingToolkit.View
 					return null;
 				}
 
-				return EvaluatedPrice.Value.ToStringUSD();
+				return "(" + EvaluatedPrice.Value.ToStringUSD() + ")";
 			}
 		}
 
 		public bool IsMarket
 		{ get; private set; }
 
+		private bool _changingQuality = false;
+
 		public ItemsView()
 		{
 			InitializeComponent();
 
-			Unusuals = new ObservableCollection<UnusualEffect>();
+			DeleteCalcCmd = new DeleteCalcCommand(this);
+
+			Unusuals = new ObservableCollection<UnusualViewModel>();
 			UnusualEffectsDropdown.ItemsSource = Unusuals;
 
 			AvailableItems = new ObservableCollection<ItemViewModel>();
 			ItemSearchResultList.ItemsSource = AvailableItems;
+
+			CalculatorContents = new ObservableCollection<PricedViewModel>();
+			CalcList.ItemsSource = CalculatorContents;
 		}
 
 		private void ItemSearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -120,8 +176,64 @@ namespace TF2TradingToolkit.View
 				return;
 			}
 
+			ItemSlotPlain plain = ActiveItem?.Item.PlainSlot ?? ItemSlotPlain.Unused;
+			Killstreaks.IsEnabled = plain == ItemSlotPlain.Weapon;
+			if (!Killstreaks.IsEnabled)
+			{
+				Killstreaks.SelectedKillstreak = CustomSteamTools.Market.KillstreakType.None;
+			}
+
+			PriceCheckResults pcr = null;
 			if (ActiveItem != null)
 			{
+				pcr = CmdPriceCheck.GetPriceCheckResults(ActiveItem.Item);
+
+				_changingQuality = true;
+				Quality oldQuality = Qualities.SelectedQuality;
+				Qualities.ClearAllQualities();
+				foreach (CheckedPrice cp in pcr.All)
+				{
+					Qualities.EnableQuality(cp.Quality);
+				}
+				if (Qualities.AvailableQualities.Contains(oldQuality))
+				{
+					Qualities.SelectedQuality = oldQuality;
+				}
+				else
+				{
+					Qualities.SelectFirstAvailable();
+				}
+				_changingQuality = false;
+
+				if (pcr.All.Exists((cp) => cp.Quality == Qualities.SelectedQuality))
+				{
+					bool hasCraftable = pcr.All.Exists((cp) => cp.Craftable);
+					bool hasUncraftable = pcr.All.Exists((cp) => !cp.Craftable);
+
+					CraftableCheckbox.IsEnabled = hasCraftable && hasUncraftable;
+					if (!CraftableCheckbox.IsEnabled)
+					{
+						CraftableCheckbox.IsChecked = hasCraftable;
+					}
+
+					bool hasTradable = pcr.All.Exists((cp) => cp.Tradable);
+					bool hasNontradable = pcr.All.Exists((cp) => !cp.Tradable);
+
+					TradableCheckbox.IsEnabled = hasTradable && hasNontradable;
+					if (!TradableCheckbox.IsEnabled)
+					{
+						TradableCheckbox.IsChecked = hasTradable;
+					}
+				}
+				else
+				{
+					CraftableCheckbox.IsEnabled = false;
+					CraftableCheckbox.IsChecked = true;
+
+					TradableCheckbox.IsEnabled = false;
+					TradableCheckbox.IsChecked = true;
+				}
+
 				Info = new ItemPriceInfo(ActiveItem.Item, Qualities.SelectedQuality);
 				Info.Killstreak = Killstreaks.SelectedKillstreak;
 				Info.Craftable = CraftableCheckbox.IsChecked ?? false;
@@ -133,18 +245,20 @@ namespace TF2TradingToolkit.View
 					AustraliumCheckbox.IsChecked = false;
 				}
 			}
-			ItemSlotPlain plain = ActiveItem?.Item.PlainSlot ?? ItemSlotPlain.Unused;
-			Killstreaks.IsEnabled = plain == ItemSlotPlain.Weapon;
-			UnusualEffectsDropdown.IsEnabled = plain == ItemSlotPlain.Cosmetic;
+
+			UnusualEffectsDropdown.IsEnabled = Qualities.SelectedQuality == Quality.Unusual;
+			if (!UnusualEffectsDropdown.IsEnabled)
+			{
+				UnusualEffectsDropdown.SelectedIndex = -1;
+			}
 
 			Unusuals.Clear();
 			if (ActiveItem != null)
 			{
-				PriceCheckResults pcr = CmdPriceCheck.GetPriceCheckResults(ActiveItem.Item);
-				List<UnusualEffect> ues = pcr.Unusuals.ConvertAll((cp) => cp.Unusual);
+				List<UnusualViewModel> ues = pcr.Unusuals.ConvertAll((cp) => new UnusualViewModel(cp.Unusual));
 				Unusuals.AddRange(ues);
 				UnusualEffectsDropdown.SelectedIndex = Unusuals.IsNullOrEmpty() ? -1 : 0;
-				Info.Unusual = ActiveUnusual;
+				Info.Unusual = ActiveUnusual?.Effect;
 			}
 
 			RefreshPriceLabels();
@@ -154,6 +268,7 @@ namespace TF2TradingToolkit.View
 		{
 			_loaded = true;
 
+			ItemSearchBox.Focus();
 			ItemSearchBox_TextChanged(null, null);
 			RefreshPriceLabels();
 		}
@@ -173,12 +288,31 @@ namespace TF2TradingToolkit.View
 			// Bindings aren't working for some reason...
 			PriceLabelText.Text = IsMarket ? "Price (Market):" : "Price:";
 			PriceActualText.Text = EvaluatedPriceString;
-			PriceActualText.ToolTip = EvaluatedPriceUSD;
+			PriceUSDText.Text = EvaluatedPriceUSD;
+
+			if (CalcList.SelectedIndex != -1)
+			{
+				int index = CalcList.SelectedIndex;
+				CalculatorContents[index] = new PricedViewModel(Info, EvaluatedPrice ?? PriceRange.Zero);
+				CalcList.SelectedIndex = index;
+				RefreshCalcLabels();
+			}
+		}
+
+		public void RefreshCalcLabels()
+		{
+			if (!_loaded)
+			{
+				return;
+			}
+
+			CalcRefText.Text = CalcTotalPriceString;
+			CalcRefText.ToolTip = CalcTotalPriceUSD;
 		}
 
 		private void Qualities_QualityChanged(object sender, Quality q)
 		{
-			if (!_loaded)
+			if (!_loaded || _changingQuality)
 			{
 				return;
 			}
@@ -199,8 +333,7 @@ namespace TF2TradingToolkit.View
 			{
 				return;
 			}
-
-			_updateSearch(false);
+			
 			if (Info == null)
 			{
 				return;
@@ -217,7 +350,7 @@ namespace TF2TradingToolkit.View
 				return;
 			}
 
-			Info.Unusual = ActiveUnusual;
+			Info.Unusual = ActiveUnusual?.Effect;
 			RefreshPriceLabels();
 		}
 
@@ -264,6 +397,59 @@ namespace TF2TradingToolkit.View
 
 			Info.Australium = AustraliumCheckbox.IsChecked ?? false;
 			RefreshPriceLabels();
+		}
+
+		private void CalcAddItem_Click(object sender, RoutedEventArgs e)
+		{
+			if (!_loaded || Info == null || EvaluatedPrice == null)
+			{
+				return;
+			}
+
+			CalculatorContents.Add(new PricedViewModel(Info, EvaluatedPrice.Value));
+			RefreshCalcLabels();
+		}
+
+		private void CalcClearBtn_Click(object sender, RoutedEventArgs e)
+		{
+			CalculatorContents.Clear();
+			RefreshCalcLabels();
+		}
+
+		private void CalcList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			CalcClearBtn.IsEnabled = CalculatorContents.HasItems();
+			CalcEditBtn.IsEnabled = CalcList.SelectedIndex != -1;
+		}
+
+		private void CalcEditBtn_Click(object sender, RoutedEventArgs e)
+		{
+			PricedViewModel selected = CalcList.SelectedItem as PricedViewModel;
+			if (selected == null)
+			{
+				return;
+			}
+
+			ItemSearchBox.Text = selected.Info.Item.ToString();
+
+			Info = selected.Info;
+			Qualities.SelectedQuality = Info.Quality;
+			Killstreaks.SelectedKillstreak = Info.Killstreak;
+			CraftableCheckbox.IsChecked = Info.Craftable;
+			TradableCheckbox.IsChecked = Info.Tradable;
+			if (Info.Unusual != null)
+			{
+				UnusualEffectsDropdown.SelectedItem = Info.Unusual;
+			}
+			else
+			{
+				UnusualEffectsDropdown.SelectedIndex = -1;
+			}
+		}
+
+		private void CalcRemoveBtn_Click(object sender, RoutedEventArgs e)
+		{
+			DeleteCalcCmd.Execute(null);
 		}
 	}
 }
