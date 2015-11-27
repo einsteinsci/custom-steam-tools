@@ -6,7 +6,7 @@
           xmlns:e="http://schemas.codeplex.com/elysium"
           xmlns:ep="http://schemas.codeplex.com/elysium/params"
           xmlns:ex="http://schemas.extra.com/ui"
-          xmlns:local="clr-namespace:TF2TradingToolkit"
+          xmlns:v="clr-namespace:TF2TradingToolkit.View"
           mc:Ignorable="d"
           ep:Design.Theme="Light"
           ep:Manager.Theme="Light"
@@ -56,6 +56,7 @@
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
+        <v:ItemsView x:Name="ItemsView" />
       </TabItem>
       <TabItem x:Name="BackpackTab"
                FontSize="24">
@@ -112,7 +113,8 @@
                 MaxHeight="32">
       <Button x:Name="RefreshAllBtn"
               FontSize="14"
-              ContextMenu="{DynamicResource K_RefreshMenu}">
+              ContextMenu="{DynamicResource K_RefreshMenu}"
+              Click="RefreshAllBtn_Click">
         <StackPanel Orientation="Horizontal">
           <Image Source="assets/smallnflat_cloud-sync-24x.png"
                  Width="16"

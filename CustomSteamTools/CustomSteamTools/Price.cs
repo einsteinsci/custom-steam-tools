@@ -54,6 +54,7 @@ namespace CustomSteamTools
 		public int Keys => (int)TotalKeys;
 		public double Refined => TotalRefined - (Keys * RefinedPerKey);
 		public double TotalKeys => TotalRefined / RefinedPerKey;
+		public double TotalUSD => TotalKeys * KEY_STOREPRICE_USD;
 
 		public Price(int keys, double refined) : this(keys * RefinedPerKey + refined)
 		{ }

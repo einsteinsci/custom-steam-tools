@@ -16,12 +16,15 @@ namespace CustomSteamTools.Lookup
 		{ get; private set; }
 
 		public Quality Quality
-		{ get; private set; }
+		{ get; set; }
 
 		public bool Craftable
 		{ get; set; }
 
 		public bool Tradable
+		{ get; set; }
+
+		public bool Australium
 		{ get; set; }
 
 		public KillstreakType Killstreak
@@ -76,11 +79,12 @@ namespace CustomSteamTools.Lookup
 
 			Craftable = inst.Craftable;
 			Tradable = inst.Tradable;
+			Australium = inst.IsAustralium();
 		}
 
 		public override string ToString()
 		{
-			string res = Item.ToString(Quality, Killstreak);
+			string res = Item.ToString(Quality, Australium, Killstreak);
 			if (Unusual != null)
 			{
 				res += " (" + Unusual.ToString() + ")";

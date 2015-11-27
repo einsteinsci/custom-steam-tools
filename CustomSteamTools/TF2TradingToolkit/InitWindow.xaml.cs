@@ -13,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using UltimateUtil.UserInteraction;
+using UltimateUtil;
+using UltimateUtil.Fluid;
+using CustomSteamTools;
+using CustomSteamTools.Commands;
+using System.Threading;
 
 namespace TF2TradingToolkit
 {
@@ -21,41 +26,27 @@ namespace TF2TradingToolkit
 	/// </summary>
 	public partial class InitWindow : Elysium.Controls.Window
 	{
-		public double InitProgressVal
-		{
-			get
-			{
-				int pct = LoadedPercent;
-				if (SettingsComplete)
-				{
-					pct += 20;
-				}
-
-				return pct / 120.0;
-			}
-		}
-
-		public int LoadedPercent
-		{ get; private set; }
-
-		public bool SettingsComplete
-		{ get; private set; }
-
-		public BackgroundWorker InitWorker
-		{ get; private set; }
-
-		public InitWindow()
-		{
-			InitializeComponent();
-			
-			DialogResult = null;
-		}
-
 		public sealed class InitVersatileHandler : VersatileHandlerBase
 		{
+			InitWindow _window;
+
+			public InitVersatileHandler(InitWindow window)
+			{
+				_window = window;
+			}
+
 			public override double GetDouble(string prompt)
 			{
-				throw new NotImplementedException();
+				double? res = null;
+				while (res == null)
+				{
+					InputNumberWindow inw = new InputNumberWindow(prompt);
+					inw.ShowDialog();
+
+					res = inw.InputResult;
+				}
+
+				return res.Value;
 			}
 
 			public override string GetSelection(string prompt, IDictionary<string, object> options)
@@ -70,18 +61,133 @@ namespace TF2TradingToolkit
 
 			public override string GetString(string prompt)
 			{
-				throw new NotImplementedException();
+				InputStringWindow isw = new InputStringWindow(prompt);
+				isw.ShowDialog();
+
+				return isw.InputResult ?? "";
 			}
 
 			public override void LogLine(string line, ConsoleColor color)
 			{
-				throw new NotImplementedException();
+				line = line.Replace("\n", Environment.NewLine);
+
+				_window.LogBox.Dispatcher.Invoke(() => {
+					_window.LogBox.Text += line + Environment.NewLine;
+					_window.LogBox.ScrollToEnd();
+				});
+
+				_window.LastItemText.Dispatcher.Invoke(() => {
+					if (line.IsNullOrWhitespace())
+					{
+						_window.LastItemText.Text = "Loading...";
+					}
+					else
+					{
+						_window.LastItemText.Text = line.Trim();
+					}
+				});
 			}
 
 			public override void LogPart(string text, ConsoleColor? color)
 			{
-				throw new NotImplementedException();
+				text = text.Replace("\n", Environment.NewLine);
+
+				_window.LogBox.Dispatcher.Invoke(() => {
+					_window.LogBox.Text += text;
+					_window.LogBox.ScrollToEnd();
+				});
 			}
+		}
+
+		public BackgroundWorker InitWorker
+		{ get; private set; }
+
+		public InitVersatileHandler Handler
+		{ get; private set; }
+
+		private bool _cancelled = false;
+
+		public InitWindow()
+		{
+			InitializeComponent();
+
+			Handler = new InitVersatileHandler(this);
+
+			InitWorker = new BackgroundWorker();
+			InitWorker.WorkerReportsProgress = true;
+
+			InitWorker.ProgressChanged += InitWorker_ProgressChanged;
+			InitWorker.DoWork += InitWorker_DoWork;
+			InitWorker.RunWorkerCompleted += InitWorker_RunWorkerCompleted;
+		}
+
+		private void InitWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			DialogResult = !_cancelled;
+			Close();
+		}
+
+		private void InitWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			VersatileIO.WriteLine();
+			VersatileIO.MinLogLevel = UltimateUtil.Logging.LogLevel.Verbose;
+
+			CommandHandler.Initialize();
+			DataManager.AutoSetup(false, InitWorker);
+		}
+
+		private void InitWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			InitProgress.Value = e.ProgressPercentage;
+			Progress = e.ProgressPercentage;
+
+			double p = e.ProgressPercentage / 100.0;
+			TaskbarInfo.ProgressValue = p;
+
+			if (e.UserState is bool)
+			{
+				if ((bool)e.UserState)
+				{
+					TaskbarInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Error;
+				}
+			}
+		}
+
+		private void Window_Closing(object sender, CancelEventArgs e)
+		{
+			if (DialogResult == true)
+			{
+				return;
+			}
+
+			e.Cancel = true;
+		}
+
+		private void ToggleLog_Click(object sender, RoutedEventArgs e)
+		{
+			if (LogBox.Visibility.IsAnyOf(Visibility.Collapsed, Visibility.Hidden))
+			{
+				LogBox.Visibility = Visibility.Visible;
+				ToggleLog.Content = "Hide Log";
+			}
+			else
+			{
+				LogBox.Visibility = Visibility.Collapsed;
+				ToggleLog.Content = "Show Log";
+			}
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			TaskbarInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+			VersatileIO.SetHandler(Handler, true);
+			InitWorker.RunWorkerAsync();
+		}
+
+		private void CancelSetupBtn_Click(object sender, RoutedEventArgs e)
+		{
+			_cancelled = true;
+			InitWorker.CancelAsync();
 		}
 	}
 }

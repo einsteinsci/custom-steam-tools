@@ -111,13 +111,6 @@ namespace CustomSteamTools
 		{ get; private set; }
 		#endregion stored data
 
-		/// <summary>
-		/// Fired during <see cref="AutoSetup(bool)"/>. UserState is a <see cref="bool"/>
-		/// indicating if the setup has failed and will have to restart.
-		/// </summary>
-		public static ProgressChangedEventHandler OnProgressChanged
-		{ get; private set; }
-
 		public static void Initialize()
 		{
 			string _cachelocation = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "CUSTOM-STEAM-TOOLS");
@@ -794,7 +787,7 @@ namespace CustomSteamTools
 
 		#endregion JSON stuff
 
-		public static void AutoSetup(bool force = true)
+		public static void AutoSetup(bool force = true, BackgroundWorker worker = null)
 		{
 			if (Settings.Instance == null || !Settings.Instance.Initialized)
 			{
@@ -812,23 +805,23 @@ namespace CustomSteamTools
 				{
 					LoadItemSchema(!force);
 					pct += 20;
-					FireProgressChanged(pct);
+					FireProgressChanged(worker, pct);
 
 					LoadMyBackpackData(!force);
 					pct += 20;
-					FireProgressChanged(pct);
+					FireProgressChanged(worker, pct);
 
 					LoadPriceData(!force);
 					pct += 20;
-					FireProgressChanged(pct);
+					FireProgressChanged(worker, pct);
 
 					LoadMarketData(!force);
 					pct += 20;
-					FireProgressChanged(pct);
+					FireProgressChanged(worker, pct);
 
 					LoadMyFriendsList(!force);
 					pct += 20;
-					FireProgressChanged(pct);
+					FireProgressChanged(worker, pct);
 
 					success = true;
 				}
@@ -836,7 +829,7 @@ namespace CustomSteamTools
 				{
 					VersatileIO.Fatal("Details: " + e.ToString());
 					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
-					FireProgressChanged(pct, true);
+					FireProgressChanged(worker, pct, true);
 
 					Thread.Sleep(10000);
 				}
@@ -847,11 +840,11 @@ namespace CustomSteamTools
 			FixHauntedItems();
 		}
 
-		public static void FireProgressChanged(int pct, bool fail = false)
+		public static void FireProgressChanged(BackgroundWorker worker, int pct, bool fail = false)
 		{
-			if (OnProgressChanged != null)
+			if (worker != null)
 			{
-				OnProgressChanged(null, new ProgressChangedEventArgs(pct, fail));
+				worker.ReportProgress(pct, fail);
 			}
 		}
 

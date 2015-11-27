@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltimateUtil;
 
 namespace CustomSteamTools
 {
@@ -85,6 +86,16 @@ namespace CustomSteamTools
 			}
 
 			return Low.ToString() + " - " + High.ToString();
+		}
+
+		public string ToStringUSD()
+		{
+			if (IsOnePrice)
+			{
+				return Low.TotalUSD.ToCurrency();
+			}
+
+			return Low.TotalUSD.ToCurrency() + " - " + High.TotalUSD.ToCurrency();
 		}
 
 		#region operator overloads

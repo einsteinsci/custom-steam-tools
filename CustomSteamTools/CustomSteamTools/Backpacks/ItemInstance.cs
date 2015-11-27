@@ -238,6 +238,17 @@ namespace CustomSteamTools.Backpacks
 			return SkinWears.GetFromFloatingPoint(att.Value);
 		}
 
+		public bool IsAustralium()
+		{
+			AppliedInstanceAttribute att = Attributes.FirstOrDefault((a) => a.ID == ItemAttribute.AUSTRALIUM_ID);
+			if (att == null)
+			{
+				return false;
+			}
+
+			return att.Value != 0;
+		}
+
 		public override string ToString()
 		{
 			string result = TitleQuick(true);

@@ -17,6 +17,9 @@ namespace CustomSteamTools.Lookup
 
 		public Quality Quality => Pricing?.Quality ?? Quality.Decorated;
 
+		public bool Craftable => Pricing?.Craftable ?? true;
+		public bool Tradable => Pricing?.Tradable ?? true;
+
 		public UnusualEffect Unusual
 		{ get; private set; }
 

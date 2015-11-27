@@ -48,6 +48,18 @@ namespace CustomSteamTools.Lookup
 			}
 		}
 
+		public List<CheckedPrice> NonUnusuals
+		{
+			get
+			{
+				List<CheckedPrice> res = new List<CheckedPrice>();
+				res.AddRange(Uniques);
+				res.AddRange(Others);
+
+				return res;
+			}
+		}
+
 		public PriceCheckResults(Item item)
 		{
 			Item = item;

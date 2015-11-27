@@ -14,6 +14,7 @@ namespace CustomSteamTools.Schema
 		public const int CRATESERIES_ID = 187;
 		public const int KILLSTREAK_ID = 2025; // "Killstreak Tier"
 		public const int SKINWEAR_ID = 725;
+		public const int AUSTRALIUM_ID = 2027;
 
 		public string Name
 		{ get; set; }

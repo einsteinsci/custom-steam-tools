@@ -13,10 +13,16 @@
           ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
           ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
           BorderBrush="{x:Static e:AccentBrushes.Orange}"
-          Title="Initializing..." 
+          Title="Initializing..."
+          Progress="{Binding InitProgressVal}"
           Height="300" 
           Width="500"
-          ResizeMode="NoResize">
+          ResizeMode="NoResize"
+          Closing="Window_Closing"
+          Topmost="True"
+          Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
+          SizeToContent="Height"
+          Loaded="Window_Loaded">
   <e:Window.TaskbarItemInfo>
     <TaskbarItemInfo x:Name="TaskbarInfo"
                      ProgressState="Normal"
@@ -30,7 +36,8 @@
       <RowDefinition Height="170" x:Name="LogRow" />
     </Grid.RowDefinitions>
     
-    <TextBlock Text="Downloading Backpack Data..."
+    <TextBlock Text="Loading..."
+               x:Name="LastItemText"
                FontSize="14"
                Margin="0,0,0,5" />
     <ProgressBar x:Name="InitProgress"
@@ -39,13 +46,16 @@
                  Grid.Row="1"
                  Margin="0,0,0,5" />
     <Button x:Name="ToggleLog"
-            Content="Show Log"
-            FontSize="10"
-            HorizontalAlignment="Left"
+            Content="Hide Log"
+            Grid.Row="2"
             Margin="0,0,0,5"
-            Grid.Row="2" />
+            MinWidth="96"
+            FontSize="12"
+            HorizontalAlignment="Left"
+            Padding="6,3"
+            Click="ToggleLog_Click" />
     <TextBox x:Name="LogBox"
-             Text="Test Text"
+             Text="Initializing..."
              Grid.Row="3"
              IsReadOnly="True"
              VerticalScrollBarVisibility="Visible"

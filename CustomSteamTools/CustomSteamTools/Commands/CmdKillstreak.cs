@@ -19,12 +19,13 @@ namespace CustomSteamTools.Commands
 
 		public string RegistryName => "ks";
 
-		public string Syntax => "ks [/tier=TIER] [/quality=QUALITY] {defindex | itemName | searchQuery}";
+		public string Syntax => "ks [/tier=TIER] [/quality=QUALITY] [/aus] {defindex | itemName | searchQuery}";
 
 		public void RunCommand(CommandHandler sender, List<string> args)
 		{
 			Quality? quality = null;
 			KillstreakType? killstreak = null;
+			bool? aus = null;
 
 			string query = "";
 			foreach (string s in args)
@@ -45,6 +46,11 @@ namespace CustomSteamTools.Commands
 				{
 					string qStr = s.Substring("/quality=".Length);
 					quality = ItemQualities.ParseNullable(qStr);
+				}
+				
+				if (s.EqualsIgnoreCase("/aus"))
+				{
+					aus = true;
 				}
 			}
 			query = query.TrimEnd(' ');
@@ -97,7 +103,27 @@ namespace CustomSteamTools.Commands
 				}
 			}
 
-			Price? price = PriceKillstreak(item, quality.Value, killstreak.Value);
+			if (!item.CanBeAustralium())
+			{
+				aus = false;
+			}
+			while (aus == null)
+			{
+				string ausStr = VersatileIO.GetString("Australium? ");
+				if (ausStr.EqualsIgnoreCase("esc"))
+				{
+					VersatileIO.Warning("Cancelled.");
+					return;
+				}
+
+				aus = BooleanUtil.ParseLoose(ausStr);
+				if (aus == null)
+				{
+					VersatileIO.Error("Invalid boolean. Try again.");
+				}
+			}
+
+			Price? price = PriceKillstreak(item, quality.Value, killstreak.Value, aus ?? false);
 
 			if (price == null)
 			{
@@ -105,12 +131,12 @@ namespace CustomSteamTools.Commands
 				return;
 			}
 			
-			VersatileIO.WriteComplex("{0}  Price for {1} " + item.ToString(quality.Value, killstreak.Value) + 
+			VersatileIO.WriteComplex("{0}  Price for {1} " + item.ToString(quality.Value, aus ?? false, killstreak.Value) + 
 				"{2}: " + price.Value.ToString(), 
 				ConsoleColor.White, quality.Value.GetColor(), ConsoleColor.White);
 		}
 
-		public static Price? PriceKillstreak(Item item, Quality quality, KillstreakType killstreak)
+		public static Price? PriceKillstreak(Item item, Quality quality, KillstreakType killstreak, bool australium)
 		{
 			if (item.PlainSlot != ItemSlotPlain.Weapon)
 			{
@@ -146,7 +172,7 @@ namespace CustomSteamTools.Commands
 			if (pricings.Count == 0)
 			{
 				VersatileIO.Error("No killstreak prices found on community market for " +
-					item.ToString(quality, killstreak));
+					item.ToString(quality, australium, killstreak));
 				return null;
 			}
 			else if (pricings.Count == 1)
@@ -157,7 +183,7 @@ namespace CustomSteamTools.Commands
 			else
 			{
 				VersatileIO.Warning("Multiple market pricings found for {0}. Returning the average price.",
-					item.ToString(quality, killstreak));
+					item.ToString(quality, australium, killstreak));
 				Price sum = Price.Zero;
 				foreach (MarketPricing p in pricings)
 				{

@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="TF2TradingToolkit.View.ItemsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TF2TradingToolkit.View"
+             xmlns:e="http://schemas.codeplex.com/elysium"
+             xmlns:ep="http://schemas.codeplex.com/elysium/params"
+             xmlns:ex="http://schemas.extra.com/ui"
+             ep:Design.Theme="Light"
+             ep:Manager.Theme="Light"
+             ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             mc:Ignorable="d"
+             d:DesignHeight="667"
+             d:DesignWidth="1337">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <Grid Tag="Lookup Column"
+          Grid.Column="0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <TextBox x:Name="ItemSearchBox"
+               Text=""
+               FontSize="24"
+               TextChanged="ItemSearchBox_TextChanged"
+               Margin="0,10,10,0" />
+      <ListBox x:Name="ItemSearchResultList"
+               Grid.Row="1"
+               SelectionChanged="ItemSearchResultList_SelectionChanged"
+               Margin="0,10,10,10"
+               BorderThickness="1">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid Margin="5,0"
+                  ToolTip="{Binding Tooltip}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              
+              <Image Source="{Binding ImageURL}"
+                     Height="48"
+                     Width="48" />
+              <TextBlock Text="{Binding Name}"
+                         FontSize="24"
+                         VerticalAlignment="Center"
+                         Grid.Column="1"
+                         Margin="5,0,0,0" />
+              <Label Content="{Binding QualityPriceUI}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Right"
+                     Grid.Column="2"
+                     Margin="10,0,0,0" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <Grid Grid.Row="2"
+            Margin="0,0,10,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Quality:"
+                   VerticalAlignment="Center"
+                   FontSize="16" />
+        <local:QualitySelector x:Name="Qualities"
+                               Grid.Column="1"
+                               QualityChanged="Qualities_QualityChanged"/>
+      </Grid>
+      <Grid Grid.Row="3"
+            Margin="0,0,10,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <CheckBox x:Name="AustraliumCheckbox"
+                  Content="Australium"
+                  VerticalAlignment="Center"
+                  Margin="5,0,0,0"
+                  HorizontalAlignment="Left"
+                  Checked="AustraliumCheckbox_Checked" />
+        <Label x:Name="KillstreakLbl"
+               Content="Killstreak Tier:"
+               VerticalAlignment="Center"
+               FontSize="16"
+               Grid.Column="1"
+               Padding="0,5,5,5"
+               Margin="0,0,10,0" />
+        <local:KillstreakSelector x:Name="Killstreaks"
+                                  Grid.Column="2"
+                                  SelectedKillstreak="None"
+                                  KillstreakChanged="Killstreaks_KillstreakChanged" />
+      </Grid>
+      <Grid Grid.Row="4"
+            Margin="5,0,10,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <CheckBox x:Name="CraftableCheckbox"
+                  Content="Craftable"
+                  IsChecked="True"
+                  VerticalAlignment="Center"
+                  Click="CraftableCheckbox_Click" />
+        <CheckBox x:Name="TradableCheckbox"
+                  Content="Tradable"
+                  IsChecked="True"
+                  Grid.Column="1"
+                  VerticalAlignment="Center"
+                  Margin="10,0,0,0"
+                  Click="TradableCheckbox_Click" />
+        <Label x:Name="UnusualLbl"
+               Content="Unusual Effect:"
+               VerticalAlignment="Center"
+               FontSize="14"
+               Grid.Column="2"
+               Margin="20,0,0,0" />
+        <ComboBox x:Name="UnusualEffectsDropdown"
+                  Grid.Column="3"
+                  Margin="5,0,0,0"
+                  SelectionChanged="UnusualEffectsDropdown_SelectionChanged">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Grid>
+      <Grid Grid.Row="5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="PriceLabelText"
+                   Text="Price:"
+                   VerticalAlignment="Center"
+                   FontSize="32"
+                   Margin="0,0,0,10" />
+        <TextBlock x:Name="PriceActualText"
+                   Text="-"
+                   VerticalAlignment="Center"
+                   Grid.Column="1"
+                   FontSize="28"
+                   ToolTip="-"/>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

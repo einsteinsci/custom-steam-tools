@@ -160,8 +160,14 @@ namespace CustomSteamTools.Schema
 			return false;
 		}
 
-		public string ToString(Quality quality, KillstreakType killstreak = KillstreakType.None)
+		public string ToString(Quality quality, bool australium = false,
+			KillstreakType killstreak = KillstreakType.None)
 		{
+			if (IsSkin())
+			{
+				return "[Skin] " + GetSkin()?.Name ?? "UNKNOWN";
+			}
+
 			string qs = quality.ToReadableString();
 			if (qs != "")
 			{
@@ -174,9 +180,15 @@ namespace CustomSteamTools.Schema
 				kss += " ";
 			}
 
+			string auss = "";
+			if (australium)
+			{
+				auss = "Australium ";
+			}
+
 			string name = qs.HasItems() && kss.HasItems() ? ImproperName : Name;
 
-			return qs + kss + name;
+			return qs + kss + auss + name;
 		}
 
 		public override string ToString()

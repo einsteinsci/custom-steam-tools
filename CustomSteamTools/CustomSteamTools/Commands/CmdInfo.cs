@@ -120,25 +120,7 @@ namespace CustomSteamTools.Commands
 			{
 				VersatileIO.WriteLine("Searching items...", ConsoleColor.Gray);
 
-				List<Item> possibleItems = new List<Item>();
-				foreach (Item i in DataManager.Schema.Items)
-				{
-					if (i.Name.ContainsIgnoreCase(query) || i.UnlocalizedName.ContainsIgnoreCase(query))
-					{
-						possibleItems.Add(i);
-						continue;
-					}
-
-					if (i.IsSkin())
-					{
-						Skin s = i.GetSkin();
-
-						if (s.Name.ContainsIgnoreCase(query) || s.Name.ContainsIgnoreCase(query))
-						{
-							possibleItems.Add(i);
-						}
-					}
-				}
+				List<Item> possibleItems = GetMatchingItems(query);
 
 				if (possibleItems.IsEmpty())
 				{
@@ -161,6 +143,41 @@ namespace CustomSteamTools.Commands
 			#endregion
 
 			return item;
+		}
+
+		public static List<Item> GetMatchingItems(string query, int maxResults = 50)
+		{
+			List<Item> possibleItems = new List<Item>();
+			if (query.IsNullOrWhitespace())
+			{
+				return possibleItems;
+			}
+
+			foreach (Item i in DataManager.Schema.Items)
+			{
+				if (possibleItems.Count >= maxResults)
+				{
+					break;
+				}
+
+				if (i.Name.ContainsIgnoreCase(query) || i.UnlocalizedName.ContainsIgnoreCase(query))
+				{
+					possibleItems.Add(i);
+					continue;
+				}
+
+				if (i.IsSkin())
+				{
+					Skin s = i.GetSkin();
+
+					if (s.Name.ContainsIgnoreCase(query) || s.Name.ContainsIgnoreCase(query))
+					{
+						possibleItems.Add(i);
+					}
+				}
+			}
+
+			return possibleItems;
 		}
 	}
 }

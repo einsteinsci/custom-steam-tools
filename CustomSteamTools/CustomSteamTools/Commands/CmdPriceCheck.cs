@@ -35,7 +35,7 @@ namespace CustomSteamTools.Commands
 
 			string query = string.Join(" ", args);
 			Item item = CmdInfo.SearchItem(query);
-			PriceCheckResults results = GetPriceInfo(item);
+			PriceCheckResults results = GetPriceCheckResults(item);
 
 			if (results == null)
 			{
@@ -81,7 +81,7 @@ namespace CustomSteamTools.Commands
 			}
 		}
 
-		public static PriceCheckResults GetPriceInfo(Item item)
+		public static PriceCheckResults GetPriceCheckResults(Item item)
 		{
 			if (item == null)
 			{

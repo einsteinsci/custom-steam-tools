@@ -10,8 +10,8 @@ namespace CustomSteamTools.Schema
 {
 	public class GameSchema
 	{
-		const string ACCOUNT_FLAGGED_ITEM_SUBSTRING = "Your account has been flagged for circumventing the " +
-			"item distribution system. We have removed the items that were illegally obtained.";
+		const string ACCOUNT_FLAGGED_ITEM_SUBSTRING = "Your account has been flagged";
+		const string ACCOUNT_BONUS_ITEM_SUBSTRING = "Congratulations! Your Honesty has been rewarded";
 
 		// the big one
 		public List<Item> Items
@@ -36,7 +36,10 @@ namespace CustomSteamTools.Schema
 			Items = new List<Item>();
 			foreach (var j in json.items)
 			{
-				if (j.name.Contains(ACCOUNT_FLAGGED_ITEM_SUBSTRING))
+				if (j.name.Contains(ACCOUNT_FLAGGED_ITEM_SUBSTRING) ||
+					j.item_name.Contains(ACCOUNT_FLAGGED_ITEM_SUBSTRING) ||
+					j.name.Contains(ACCOUNT_BONUS_ITEM_SUBSTRING) ||
+					j.item_name.Contains(ACCOUNT_BONUS_ITEM_SUBSTRING))
 				{
 					continue;
 				}

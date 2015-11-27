@@ -17,18 +17,19 @@ namespace CustomSteamTools
 	public static class PriceChecker
 	{
 		public static PriceRange? GetNormalPrice(Item item, Quality quality, 
-			bool craftable = true, UnusualEffect unusual = null)
+			bool craftable = true, bool australium = false, UnusualEffect unusual = null)
 		{
-			PriceCheckResults pcres = CmdPriceCheck.GetPriceInfo(item);
+			PriceCheckResults pcres = CmdPriceCheck.GetPriceCheckResults(item);
 
 			if (pcres == null)
 			{
 				return null;
 			}
 
-			if (unusual == null)
+			if (unusual == null || quality != Quality.Unusual)
 			{
-				CheckedPrice cp = pcres.All.FirstOrDefault((c) => c.Quality == quality && c.Pricing.Craftable == craftable);
+				CheckedPrice cp = pcres.All.FirstOrDefault((c) => c.Quality == quality && 
+					c.Pricing.Craftable == craftable && c.Pricing.Australium == australium);
 				return cp?.Pricing.Pricing;
 			}
 			else
@@ -51,9 +52,9 @@ namespace CustomSteamTools
 			return new PriceRange(p.Value);
 		}
 
-		public static PriceRange? GetKillstreakPrice(Item item, Quality quality, KillstreakType tier)
+		public static PriceRange? GetKillstreakPrice(Item item, Quality quality, KillstreakType tier, bool australium)
 		{
-			Price? res = CmdKillstreak.PriceKillstreak(item, quality, tier);
+			Price? res = CmdKillstreak.PriceKillstreak(item, quality, tier, australium);
 			if (res == null)
 			{
 				return null;
@@ -86,13 +87,13 @@ namespace CustomSteamTools
 
 			if (res == null && item.Killstreak != KillstreakType.None)
 			{
-				res = GetKillstreakPrice(item.Item, item.Quality, item.Killstreak);
+				res = GetKillstreakPrice(item.Item, item.Quality, item.Killstreak, item.Australium);
 				flags.AddIfMissing("market");
 			}
 
 			if (res == null)
 			{
-				res = GetNormalPrice(item.Item, item.Quality, item.Craftable, item.Unusual);
+				res = GetNormalPrice(item.Item, item.Quality, item.Craftable, item.Australium, item.Unusual);
 			}
 
 			if (res == null) // still
