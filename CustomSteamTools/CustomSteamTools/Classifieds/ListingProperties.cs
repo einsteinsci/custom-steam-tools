@@ -31,7 +31,12 @@ namespace CustomSteamTools.Classifieds
 
 		public string ToString(Item item)
 		{
-			string res = Quality.ToReadableString() + " " + item.Name;
+			return ToString(item.ImproperName);
+		}
+
+		public string ToString(string name)
+		{
+			string res = Quality.ToReadableString() + " " + name;
 
 			if (Australium)
 			{

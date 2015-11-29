@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Backpacks;
+using CustomSteamTools.Classifieds;
 using CustomSteamTools.Market;
 using CustomSteamTools.Schema;
 using CustomSteamTools.Skins;
@@ -80,6 +81,16 @@ namespace CustomSteamTools.Lookup
 			Craftable = inst.Craftable;
 			Tradable = inst.Tradable;
 			Australium = inst.IsAustralium();
+		}
+
+		public ListingProperties ToListingProperties()
+		{
+			ListingProperties res = new ListingProperties();
+			res.Quality = Quality;
+			res.Craftable = Craftable;
+			res.Tradable = Tradable;
+			res.Australium = Australium;
+			return res;
 		}
 
 		public override string ToString()

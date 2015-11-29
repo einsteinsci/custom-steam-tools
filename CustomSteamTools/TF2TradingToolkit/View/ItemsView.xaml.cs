@@ -156,9 +156,8 @@ namespace TF2TradingToolkit.View
 
 			List<ItemViewModel> results = CmdInfo.GetMatchingItems(ItemSearchBox.Text, 50)
 							.ConvertAll((i) => new ItemViewModel(i, Qualities));
-
-			AvailableItems = new ObservableCollection<ItemViewModel>(results);
-			ItemSearchResultList.ItemsSource = AvailableItems;
+			AvailableItems.Clear();
+			AvailableItems.AddRange(results);
 			if (resetPos)
 			{
 				ItemSearchResultList.SelectedIndex = AvailableItems.IsNullOrEmpty() ? -1 : 0;
@@ -316,8 +315,7 @@ namespace TF2TradingToolkit.View
 			{
 				return;
 			}
-
-			_updateSearch(false);
+			
 			if (Info == null)
 			{
 				return;
@@ -367,13 +365,7 @@ namespace TF2TradingToolkit.View
 
 		private void CraftableCheckbox_Click(object sender, RoutedEventArgs e)
 		{
-			if (!_loaded)
-			{
-				return;
-			}
-
-			_updateSearch(false);
-			if (Info == null)
+			if (!_loaded || Info == null)
 			{
 				return;
 			}

@@ -95,6 +95,7 @@
                    VerticalAlignment="Center"
                    FontSize="16" />
         <local:QualitySelector x:Name="Qualities"
+                               AllowMultiple="False"
                                Grid.Column="1"
                                QualityChanged="Qualities_QualityChanged" />
       </Grid>

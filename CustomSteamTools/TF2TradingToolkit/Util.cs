@@ -72,5 +72,10 @@ namespace TF2TradingToolkit
 				return Colors.Black;
 			}
 		}
+
+		public static void OpenLink(string url)
+		{
+			System.Diagnostics.Process.Start(url);
+		}
 	}
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -25,15 +27,19 @@ namespace TF2TradingToolkit.View
 		public HashSet<Quality> AvailableQualities
 		{ get; private set; }
 
+		public ObservableCollection<Quality> SelectedQualities
+		{ get; private set; }
+
 		public Quality SelectedQuality
 		{
 			get
 			{
-				return _selectedQuality;
+				return SelectedQualities.First();
 			}
 			set
 			{
-				_selectedQuality = value;
+				SelectedQualities.Clear();
+				SelectedQualities.Add(value);
 				UpdateQualities();
 
 				if (QualityChanged != null)
@@ -42,51 +48,53 @@ namespace TF2TradingToolkit.View
 				}
 			}
 		}
-		private Quality _selectedQuality = Quality.Unique;
+
+		public bool AllowMultiple
+		{ get; set; }
 
 		public event EventHandler<Quality> QualityChanged;
 
 		public void UpdateQualities()
 		{
-			UniqueBtn.IsChecked = false;
-			StrangeBtn.IsChecked = false;
-			GenuineBtn.IsChecked = false;
-			CollectorsBtn.IsChecked = false;
-			VintageBtn.IsChecked = false;
-			HauntedBtn.IsChecked = false;
-			UnusualBtn.IsChecked = false;
-
-			switch (SelectedQuality)
+			for (Quality q = Quality.Stock; q <= Quality.Decorated; q++)
 			{
-			case Quality.Genuine:
-				GenuineBtn.IsChecked = true;
-				break;
-			case Quality.Vintage:
-				VintageBtn.IsChecked = true;
-				break;
-			case Quality.Unusual:
-				UnusualBtn.IsChecked = true;
-				break;
-			case Quality.Unique:
-				UniqueBtn.IsChecked = true;
-				break;
-			case Quality.Strange:
-				StrangeBtn.IsChecked = true;
-				break;
-			case Quality.Haunted:
-				HauntedBtn.IsChecked = true;
-				break;
-			case Quality.Collectors:
-				CollectorsBtn.IsChecked = true;
-				break;
+				ToggleButton btn = _getButtonFromQuality(q);
+				if (btn != null)
+				{
+					btn.IsChecked = SelectedQualities.Contains(q);
+				}
 			}
 		}
 
 		public QualitySelector()
 		{
-			InitializeComponent();
-
 			AvailableQualities = new HashSet<Quality>();
+			SelectedQualities = new ObservableCollection<Quality>();
+
+			InitializeComponent();
+		}
+
+		private ToggleButton _getButtonFromQuality(Quality q)
+		{
+			switch (q)
+			{
+			case Quality.Genuine:
+				return GenuineBtn;
+			case Quality.Vintage:
+				return VintageBtn;
+			case Quality.Unusual:
+				return UnusualBtn;
+			case Quality.Unique:
+				return UniqueBtn;
+			case Quality.Strange:
+				return StrangeBtn;
+			case Quality.Haunted:
+				return HauntedBtn;
+			case Quality.Collectors:
+				return CollectorsBtn;
+			default:
+				return null;
+			}
 		}
 
 		public void DisableQuality(Quality q)
@@ -161,39 +169,66 @@ namespace TF2TradingToolkit.View
 			}
 		}
 
+		private void HitQuality(Quality q)
+		{
+			ToggleButton btn = _getButtonFromQuality(q);
+			if (btn == null)
+			{
+				return;
+			}
+
+			if (AllowMultiple)
+			{
+				if (SelectedQualities.Contains(q))
+				{
+					SelectedQualities.Remove(q);
+					UpdateQualities();
+				}
+				else
+				{
+					SelectedQualities.Add(q);
+					UpdateQualities();
+				}
+			}
+			else
+			{
+				SelectedQuality = q;
+			}
+		}
+
 		private void UniqueBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Unique;
+			HitQuality(Quality.Unique);
 		}
 
 		private void StrangeBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Strange;
+			HitQuality(Quality.Strange);
 		}
 
 		private void GenuineBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Genuine;
+			HitQuality(Quality.Genuine);
 		}
 
 		private void CollectorsBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Collectors;
+			HitQuality(Quality.Collectors);
 		}
 
 		private void VintageBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Vintage;
+			HitQuality(Quality.Vintage);
 		}
 
 		private void HauntedBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Haunted;
+			HitQuality(Quality.Haunted);
 		}
 
 		private void UnusualBtn_Click(object sender, RoutedEventArgs e)
 		{
-			SelectedQuality = Quality.Unusual;
+			HitQuality(Quality.Unusual);
 		}
 
 		public void SelectFirstAvailable()
@@ -204,6 +239,14 @@ namespace TF2TradingToolkit.View
 			}
 
 			SelectedQuality = AvailableQualities.FirstOrDefault();
+		}
+
+		private void UserControl_Initialized(object sender, EventArgs e)
+		{
+			if (SelectedQualities.IsEmpty())
+			{
+				SelectFirstAvailable();
+			}
 		}
 	}
 }

@@ -61,7 +61,8 @@
 
   <Grid>
     <TabControl x:Name="MainTabControl"
-                Margin="10 ">
+                Margin="10 "
+                SelectionChanged="MainTabControl_SelectionChanged">
       <TabItem x:Name="ItemsTab"
                FontSize="24">
         <TabItem.Header>
@@ -109,6 +110,8 @@
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
+        
+        <v:ClassifiedsView x:Name="ClassifiedsView" />
       </TabItem>
       <TabItem x:Name="RangeTab"
                FontSize="24">

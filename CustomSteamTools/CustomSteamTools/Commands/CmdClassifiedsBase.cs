@@ -190,6 +190,11 @@ namespace CustomSteamTools.Commands
 			List<ClassifiedsListing> res = new List<ClassifiedsListing>();
 			foreach (ClassifiedsListing c in all)
 			{
+				if (c.ItemInstance.Item.IsSkin())
+				{
+					continue;
+				}
+
 				if (c.OrderType == orderType)
 				{
 					res.Add(c);

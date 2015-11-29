@@ -66,6 +66,7 @@ namespace TF2TradingToolkit
 
 			ItemsView.PostLoad();
 			BackpackView.PostLoad();
+			ClassifiedsView.PostLoad();
 		}
 
 		private void RefreshAllBtn_Click(object sender, RoutedEventArgs e)
@@ -81,6 +82,7 @@ namespace TF2TradingToolkit
 
 			ItemsView.PostLoad();
 			BackpackView.PostLoad();
+			ClassifiedsView.PostLoad();
 		}
 
 		private void RefreshItem_Click(object sender, RoutedEventArgs e)
@@ -109,6 +111,21 @@ namespace TF2TradingToolkit
 				break;
 			default:
 				break;
+			}
+		}
+
+		private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			const int ITEMS_TAB_INDEX = 0;
+			const int CLASSIFIEDS_TAB_INDEX = 2;
+
+			if (MainTabControl.SelectedIndex == ITEMS_TAB_INDEX)
+			{
+				ItemsView.ItemSearchBox.Focus();
+			}
+			else if (MainTabControl.SelectedIndex == CLASSIFIEDS_TAB_INDEX)
+			{
+				ClassifiedsView.ItemSearchBox.Focus();
 			}
 		}
 	}

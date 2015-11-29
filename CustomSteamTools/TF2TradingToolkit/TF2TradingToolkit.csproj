@@ -104,7 +104,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Util.cs" />
-    <Compile Include="ViewModel\ItemInstanceViewModel.cs" />
+    <Compile Include="ViewModel\ClassifiedsListingViewModel.cs" />
+    <Compile Include="ViewModel\ItemSlotViewModel.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\PlayerViewModel.cs" />
     <Compile Include="ViewModel\PricedViewModel.cs" />
@@ -114,6 +115,9 @@
     </Compile>
     <Compile Include="View\BackpackView.xaml.cs">
       <DependentUpon>BackpackView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ClassifiedsView.xaml.cs">
+      <DependentUpon>ClassifiedsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ItemsView.xaml.cs">
       <DependentUpon>ItemsView.xaml</DependentUpon>
@@ -162,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BackpackView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ClassifiedsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
