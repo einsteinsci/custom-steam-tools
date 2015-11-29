@@ -135,6 +135,11 @@ namespace CustomSteamTools.Backpacks
 
 		public string GetSubtext()
 		{
+			if (Item.IsSkin())
+			{
+				return Item.GetSkin().Description;
+			}
+
 			return "Level " + Level.ToString() + " " + Item.Type;
 		}
 
@@ -203,7 +208,7 @@ namespace CustomSteamTools.Backpacks
 			return KillstreakTypes.Parse(att.Value.ToString("F0"));
 		}
 
-		public ItemPricing GetPrice()
+		public ItemPricing GetPriceSimple()
 		{
 			int? priceIndex = null;
 
@@ -248,22 +253,31 @@ namespace CustomSteamTools.Backpacks
 
 			return att.Value != 0;
 		}
-
+		
 		public override string ToString()
 		{
+			return ToString(false);
+		}
+
+		public string ToString(bool shortened)
+		{
 			string result = TitleQuick(true);
-			if (CustomName != null)
+
+			if (!shortened)
 			{
-				result += " (" + Item.ImproperName + ")";
-			}
-			
-			if (!Tradable)
-			{
-				result = "Non-Tradable " + result;
-			}
-			if (!Craftable)
-			{
-				result = "Non-Craftable " + result;
+				if (CustomName != null)
+				{
+					result += " (" + Item.ImproperName + ")";
+				}
+
+				if (!Tradable)
+				{
+					result = "Non-Tradable " + result;
+				}
+				if (!Craftable)
+				{
+					result = "Non-Craftable " + result;
+				}
 			}
 
 			int? series = GetCrateSeries();
@@ -271,8 +285,8 @@ namespace CustomSteamTools.Backpacks
 			{
 				result += " No. " + series.Value.ToString();
 			}
-
-			if (Count != 1)
+			
+			if (!shortened && Count > 1)
 			{
 				result += " x" + Count.ToString();
 			}

@@ -19,7 +19,6 @@
           Width="500"
           ResizeMode="NoResize"
           Closing="Window_Closing"
-          Topmost="True"
           Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
           SizeToContent="Height"
           Loaded="Window_Loaded"

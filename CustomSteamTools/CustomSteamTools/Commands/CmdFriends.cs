@@ -64,7 +64,7 @@ namespace CustomSteamTools.Commands
 			}
 		}
 
-		public PlayerList GetFriendsList(string steamid, bool force)
+		public static PlayerList GetFriendsList(string steamid, bool force)
 		{
 			if (steamid == Settings.Instance.HomeSteamID64)
 			{

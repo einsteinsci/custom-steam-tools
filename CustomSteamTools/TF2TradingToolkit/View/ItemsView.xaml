@@ -13,7 +13,7 @@
              ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
              mc:Ignorable="d"
              d:DesignHeight="667"
-             d:DesignWidth="1337">
+             d:DesignWidth="1387">
   <UserControl.InputBindings>
     <KeyBinding Key="Delete"
                 Command="{Binding DeleteCalcCmd}" />

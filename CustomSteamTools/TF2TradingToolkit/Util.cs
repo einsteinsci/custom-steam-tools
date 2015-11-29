@@ -21,7 +21,7 @@ namespace TF2TradingToolkit
 			case Quality.Vintage:
 				return Colors.Navy;
 			case Quality.Unusual:
-				return Colors.Purple;
+				return Colors.MediumPurple;
 			case Quality.Unique:
 				return Colors.Goldenrod;
 			case Quality.Community:
@@ -30,7 +30,7 @@ namespace TF2TradingToolkit
 			case Quality.Valve:
 				return Colors.MediumVioletRed;
 			case Quality.Strange:
-				return new Color() { R = 220, G = 100, B = 0, A = 255 };
+				return new Color() { R = 200, G = 100, B = 0, A = 255 };
 			case Quality.Haunted:
 				return Colors.Teal;
 			case Quality.Collectors:

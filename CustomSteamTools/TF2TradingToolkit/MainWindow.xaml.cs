@@ -65,6 +65,7 @@ namespace TF2TradingToolkit
 			}
 
 			ItemsView.PostLoad();
+			BackpackView.PostLoad();
 		}
 
 		private void RefreshAllBtn_Click(object sender, RoutedEventArgs e)
@@ -79,6 +80,7 @@ namespace TF2TradingToolkit
 			}
 
 			ItemsView.PostLoad();
+			BackpackView.PostLoad();
 		}
 
 		private void RefreshItem_Click(object sender, RoutedEventArgs e)

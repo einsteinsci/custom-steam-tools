@@ -14,14 +14,16 @@
           ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
           BorderBrush="{x:Static e:AccentBrushes.Orange}"
           Height="768"
-          Width="1365"
+          Width="1415"
           Title="TF2 Trading Toolkit"
           WindowStartupLocation="CenterScreen"
           ResizeMode="CanResizeWithGrip"
           HasDropShadow="True"
           Initialized="Window_Initialized"
           Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
-          Loaded="Window_Loaded">
+          Loaded="Window_Loaded"
+          MinWidth="1415"
+          MinHeight="768">
   <Window.Resources>
     <ContextMenu x:Key="K_RefreshMenu"
                  ep:Manager.Theme="Light">
@@ -90,6 +92,8 @@
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
+        
+        <v:BackpackView x:Name="BackpackView" />
       </TabItem>
       <TabItem x:Name="ClassifiedsTab"
                FontSize="24">

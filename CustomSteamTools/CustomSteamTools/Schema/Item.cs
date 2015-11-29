@@ -148,6 +148,11 @@ namespace CustomSteamTools.Schema
 				DataManager.TranslatePricingData();
 			}
 
+			if (IsSkin())
+			{
+				return false;
+			}
+
 			List<ItemPricing> pricings = DataManager.PriceData.GetAllPriceData(this);
 			foreach (ItemPricing p in pricings)
 			{

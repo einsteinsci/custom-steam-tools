@@ -13,11 +13,12 @@
              ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
              mc:Ignorable="d"
              d:DesignHeight="667"
-             d:DesignWidth="1337">
+             d:DesignWidth="1387">
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="2*" />
+      <ColumnDefinition MinWidth="1056"
+                        Width="3*" />
     </Grid.ColumnDefinitions>
 
     <Grid Tag="UserSelect"
@@ -38,13 +39,14 @@
         </Grid.ColumnDefinitions>
         
         <TextBlock Text="User SteamID:"
-                   FontSize="32" />
+                   FontSize="24" />
         <Button x:Name="BackpackBtn"
                 Content="Open Backpack"
                 Grid.Column="1"
                 IsDefault="True"
                 Padding="20,6"
-                VerticalAlignment="Center" />
+                VerticalAlignment="Center"
+                Click="BackpackBtn_Click" />
       </Grid>
       <TextBox x:Name="SteamIDBox"
                Grid.Row="1"
@@ -59,17 +61,20 @@
 
         <TextBlock Text="Friends of"
                    FontSize="24" />
-        <ComboBox x:Name="FriendsCombo"
+        <ComboBox x:Name="PlayersCombo"
                   VerticalAlignment="Center"
                   Grid.Column="1"
-                  IsEditable="True"
-                  Margin="10,0,0,0">
+                  Margin="10,0,0,0"
+                  SelectionChanged="PlayersCombo_SelectionChanged">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal"
-                          ToolTip="{Binding SteamID64}">
-                <Image Source="{Binding AvatarSmallURL}" />
-                <TextBlock Text="{Binding Name}"
+                          ToolTip="{Binding SteamID}">
+                <Image Source="{Binding ProfilePicURL}"
+                       Width="32" 
+                       Height="32" />
+                <TextBlock Text="{Binding PersonaName}"
+                           Foreground="{Binding StateColor}"
                            Margin="10,0,0,0"
                            VerticalAlignment="Center" />
               </StackPanel>
@@ -80,29 +85,79 @@
       <ProgressBar x:Name="FriendLoadingBar"
                    Grid.Row="3"
                    Height="16"
-                   Margin="0,10" />
+                   Margin="0,10,0,0"
+                   IsIndeterminate="True" />
       <ListBox x:Name="FriendsList"
                Grid.Row="4"
                HorizontalContentAlignment="Stretch"
-               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+               SelectionChanged="FriendsList_SelectionChanged"
+               Margin="0,10,0,0">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid>
+            <Grid ToolTip="{Binding SteamID}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              
-              <Image Source="{Binding ProfilePicURL}" />
-              <StackPanel Orientation="Vertical">
+
+              <Image Source="{Binding ProfilePicURL}"
+                     Width="32"
+                     Height="32" />
+              <StackPanel Orientation="Vertical"
+                          Grid.Column="1"
+                          Margin="10,0,0,0">
                 <TextBlock Text="{Binding PersonaName}"
                            FontSize="16" />
-                <TextBlock Text="{Binding CurrentState}" />
+                <TextBlock Text="{Binding CurrentState}"
+                           Foreground="{Binding StateColor}"/>
               </StackPanel>
             </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+    </Grid>
+
+    <Grid Tag="BackpackDisplay"
+          Grid.Column="1"
+          Margin="10,0,0,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Row="0"
+            Margin="0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock x:Name="BackpackTitleText"
+                   Text="No Backpack Selected"
+                   FontSize="24"
+                   FontWeight="SemiBold" />
+        <TextBlock x:Name="SlotCountText"
+                   Text="(0 slots)"
+                   Grid.Column="1"
+                   FontSize="24" />
+      </Grid>
+      <ScrollViewer Grid.Row="1">
+        <ItemsControl x:Name="BackpackItemsControl" />
+      </ScrollViewer>
+      
+      <TextBlock x:Name="NetWorthText"
+                 Text="Net Worth: 0 ref"
+                 Grid.Row="2"
+                 FontSize="24"
+                 Margin="0,10" />
+      <TextBlock x:Name="TotalPureText"
+                 Text="Total Pure: 0 ref"
+                 Grid.Row="3"
+                 FontSize="16"
+                 Margin="0,0,0,10" />
     </Grid>
   </Grid>
 </UserControl>

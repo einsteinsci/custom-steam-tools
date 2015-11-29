@@ -21,10 +21,8 @@ using UltimateUtil;
 
 namespace TF2TradingToolkit.ViewModel
 {
-	public sealed class ItemViewModel : INotifyPropertyChanged
+	public sealed class ItemViewModel
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
-
 		public Item Item
 		{ get; private set; }
 
@@ -39,7 +37,7 @@ namespace TF2TradingToolkit.ViewModel
 
 		public WrapPanel QualityPriceUI => GetPriceStamps();
 
-		public string Tooltip => GetItemTooltip();
+		public string Tooltip => GetItemTooltip(Item);
 
 		public ItemViewModel(Item item, QualitySelector selector)
 		{
@@ -67,36 +65,34 @@ namespace TF2TradingToolkit.ViewModel
 
 				PriceListings.Add(p);
 			}
-
-			_raisePropertyChanged(nameof(PriceListings));
 		}
 
-		public string GetItemTooltip()
+		public static string GetItemTooltip(Item item)
 		{
 			string nl = Environment.NewLine;
 
-			string res = Item.ToString();
-			res += nl + "  " + Item.GetSubtext();
-			res += nl + "  Description: " + Item.Description?.Shorten(120).Replace('\n', ' ') ?? "";
-			res += nl + "  Defindex: " + Item.ID;
-			res += nl + "  Slot: {0} ({1})".Fmt(Item.PlainSlot, Item.Slot);
-			res += nl + "  Classes: " + Item.ValidClasses.ToReadableString(includeBraces: false);
-			if (Item.IsSkin())
+			string res = item.ToString();
+			res += nl + "  " + item.GetSubtext();
+			res += nl + " - Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "";
+			res += nl + " - Defindex: " + item.ID;
+			res += nl + " - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot);
+			res += nl + " - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false);
+			if (item.IsSkin())
 			{
-				Skin skin = Item.GetSkin();
-				res += nl + "  " + skin.Description;
+				Skin skin = item.GetSkin();
+				res += nl + " - " + skin.Description;
 			}
-			if (Item.CanBeAustralium())
+			if (item.CanBeAustralium())
 			{
-				res += nl + "  Can be Australium";
+				res += nl + " - Can be Australium";
 			}
-			if (Item.IsCheapWeapon())
+			if (item.IsCheapWeapon())
 			{
-				res += nl + "  Drop weapon";
+				res += nl + " - Drop weapon";
 			}
-			if (Item.HalloweenOnly || Item.HasHauntedVersion == true)
+			if (item.HalloweenOnly || item.HasHauntedVersion == true)
 			{
-				res += nl + "  Halloween only";
+				res += nl + " - Halloween only";
 			}
 
 			return res;
@@ -165,15 +161,6 @@ namespace TF2TradingToolkit.ViewModel
 			res.Children.Add(textBlock);
 
 			return res;
-		}
-
-		private void _raisePropertyChanged(string propertyName)
-		{
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null)
-			{
-				handler(this, new PropertyChangedEventArgs(propertyName));
-			}
 		}
 	}
 }

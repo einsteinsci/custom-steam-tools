@@ -386,6 +386,8 @@ namespace CustomSteamTools
 			VersatileIO.Verbose("  Parse complete.");
 
 			MyFriendsList = new PlayerList();
+			LoadPlayerInfo(Settings.Instance.HomeSteamID64);
+
 			foreach (var fj in MyFriendsListRaw.response.players)
 			{
 				Player p = new Player(fj);
@@ -528,12 +530,12 @@ namespace CustomSteamTools
 			{
 				return false;
 			}
-
-			BackpackCaches.Add(steamID64, result);
+			
+			BackpackCaches.Put(steamID64, result);
 
 			VersatileIO.Verbose("  Parsing backpack data...");
 			TF2BackpackJson json = JsonConvert.DeserializeObject<TF2BackpackJson>(BackpackCaches[steamID64]);
-			BackpackDataRaw.Add(steamID64, json);
+			BackpackDataRaw.Put(steamID64, json);
 
 			if (json.result.status != TF2BackpackResultJson.Status.SUCCESS)
 			{
@@ -547,7 +549,7 @@ namespace CustomSteamTools
 				TranslateItemsData();
 			}
 			Backpack data = new Backpack(json, Schema);
-			BackpackData.Add(steamID64, data);
+			BackpackData.Put(steamID64, data);
 			VersatileIO.Verbose("  Parse complete.");
 
 			return true;

@@ -74,6 +74,12 @@ namespace CustomSteamTools
 			return new PriceRange(p.Price);
 		}
 
+		/// <summary>
+		/// Gets the resulting price from complex algorithm, with the flag "market" if the price
+		/// was obtained from the Steam Community Market.
+		/// </summary>
+		/// <param name="item">Item to check</param>
+		/// <returns>The resulting price with flags</returns>
 		public static FlaggedResult<PriceRange?, string> GetPriceFlagged(ItemPriceInfo item)
 		{
 			List<string> flags = new List<string>();
@@ -105,14 +111,30 @@ namespace CustomSteamTools
 
 			return new FlaggedResult<PriceRange?, string>(res, flags);
 		}
+		/// <summary>
+		/// Gets the resulting price from complex algorithm, with the flag "market" if the price
+		/// was obtained from the Steam Community Market.
+		/// </summary>
+		/// <param name="inst">Item to check</param>
+		/// <returns>The resulting price with flags</returns>
 		public static FlaggedResult<PriceRange?, string> GetPriceFlagged(ItemInstance inst)
 		{
 			return GetPriceFlagged(new ItemPriceInfo(inst));
 		}
+		/// <summary>
+		/// Gets the resulting price from complex algorithm.
+		/// </summary>
+		/// <param name="item">Item to check</param>
+		/// <returns>The resulting price</returns>
 		public static PriceRange? GetPrice(ItemPriceInfo item)
 		{
 			return GetPriceFlagged(item).Result;
 		}
+		/// <summary>
+		/// Gets the resulting price from complex algorithm.
+		/// </summary>
+		/// <param name="inst">Item to check</param>
+		/// <returns>The resulting price</returns>
 		public static PriceRange? GetPrice(ItemInstance inst)
 		{
 			return GetPrice(new ItemPriceInfo(inst));

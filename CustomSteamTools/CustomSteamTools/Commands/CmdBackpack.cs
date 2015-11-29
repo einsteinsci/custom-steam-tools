@@ -66,20 +66,21 @@ namespace CustomSteamTools.Commands
 					continue;
 				}
 
-				#region formatting
-				if (item.Item.IsCheapWeapon() && item.Quality == Quality.Unique && noWeapons)
-				{
-					continue;
-				}
-
 				var checkedPrice = PriceChecker.GetPriceFlagged(item);
 				PriceRange? price = checkedPrice.Result;
+
 				string priceString = "&cUNKNOWN";
 				if (price != null)
 				{
 					priceString = "&f" + price.Value.ToString();
 
 					netWorth += price.Value;
+				}
+
+				#region formatting
+				if (item.Item.IsCheapWeapon() && item.Quality == Quality.Unique && noWeapons)
+				{
+					continue;
 				}
 
 				if (checkedPrice.Contains("market"))

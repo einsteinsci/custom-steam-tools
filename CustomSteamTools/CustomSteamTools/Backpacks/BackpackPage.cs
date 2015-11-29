@@ -28,9 +28,9 @@ namespace CustomSteamTools.Backpacks
 
 			foreach (ItemInstance i in items)
 			{
-				if (i.BackpackSlot.IsBetween(MinSlotID, MaxSlotID) && !i.IsNewToBackpack)
+				if ((i.BackpackSlot - 1).IsBetween(MinSlotID, MaxSlotID) && !i.IsNewToBackpack)
 				{
-					Items[i.BackpackSlot - MinSlotID] = i;
+					Items[i.BackpackSlot - MinSlotID - 1] = i;
 				}
 			}
 		}

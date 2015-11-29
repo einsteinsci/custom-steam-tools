@@ -14,9 +14,6 @@ namespace CustomSteamTools.Backpacks
 		public int SlotCount
 		{ get; private set; }
 
-		public List<ItemInstance> ItemsOld
-		{ get; private set; }
-
 		public BackpackPage[] Pages
 		{ get; private set; }
 
