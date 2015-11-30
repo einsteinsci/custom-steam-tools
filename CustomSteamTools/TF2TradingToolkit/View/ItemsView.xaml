@@ -25,10 +25,6 @@
       <MenuItem Header="Search Classifieds"
                 Click="SearchClassifiedsItem_Click" />
     </ContextMenu>
-    <ContextMenu x:Key="CalcItemContextMenu">
-      <MenuItem Header="Edit" />
-      <MenuItem Header="Remove" />
-    </ContextMenu>
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
@@ -254,12 +250,19 @@
                SelectionChanged="CalcList_SelectionChanged">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ContextMenu="{StaticResource CalcItemContextMenu}">
+            <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
+              <Grid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Edit"
+                            Click="CalcEditBtn_Click" />
+                  <MenuItem Header="Remove" />
+                </ContextMenu>
+              </Grid.ContextMenu>
 
               <Image Source="{Binding ImageURL}"
                      Width="64"

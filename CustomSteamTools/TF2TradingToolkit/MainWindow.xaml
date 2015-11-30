@@ -178,7 +178,8 @@
         </StackPanel>
       </Button>
       <Button x:Name="ConsoleBtn"
-              FontSize="14">
+              FontSize="14"
+              Click="ConsoleBtn_Click">
         <StackPanel Orientation="Horizontal">
           <Image Source="assets/smallnflat_terminal-24x.png"
                  Width="16"

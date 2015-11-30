@@ -37,9 +37,32 @@ namespace CustomSteamTools.Commands
 		}
 	}
 
+	public sealed class PostCommandArgs : EventArgs
+	{
+		public string Name
+		{ get; private set; }
+
+		public bool Canceled
+		{ get; private set; }
+
+		public List<string> Args
+		{ get; private set; }
+
+		public ITradeCommand Command
+		{ get; private set; }
+
+		public PostCommandArgs(string name, ITradeCommand cmd, List<string> args)
+		{
+			Name = name;
+			Command = cmd;
+			Args = args;
+		}
+	}
+
 	public sealed class CommandHandler : ReflectiveRegistry<ITradeCommand, TradeCommandAttribute>
 	{
-		public delegate bool PreCommandHandler(object sender, PreCommandArgs e);
+		public delegate void PreCommandHandler(object sender, PreCommandArgs e);
+		public delegate void PostCommandHandler(object sender, PostCommandArgs e);
 
 		public static CommandHandler Instance
 		{ get; private set; }
@@ -47,6 +70,7 @@ namespace CustomSteamTools.Commands
 		public List<ITradeCommand> Commands => registry.Values.ToList();
 
 		public event PreCommandHandler OnPreCommand;
+		public event PostCommandHandler OnPostCommand;
 
 		public static void Initialize()
 		{
@@ -56,20 +80,20 @@ namespace CustomSteamTools.Commands
 		public CommandHandler() : base(true)
 		{ }
 
-		public void RunCommand(string command, params string[] args)
+		public void RunCommand(string commandName, params string[] args)
 		{
 			List<string> largs = args.ToList();
 
-			ITradeCommand cmd = FindCommand(command);
+			ITradeCommand cmd = FindCommand(commandName);
 			if (cmd == null)
 			{
-				VersatileIO.Error("No command found by name '{0}'.", command);
+				VersatileIO.Error("No command found by name '{0}'.", commandName);
 				return;
 			}
 
 			if (OnPreCommand != null)
 			{
-				PreCommandArgs e = new PreCommandArgs(command, cmd, largs);
+				PreCommandArgs e = new PreCommandArgs(commandName, cmd, largs);
 				OnPreCommand(this, e);
 
 				if (e.Cancel)
@@ -89,6 +113,12 @@ namespace CustomSteamTools.Commands
 					cmd.RegistryName, e.GetType().Name);
 				VersatileIO.Error(e.ToString());
 				//throw;
+			}
+
+			if (OnPostCommand != null)
+			{
+				PostCommandArgs e = new PostCommandArgs(commandName, cmd, largs);
+				OnPostCommand(this, e);
 			}
 		}
 

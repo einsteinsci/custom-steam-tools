@@ -14,7 +14,6 @@
           ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
           BorderBrush="{x:Static e:AccentBrushes.Orange}"
           Title="Settings"
-          Progress="{Binding InitProgressVal}"
           MinHeight="100"
           MinWidth="300"
           Height="450"
@@ -202,11 +201,13 @@
               Content="Save"
               Width="128"
               Margin="0,0,5,0"
-              Click="SaveBtn_Click" />
+              Click="SaveBtn_Click"
+              IsDefault="True" />
       <Button x:Name="CancelBtn"
               Content="Cancel"
               Width="128"
-              Click="CancelBtn_Click" />
+              Click="CancelBtn_Click"
+              IsCancel="True" />
     </StackPanel>
   </Grid>
 </e:Window>

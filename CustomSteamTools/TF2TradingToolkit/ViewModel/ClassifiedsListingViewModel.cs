@@ -12,30 +12,91 @@ namespace TF2TradingToolkit.ViewModel
 {
 	public sealed class ClassifiedsListingViewModel
 	{
+		public static ClassifiedsListingViewModel DownloadFailed => _downloadFailed;
+		private static ClassifiedsListingViewModel _downloadFailed = new ClassifiedsListingViewModel(true);
+
 		public ClassifiedsListing Listing
 		{ get; private set; }
 
-		public string ListingString => Listing.Price.ToString() + " from " +
-			Listing.ListerNickname ?? Listing.ListerSteamID64;
+		public Brush QualityColorBrush
+		{
+			get
+			{
+				if (Failed)
+				{
+					return new SolidColorBrush(Colors.Red);
+				}
 
-		public string OfferLink => Listing.OfferURL;
+				return new SolidColorBrush(Listing.ItemInstance.Quality.ToWPFBorderColor());
+			}
+		}
 
-		public string Comment => Listing.Comment ?? "(No comment)";
+		public string ListingString
+		{
+			get
+			{
+				if (Failed)
+				{
+					return "Download Failed";
+				}
+
+				return Listing.Price.ToString() + " from " +
+					Listing.ListerNickname ?? Listing.ListerSteamID64;
+			}
+		}
+
+		public string OfferLink => Listing?.OfferURL;
+
+		public string Comment
+		{
+			get
+			{
+				if (Failed)
+				{
+					return "";
+				}
+
+				return Listing.Comment ?? "(No comment)";
+			}
+		}
 
 		public StackPanel Tooltip => GetTooltip();
 
-		public string ImageURL => Listing.ItemInstance.Item.ImageURL;
+		public string ImageURL => Listing?.ItemInstance.Item.ImageURL;
 
-		public Visibility ShowOfferBtn => Listing.OfferURL != null ? 
-			Visibility.Visible : Visibility.Collapsed;
+		public Visibility ShowOfferBtn
+		{
+			get
+			{
+				if (Failed)
+				{
+					return Visibility.Collapsed;
+				}
+
+				return Listing.OfferURL != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
+		public bool Failed
+		{ get; private set; }
 
 		public ClassifiedsListingViewModel(ClassifiedsListing listing)
 		{
 			Listing = listing;
 		}
 
+		private ClassifiedsListingViewModel(bool failed)
+		{
+			Failed = failed;
+		}
+
 		public StackPanel GetTooltip()
 		{
+			if (Failed)
+			{
+				return null;
+			}
+
 			StackPanel res = new StackPanel();
 
 			TextBlock t = new TextBlock();

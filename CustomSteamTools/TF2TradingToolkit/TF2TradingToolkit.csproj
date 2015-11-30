@@ -103,11 +103,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConsoleWindow.xaml.cs">
+      <DependentUpon>ConsoleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MultiSelectorEventArgs.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
+    <Compile Include="VersatileFakeConsoleHandler.cs" />
     <Compile Include="ViewModel\ClassifiedsListingViewModel.cs" />
     <Compile Include="ViewModel\DealExclusionViewModel.cs" />
     <Compile Include="ViewModel\ItemSlotViewModel.cs" />
@@ -144,6 +148,10 @@
     <Compile Include="View\SlotMultiSelector.xaml.cs">
       <DependentUpon>SlotMultiSelector.xaml</DependentUpon>
     </Compile>
+    <Page Include="ConsoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

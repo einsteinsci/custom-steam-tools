@@ -125,6 +125,9 @@ namespace TF2TradingToolkit.View
 		public bool IsMarket
 		{ get; private set; }
 
+		public bool IsCalcEditing
+		{ get; private set; }
+
 		private bool _changingQuality = false;
 
 		public ItemsView()
@@ -294,7 +297,7 @@ namespace TF2TradingToolkit.View
 			PriceActualText.Text = EvaluatedPriceString;
 			PriceUSDText.Text = EvaluatedPriceUSD;
 
-			if (CalcList.SelectedIndex != -1)
+			if (CalcList.SelectedIndex != -1 && IsCalcEditing)
 			{
 				int index = CalcList.SelectedIndex;
 				CalculatorContents[index] = new PricedViewModel(Info, EvaluatedPrice ?? PriceRange.Zero);
@@ -327,6 +330,8 @@ namespace TF2TradingToolkit.View
 			}
 
 			Info.Quality = Qualities.SelectedQuality;
+			UnusualEffectsDropdown.IsEnabled = Qualities.SelectedQuality == Quality.Unusual;
+
 			RefreshPriceLabels();
 		}
 

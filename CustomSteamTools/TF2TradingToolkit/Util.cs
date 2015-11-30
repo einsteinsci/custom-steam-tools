@@ -77,6 +77,47 @@ namespace TF2TradingToolkit
 			}
 		}
 
+		public static Color ToWPFColor(this ConsoleColor color)
+		{
+			switch (color)
+			{
+			case ConsoleColor.Black:
+				return Colors.Black;
+			case ConsoleColor.DarkBlue:
+				return Colors.MediumSlateBlue;
+			case ConsoleColor.DarkGreen:
+				return Colors.Green;
+			case ConsoleColor.DarkCyan:
+				return Colors.Teal;
+			case ConsoleColor.DarkRed:
+				return Colors.Red;
+			case ConsoleColor.DarkMagenta:
+				return Colors.MediumPurple;
+			case ConsoleColor.DarkYellow:
+				return new Color() { R = 200, G = 100, B = 0, A = 255 };
+			case ConsoleColor.Gray:
+				return Colors.Gray;
+			case ConsoleColor.DarkGray:
+				return new Color() { R = 80, G = 80, B = 80, A = 255 };
+			case ConsoleColor.Blue:
+				return Colors.CornflowerBlue;
+			case ConsoleColor.Green:
+				return Colors.Lime;
+			case ConsoleColor.Cyan:
+				return Colors.Cyan;
+			case ConsoleColor.Red:
+				return Colors.Salmon;
+			case ConsoleColor.Magenta:
+				return Colors.Magenta;
+			case ConsoleColor.Yellow:
+				return Colors.Yellow;
+			case ConsoleColor.White:
+				return Colors.White;
+			default:
+				return Colors.Black;
+			}
+		}
+
 		public static void OpenLink(string url)
 		{
 			System.Diagnostics.Process.Start(url);

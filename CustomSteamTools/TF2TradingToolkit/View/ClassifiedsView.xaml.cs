@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -146,7 +147,7 @@ namespace TF2TradingToolkit.View
 				Filters.DealsMinProfit = new Price(minProfit);
 			}
 
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		public void ShowClassifieds(ClassifiedsListing listing)
@@ -204,6 +205,16 @@ namespace TF2TradingToolkit.View
 			ListedPriceTxt.ToolTip = "USD: " + EvaluatedPrice.Value.ToStringUSD();
 		}
 
+		public void RefreshDealsFiltersTooltip()
+		{
+			if (!_loaded)
+			{
+				return;
+			}
+			
+			DealsSearchBtn.ToolTip = Filters.GetTooltip();
+		}
+
 		private void _updateSearch(bool resetPos)
 		{
 			int index = ItemSearchResultList.SelectedIndex;
@@ -222,17 +233,6 @@ namespace TF2TradingToolkit.View
 			}
 		}
 
-		private void _updateDealsFiltersTooltip()
-		{
-			if (!_loaded)
-			{
-				return;
-			}
-
-			string s = Filters.ToString();
-			DealsSearchBtn.ToolTip = "Filters: { " + s + " }";
-		}
-
 		private void ClassifiedsLoader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			ClassifiedsProgress.Visibility = Visibility.Collapsed;
@@ -248,8 +248,45 @@ namespace TF2TradingToolkit.View
 				ClassifiedsProgress.Visibility = Visibility.Visible;
 			});
 
-			List<ClassifiedsListing> sells = CmdClassifiedsBase.GetListings(item, props, OrderType.Sell);
-			List<ClassifiedsListing> buys = CmdClassifiedsBase.GetListings(item, props, OrderType.Buy);
+			List<ClassifiedsListing> sells = new List<ClassifiedsListing>();
+			List<ClassifiedsListing> buys = new List<ClassifiedsListing>();
+			try
+			{
+				sells = CmdClassifiedsBase.GetListings(item, props, OrderType.Sell);
+				buys = CmdClassifiedsBase.GetListings(item, props, OrderType.Buy);
+			}
+			catch (WebException ex)
+			{
+				SellersList.Dispatcher.Invoke(() => {
+					Sellers.Clear();
+					Sellers.Add(ClassifiedsListingViewModel.DownloadFailed);
+				});
+
+				ClassifiedsBestSellerBtn.Dispatcher.Invoke(() => {
+					ClassifiedsBestSellerBtn.IsEnabled = false;
+				});
+
+				BestSellerText.Dispatcher.Invoke(() => {
+					BestSellerText.Text = "Download Failed.";
+					BestSellerText.ToolTip = "Exception Details: " + ex.ToString();
+				});
+
+				BuyersList.Dispatcher.Invoke(() => {
+					Buyers.Clear();
+					Buyers.Add(ClassifiedsListingViewModel.DownloadFailed);
+				});
+
+				ClassifiedsBestBuyerBtn.Dispatcher.Invoke(() => {
+					ClassifiedsBestBuyerBtn.IsEnabled = false;
+				});
+
+				BestBuyerText.Dispatcher.Invoke(() => {
+					BestBuyerText.Text = "Download Failed.";
+					BestBuyerText.ToolTip = "Exception Details: " + ex.ToString();
+				});
+
+				return;
+			}
 
 			Price? cheapestSellPrice = null;
 			ClassifiedsListing bestSeller = null;
@@ -363,7 +400,9 @@ namespace TF2TradingToolkit.View
 
 		private void DealFinder_OnProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
-			DealsLoader.ReportProgress(e.ProgressPercentage, e.UserState);
+			Dispatcher.Invoke(() => {
+				DealsLoader.ReportProgress(e.ProgressPercentage, e.UserState);
+			});
 		}
 
 		private void DealsLoader_DoWork(object sender, DoWorkEventArgs e)
@@ -588,25 +627,25 @@ namespace TF2TradingToolkit.View
 		private void DealsCraftableCheck_Click(object sender, RoutedEventArgs e)
 		{
 			Filters.Craftable = DealsCraftableCheck.IsChecked;
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsHalloweenCheck_Click(object sender, RoutedEventArgs e)
 		{
 			Filters.Halloween = DealsHalloweenCheck.IsChecked;
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsBotkillerCheck_Click(object sender, RoutedEventArgs e)
 		{
 			Filters.Botkiller = DealsBotkillerCheck.IsChecked;
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsAllClassCheck_Click(object sender, RoutedEventArgs e)
 		{
 			Filters.AllowAllClass = DealsAllClassCheck.IsChecked ?? true;
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsMinProfitBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -625,7 +664,7 @@ namespace TF2TradingToolkit.View
 
 				Filters.DealsMinProfit = p;
 				DealsSearchBtn.IsEnabled = true;
-				_updateDealsFiltersTooltip();
+				RefreshDealsFiltersTooltip();
 			}
 			else
 			{
@@ -661,7 +700,7 @@ namespace TF2TradingToolkit.View
 					Filters.Qualities.Remove(e.Selection);
 				}
 			}
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsSlots_SelectionChanged(object sender, MultiSlotSelectorEventArgs e)
@@ -680,7 +719,7 @@ namespace TF2TradingToolkit.View
 					Filters.Slots.Remove(e.Selection);
 				}
 			}
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void DealsClasses_SelectionChanged(object sender, MultiClassSelectorEventArgs e)
@@ -699,7 +738,7 @@ namespace TF2TradingToolkit.View
 					Filters.Classes.Remove(e.Selection);
 				}
 			}
-			_updateDealsFiltersTooltip();
+			RefreshDealsFiltersTooltip();
 		}
 
 		private void Deals_OfferBtn_Click(object sender, RoutedEventArgs e)

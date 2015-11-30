@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CustomSteamTools.Utils;
 using UltimateUtil;
+using UltimateUtil.Logging;
 using UltimateUtil.UserInteraction;
 
 namespace TF2TradingToolkit
@@ -54,6 +55,7 @@ namespace TF2TradingToolkit
 		}
 
 		private InitWindow _initializerWindow;
+		private ConsoleWindow _consoleWindow;
 
 		public bool AutoExiting
 		{ get; private set; }
@@ -192,6 +194,22 @@ namespace TF2TradingToolkit
 			{
 				Settings.Instance = window.Instance;
 				Settings.Instance.Save();
+			}
+		}
+
+		private void ConsoleBtn_Click(object sender, RoutedEventArgs e)
+		{
+			if (_consoleWindow?.IsShown ?? false)
+			{
+				_consoleWindow.Focus();
+			}
+			else
+			{
+				_consoleWindow = new ConsoleWindow(this);
+				VersatileIO.SetHandler(_consoleWindow.Handler);
+				VersatileIO.MinLogLevel = LogLevel.Verbose;
+
+				_consoleWindow.Show();
 			}
 		}
 	}
