@@ -67,6 +67,7 @@ namespace TF2TradingToolkit
 			ItemsView.PostLoad(this);
 			BackpackView.PostLoad(this);
 			ClassifiedsView.PostLoad(this);
+			RangeView.PostLoad(this);
 		}
 
 		private void RefreshAllBtn_Click(object sender, RoutedEventArgs e)
@@ -83,6 +84,7 @@ namespace TF2TradingToolkit
 			ItemsView.PostLoad(this);
 			BackpackView.PostLoad(this);
 			ClassifiedsView.PostLoad(this);
+			RangeView.PostLoad(this);
 		}
 
 		private void RefreshItem_Click(object sender, RoutedEventArgs e)

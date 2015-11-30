@@ -29,6 +29,8 @@ namespace CustomSteamTools
 		public static Item ReclaimedMetal => DataManager.Schema.GetItem(REC_DEFINDEX);
 		public static Item ScrapMetal => DataManager.Schema.GetItem(SCRAP_DEFINDEX);
 
+		public static Item Key => DataManager.Schema.GetItem(KEY_DEFINDEX);
+
 		public static double RefinedPerKey
 		{
 			get
@@ -66,7 +68,7 @@ namespace CustomSteamTools
 
 		public Price(double amount, string currency)
 		{
-			switch (currency)
+			switch (currency.ToLower())
 			{
 				case CURRENCY_CASH:
 					double keys = amount / KEY_STOREPRICE_USD;

@@ -21,14 +21,28 @@ namespace TF2TradingToolkit.ViewModel
 		public PriceRange Price
 		{ get; private set; }
 
-		public string ItemString => Info.Item.ToString(Info.Quality, Info.Australium, Info.Killstreak);
+		public string ItemString => GetItemString();
 		public string ImageURL => Info.Item.ImageURL;
 		public Grid PriceTag => GetPriceTag();
+
+		public string PriceString => Price.ToString();
+		public Brush QualityDarkBrush => new SolidColorBrush(Info.Quality.ToWPFBorderColor());
 
 		public PricedViewModel(ItemPriceInfo info, PriceRange range)
 		{
 			Info = info;
 			Price = range;
+		}
+
+		public string GetItemString()
+		{
+			string res = Info.Item.ToString(Info.Quality, Info.Australium, Info.Killstreak);
+			if (Info.Unusual != null)
+			{
+				res += " (" + Info.Unusual.Name + ")";
+			}
+
+			return res;
 		}
 
 		public Grid GetPriceTag()

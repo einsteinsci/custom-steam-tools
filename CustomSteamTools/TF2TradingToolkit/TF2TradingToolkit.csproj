@@ -111,6 +111,7 @@
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\PlayerViewModel.cs" />
     <Compile Include="ViewModel\PricedViewModel.cs" />
+    <Compile Include="ViewModel\PriceUnitViewModel.cs" />
     <Compile Include="ViewModel\SaleViewModel.cs" />
     <Compile Include="ViewModel\UnusualViewModel.cs" />
     <Compile Include="View\BackpackPageControl.xaml.cs">
@@ -133,6 +134,9 @@
     </Compile>
     <Compile Include="View\QualitySelector.xaml.cs">
       <DependentUpon>QualitySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RangeView.xaml.cs">
+      <DependentUpon>RangeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SlotMultiSelector.xaml.cs">
       <DependentUpon>SlotMultiSelector.xaml</DependentUpon>
@@ -195,6 +199,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\QualitySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RangeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

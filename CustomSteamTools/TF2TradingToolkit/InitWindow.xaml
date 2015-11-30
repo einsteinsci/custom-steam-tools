@@ -15,9 +15,11 @@
           BorderBrush="{x:Static e:AccentBrushes.Orange}"
           Title="Initializing..."
           Progress="{Binding InitProgressVal}"
+          MinHeight="100"
+          MinWidth="400"
           Height="300" 
           Width="500"
-          ResizeMode="NoResize"
+          ResizeMode="CanResize"
           Closing="Window_Closing"
           Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
           SizeToContent="Height"
@@ -60,6 +62,7 @@
              IsReadOnly="True"
              VerticalScrollBarVisibility="Visible"
              VerticalContentAlignment="Top"
-             BorderThickness="1" />
+             BorderThickness="1"
+             HorizontalScrollBarVisibility="Auto" />
   </Grid>
 </e:Window>

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using CustomSteamTools.Classifieds;
 using CustomSteamTools.Schema;
+using UltimateUtil;
 
 namespace TF2TradingToolkit
 {
@@ -82,6 +85,101 @@ namespace TF2TradingToolkit
 		public static Visibility ToVisibility(this bool b)
 		{
 			return b ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		public static StackPanel GetTooltip(this DealsFilters filters)
+		{
+			StackPanel res = new StackPanel();
+
+			TextBlock t = new TextBlock();
+			if (filters.Qualities.HasItems())
+			{
+				t.Text = "Qualities: " + filters.Qualities.ToReadableString(" ", false);
+			}
+			else
+			{
+				t.Text = "Any Quality";
+			}
+			res.Children.Add(t);
+
+			t = new TextBlock();
+			if (filters.Slots.HasItems())
+			{
+				t.Text = "Slots: " + filters.Slots.ToReadableString(" ", false);
+			}
+			else
+			{
+				t.Text = "Any Slot";
+			}
+			res.Children.Add(t);
+
+			t = new TextBlock();
+			if (filters.Classes.HasItems())
+			{
+				t.Text = "Classes: " + filters.Classes.ToReadableString(" ", false);
+			}
+			else
+			{
+				t.Text = "Any Class";
+			}
+			t.Margin = new Thickness(0, 0, 0, 5);
+			res.Children.Add(t);
+
+			if (filters.DealsMinProfit != null)
+			{
+				t = new TextBlock();
+				t.Text = "Minimum Profit: " + filters.DealsMinProfit.Value.ToString();
+				t.Margin = new Thickness(0, 0, 0, 5);
+				res.Children.Add(t);
+			}
+
+			if (!filters.AllowAllClass)
+			{
+				t = new TextBlock();
+				t.Text = "No All-Class Items";
+				res.Children.Add(t);
+			}
+
+			if (filters.Craftable == null)
+			{
+				t = new TextBlock();
+				t.Text = "Any Craftability";
+				res.Children.Add(t);
+			}
+			else if (filters.Craftable == false)
+			{
+				t = new TextBlock();
+				t.Text = "Uncraftable Only";
+				res.Children.Add(t);
+			}
+
+			if (filters.Halloween == true)
+			{
+				t = new TextBlock();
+				t.Text = "Halloween-Only";
+				res.Children.Add(t);
+			}
+			else if (filters.Halloween == false)
+			{
+				t = new TextBlock();
+				t.Text = "No Halloween Items";
+				res.Children.Add(t);
+			}
+
+			if (filters.Botkiller == true)
+			{
+				t = new TextBlock();
+				t.Text = "Botkillers Only";
+				res.Children.Add(t);
+			}
+			else if (filters.Botkiller == false)
+			{
+				t = new TextBlock();
+				t.Text = "No Botkillers";
+				res.Children.Add(t);
+			}
+
+			return res;
 		}
 	}
 }

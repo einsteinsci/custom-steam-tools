@@ -130,6 +130,8 @@
                        VerticalAlignment="Center" />
           </StackPanel>
         </TabItem.Header>
+        
+        <v:RangeView x:Name="RangeView" />
       </TabItem>
     </TabControl>
     

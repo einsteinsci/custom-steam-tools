@@ -327,20 +327,17 @@
 
         <CheckBox x:Name="DealsCraftableCheck"
                   Content="Craftable"
-                  ToolTip="Show craftable items only"
                   IsThreeState="True"
                   IsChecked="True"
                   Click="DealsCraftableCheck_Click" />
         <CheckBox x:Name="DealsHalloweenCheck"
                   Content="Halloween"
-                  ToolTip="Include halloween-only items"
                   IsThreeState="True"
                   IsChecked="{x:Null}"
                   Grid.Column="1"
                   Click="DealsHalloweenCheck_Click" />
         <CheckBox x:Name="DealsBotkillerCheck"
                   Content="Botkillers"
-                  ToolTip="Include botkillers"
                   IsThreeState="True"
                   IsChecked="{x:Null}"
                   Grid.Column="2"
@@ -374,7 +371,8 @@
                  HorizontalContentAlignment="Right"
                  FontSize="16"
                  BorderBrush="Gray"
-                 TextChanged="DealsMinProfitBox_TextChanged" />
+                 TextChanged="DealsMinProfitBox_TextChanged"
+                 ToolTip="Minimum profit to look for in deals. Anything less will be ignored." />
         <TextBlock Text="ref"
                    Grid.Column="2"
                    FontSize="16"

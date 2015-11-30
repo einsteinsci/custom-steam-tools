@@ -190,7 +190,7 @@ namespace CustomSteamTools
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + SchemaFilename))
+			if (!File.Exists(Path.Combine(CacheLocation, SchemaFilename)))
 			{
 				offline = false;
 			}
@@ -216,7 +216,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Retrieving item schema cache...");
 				try
 				{
-					SchemaCache = File.ReadAllText(CacheLocation + SchemaFilename, Encoding.UTF8);
+					SchemaCache = File.ReadAllText(Path.Combine(CacheLocation, SchemaFilename), Encoding.UTF8);
 					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
@@ -231,7 +231,7 @@ namespace CustomSteamTools
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(CacheLocation + SchemaFilename, SchemaCache, Encoding.UTF8);
+				File.WriteAllText(Path.Combine(CacheLocation, SchemaFilename), SchemaCache, Encoding.UTF8);
 				Settings.Instance.SchemaLastAccess = currentAccess.Ticks;
 				Settings.Instance.Save();
 			}
@@ -247,7 +247,7 @@ namespace CustomSteamTools
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + MyBackpackDataFilename))
+			if (!File.Exists(Path.Combine(CacheLocation, MyBackpackDataFilename)))
 			{
 				offline = false;
 			}
@@ -273,7 +273,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Retrieving backpack data cache...");
 				try
 				{
-					MyBackpackCache = File.ReadAllText(CacheLocation + MyBackpackDataFilename, Encoding.UTF8);
+					MyBackpackCache = File.ReadAllText(Path.Combine(CacheLocation, MyBackpackDataFilename), Encoding.UTF8);
 					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
@@ -288,7 +288,7 @@ namespace CustomSteamTools
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(CacheLocation + MyBackpackDataFilename, MyBackpackCache, Encoding.UTF8);
+				File.WriteAllText(Path.Combine(CacheLocation, MyBackpackDataFilename), MyBackpackCache, Encoding.UTF8);
 				Settings.Instance.BackpackLastAccess = currentAccess.Ticks;
 				Settings.Instance.Save();
 			}
@@ -305,7 +305,7 @@ namespace CustomSteamTools
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + MyFriendsListFilename))
+			if (!File.Exists(Path.Combine(CacheLocation, MyFriendsListFilename)))
 			{
 				offline = false;
 			}
@@ -371,7 +371,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Retrieving friends list cache...");
 				try
 				{
-					MyFriendsListCache = File.ReadAllText(CacheLocation + MyFriendsListFilename, Encoding.UTF8);
+					MyFriendsListCache = File.ReadAllText(Path.Combine(CacheLocation, MyFriendsListFilename), Encoding.UTF8);
 					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
@@ -397,7 +397,7 @@ namespace CustomSteamTools
 
 			if (!failed && !offline)
 			{
-				File.WriteAllText(CacheLocation + MyFriendsListFilename, MyFriendsListCache, Encoding.UTF8);
+				File.WriteAllText(Path.Combine(CacheLocation, MyFriendsListFilename), MyFriendsListCache, Encoding.UTF8);
 				Settings.Instance.FriendsListLastAccess = lastAccess.Ticks;
 				Settings.Instance.Save();
 			}
@@ -413,7 +413,7 @@ namespace CustomSteamTools
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + PriceDataFilename))
+			if (!File.Exists(Path.Combine(CacheLocation, PriceDataFilename)))
 			{
 				offline = false;
 			}
@@ -439,7 +439,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Retrieving price list cache...");
 				try
 				{
-					PricesCache = File.ReadAllText(CacheLocation + PriceDataFilename, Encoding.UTF8);
+					PricesCache = File.ReadAllText(Path.Combine(CacheLocation, PriceDataFilename), Encoding.UTF8);
 					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
@@ -456,7 +456,7 @@ namespace CustomSteamTools
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(CacheLocation + PriceDataFilename, PricesCache, Encoding.UTF8);
+				File.WriteAllText(Path.Combine(CacheLocation, PriceDataFilename), PricesCache, Encoding.UTF8);
 				Settings.Instance.PriceListLastAccess = currentAccess.Ticks;
 				Settings.Instance.Save();
 			}
@@ -472,7 +472,7 @@ namespace CustomSteamTools
 				offline = true;
 			}
 
-			if (!File.Exists(CacheLocation + MarketPricesFilename))
+			if (!File.Exists(Path.Combine(CacheLocation, MarketPricesFilename)))
 			{
 				offline = false;
 			}
@@ -498,7 +498,7 @@ namespace CustomSteamTools
 				VersatileIO.Debug("Retrieving market prices cache...");
 				try
 				{
-					MarketPricesCache = File.ReadAllText(CacheLocation + MarketPricesFilename, Encoding.UTF8);
+					MarketPricesCache = File.ReadAllText(Path.Combine(CacheLocation, MarketPricesFilename), Encoding.UTF8);
 					VersatileIO.Verbose("  Retrieval complete.");
 				}
 				catch (Exception e)
@@ -515,7 +515,7 @@ namespace CustomSteamTools
 
 			if (!failed && !offline) // don't bother writing again if it's the same thing
 			{
-				File.WriteAllText(CacheLocation + MarketPricesFilename, MarketPricesCache, Encoding.UTF8);
+				File.WriteAllText(Path.Combine(CacheLocation, MarketPricesFilename), MarketPricesCache, Encoding.UTF8);
 				Settings.Instance.MarketPricesLastAccess = currentAccess.Ticks;
 				Settings.Instance.Save();
 			}
