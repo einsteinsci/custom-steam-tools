@@ -12,7 +12,7 @@ using UltimateUtil;
 namespace CustomSteamTools.Utils
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptOut)]
-	public class Settings
+	public class Settings : ICloneable
 	{
 		[JsonIgnore]
 		public static readonly string LOCATION = Path.Combine(
@@ -23,7 +23,7 @@ namespace CustomSteamTools.Utils
 
 		[JsonIgnore]
 		public static Settings Instance
-		{ get; private set; }
+		{ get; set; }
 
 		[JsonIgnore]
 		public bool Initialized
@@ -159,6 +159,25 @@ namespace CustomSteamTools.Utils
 			File.WriteAllText(FILEPATH, contents);
 
 			VersatileIO.Verbose("  Settings saved.");
+		}
+
+		public object Clone()
+		{
+			Settings res = new Settings();
+			res.PriceListLastAccess = PriceListLastAccess;
+			res.MarketPricesLastAccess = MarketPricesLastAccess;
+			res.SchemaLastAccess = SchemaLastAccess;
+			res.BackpackLastAccess = BackpackLastAccess;
+			res.FriendsListLastAccess = FriendsListLastAccess;
+			res.DownloadTimeoutSeconds = DownloadTimeoutSeconds;
+			res.HomeSteamID64 = HomeSteamID64;
+			res.SteamPersonaName = SteamPersonaName;
+			res.BackpackTFAPIKey = BackpackTFAPIKey;
+			res.SteamAPIKey = SteamAPIKey;
+			res.DealsPriceDropThresholdListingCount = DealsPriceDropThresholdListingCount;
+			res.DealsPriceDropThresholdPriceBelow = DealsPriceDropThresholdPriceBelow;
+
+			return res;
 		}
 
 		public Settings()

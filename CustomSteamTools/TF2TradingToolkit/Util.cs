@@ -87,6 +87,18 @@ namespace TF2TradingToolkit
 			return b ? Visibility.Visible : Visibility.Collapsed;
 		}
 
+		public static bool IsValidDouble(this string str)
+		{
+			double buf;
+			return double.TryParse(str, out buf);
+		}
+
+		public static bool IsValidInt(this string str)
+		{
+			int buf;
+			return int.TryParse(str, out buf);
+		}
+
 		public static StackPanel GetTooltip(this DealsFilters filters)
 		{
 			StackPanel res = new StackPanel();

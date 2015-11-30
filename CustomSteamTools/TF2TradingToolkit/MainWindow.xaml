@@ -96,7 +96,7 @@
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
-        
+
         <v:BackpackView x:Name="BackpackView" />
       </TabItem>
       <TabItem x:Name="ClassifiedsTab"
@@ -113,7 +113,7 @@
                        FontWeight="SemiBold" />
           </StackPanel>
         </TabItem.Header>
-        
+
         <v:ClassifiedsView x:Name="ClassifiedsView" />
       </TabItem>
       <TabItem x:Name="RangeTab"
@@ -130,11 +130,11 @@
                        VerticalAlignment="Center" />
           </StackPanel>
         </TabItem.Header>
-        
+
         <v:RangeView x:Name="RangeView" />
       </TabItem>
     </TabControl>
-    
+
     <!--Side Buttons-->
     <StackPanel Orientation="Horizontal"
                 VerticalAlignment="Top"
@@ -166,7 +166,8 @@
       </Button>
       <Button x:Name="SettingsBtn"
               FontSize="14"
-              Margin="10,0">
+              Margin="10,0"
+              Click="SettingsBtn_Click">
         <StackPanel Orientation="Horizontal">
           <Image Source="assets/smallnflat_wrench-24x.png"
                  Width="16"
@@ -188,5 +189,12 @@
         </StackPanel>
       </Button>
     </StackPanel>
+
+    <!--<Grid x:Name="ExpanderGrid">
+      <Expander x:Name="SettingsFlyout"
+                Style="{StaticResource FlyoutExpanderStyle}"
+                ExpandDirection="Right">
+      </Expander>
+    </Grid>-->
   </Grid>
 </e:Window>

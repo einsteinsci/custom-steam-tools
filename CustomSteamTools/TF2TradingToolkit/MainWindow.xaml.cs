@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CustomSteamTools.Utils;
+using UltimateUtil;
+using UltimateUtil.UserInteraction;
 
 namespace TF2TradingToolkit
 {
@@ -20,6 +24,35 @@ namespace TF2TradingToolkit
 	/// </summary>
 	public partial class MainWindow : Elysium.Controls.Window
 	{
+		public sealed class VersatileNothingHandler : VersatileHandlerBase
+		{
+			public override double GetDouble(string prompt)
+			{
+				return 0;
+			}
+
+			public override string GetSelection(string prompt, IDictionary<string, object> options)
+			{
+				return "0";
+			}
+
+			public override string GetSelectionIgnorable(string prompt, IDictionary<string, object> options)
+			{
+				return null;
+			}
+
+			public override string GetString(string prompt)
+			{
+				return "";
+			}
+
+			public override void LogLine(string line, ConsoleColor color)
+			{ }
+
+			public override void LogPart(string text, ConsoleColor? color)
+			{ }
+		}
+
 		private InitWindow _initializerWindow;
 
 		public bool AutoExiting
@@ -28,6 +61,7 @@ namespace TF2TradingToolkit
 		public MainWindow()
 		{
 			InitializeComponent();
+			VersatileIO.SetHandler<VersatileNothingHandler>(false);
 		}
 
 		private void RefreshDropDownBtn_Click(object sender, RoutedEventArgs e)
@@ -55,6 +89,24 @@ namespace TF2TradingToolkit
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			Settings.Load();
+			if (Settings.Instance.HomeSteamID64.IsNullOrWhitespace() ||
+				Settings.Instance.BackpackTFAPIKey.IsNullOrWhitespace() ||
+				Settings.Instance.SteamAPIKey.IsNullOrWhitespace())
+			{
+				SettingsWindow sWindow = new SettingsWindow();
+				bool? res = sWindow.ShowDialog();
+				if (res != true)
+				{
+					AutoExiting = true;
+					Close();
+					return; // not sure if Close() is fake async or not
+				}
+
+				Settings.Instance = sWindow.Instance;
+				Settings.Instance.Save();
+			}
+
 			_initializerWindow = new InitWindow(false);
 			bool? loaded = _initializerWindow.ShowDialog();
 
@@ -62,6 +114,7 @@ namespace TF2TradingToolkit
 			{
 				AutoExiting = true;
 				Close();
+				return;
 			}
 
 			ItemsView.PostLoad(this);
@@ -128,6 +181,17 @@ namespace TF2TradingToolkit
 			else if (MainTabControl.SelectedIndex == CLASSIFIEDS_TAB_INDEX)
 			{
 				ClassifiedsView.ItemSearchBox.Focus();
+			}
+		}
+
+		private void SettingsBtn_Click(object sender, RoutedEventArgs e)
+		{
+			SettingsWindow window = new SettingsWindow();
+			bool? res = window.ShowDialog();
+			if (res == true)
+			{
+				Settings.Instance = window.Instance;
+				Settings.Instance.Save();
 			}
 		}
 	}
