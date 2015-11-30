@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="TF2TradingToolkit.View.ClassMultiSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TF2TradingToolkit.View"
+             xmlns:e="http://schemas.codeplex.com/elysium"
+             xmlns:ep="http://schemas.codeplex.com/elysium/params"
+             xmlns:ex="http://schemas.extra.com/ui"
+             ep:Design.Theme="Light"
+             ep:Manager.Theme="Light"
+             ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             mc:Ignorable="d"
+             d:DesignHeight="96"
+             d:DesignWidth="560">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+
+    <ToggleButton x:Name="ScoutBtn"
+                  Click="ScoutBtn_Click"
+                  Grid.Column="0"
+                  Grid.Row="0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/scout.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Scout" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="SoldierBtn"
+                  Click="SoldierBtn_Click"
+                  Grid.Column="1"
+                  Grid.Row="0"
+                  Margin="1,0,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/soldier.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Soldier" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="PryoBtn"
+                  Click="PryoBtn_Click"
+                  Grid.Column="2"
+                  Grid.Row="0"
+                  Margin="1,0,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/pyro.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Pyro" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="DemomanBtn"
+                  Click="DemomanBtn_Click"
+                  Grid.Column="0"
+                  Grid.Row="1"
+                  Margin="0,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/demo.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Demoman" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="HeavyBtn"
+                  Click="HeavyBtn_Click"
+                  Grid.Column="1"
+                  Grid.Row="1"
+                  Margin="1,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/heavy.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Heavy" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="EngineerBtn"
+                  Click="EngineerBtn_Click"
+                  Grid.Column="2"
+                  Grid.Row="1"
+                  Margin="1,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/engie.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Engineer" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="MedicBtn"
+                  Click="MedicBtn_Click"
+                  Grid.Column="0"
+                  Grid.Row="2"
+                  Margin="0,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/medic.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Medic" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="SniperBtn"
+                  Click="SniperBtn_Click"
+                  Grid.Column="1"
+                  Grid.Row="2"
+                  Margin="1,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/sniper.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Sniper" />
+      </StackPanel>
+    </ToggleButton>
+    <ToggleButton x:Name="SpyBtn"
+                  Click="SpyBtn_Click"
+                  Grid.Column="2"
+                  Grid.Row="2"
+                  Margin="1,1,0,0">
+      <StackPanel Orientation="Horizontal">
+        <Image Source="../assets/spy.png"
+               Margin="0,0,5,0" />
+        <TextBlock Text="Spy" />
+      </StackPanel>
+    </ToggleButton>
+  </Grid>
+</UserControl>

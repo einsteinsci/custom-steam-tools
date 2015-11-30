@@ -28,8 +28,8 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
       <Grid>
@@ -82,13 +82,8 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
       </Grid>
-      <ProgressBar x:Name="FriendLoadingBar"
-                   Grid.Row="3"
-                   Height="16"
-                   Margin="0,10,0,0"
-                   IsIndeterminate="True" />
       <ListBox x:Name="FriendsList"
-               Grid.Row="4"
+               Grid.Row="3"
                HorizontalContentAlignment="Stretch"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                SelectionChanged="FriendsList_SelectionChanged"
@@ -116,6 +111,11 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+      <ProgressBar x:Name="FriendLoadingBar"
+                   Grid.Row="4"
+                   Height="16"
+                   Margin="0,10,0,0"
+                   IsIndeterminate="True" />
     </Grid>
 
     <Grid Tag="BackpackDisplay"

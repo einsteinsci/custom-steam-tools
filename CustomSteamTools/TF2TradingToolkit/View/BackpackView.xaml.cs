@@ -30,7 +30,10 @@ namespace TF2TradingToolkit.View
 	/// </summary>
 	public partial class BackpackView : UserControl
 	{
-		public const bool FORCE_LOAD = false;
+		public const bool FORCE_LOAD = true;
+
+		public MainWindow OwnerWindow
+		{ get; private set; }
 
 		public ObservableCollection<PlayerViewModel> AvailablePlayers
 		{ get; private set; }
@@ -77,8 +80,10 @@ namespace TF2TradingToolkit.View
 			BackpackLoader.RunWorkerCompleted += BackpackLoader_RunWorkerCompleted;
 		}
 
-		public void PostLoad()
+		public void PostLoad(MainWindow owner)
 		{
+			OwnerWindow = owner;
+
 			foreach (Player p in DataManager.AllLoadedPlayers)
 			{
 				AvailablePlayers.Add(new PlayerViewModel(p));
@@ -86,6 +91,7 @@ namespace TF2TradingToolkit.View
 
 			SteamIDBox.Text = Settings.Instance.HomeSteamID64;
 			LoadFriends(Settings.Instance.HomeSteamID64);
+			BackpackTitleText.Text = "Backpack for " + Settings.Instance.SteamPersonaName;
 			BackpackBtn_Click(BackpackBtn, null);
 		}
 
@@ -95,11 +101,23 @@ namespace TF2TradingToolkit.View
 			FriendsLoader.RunWorkerAsync(steamid);
 		}
 
-		public void OpenBackpack(string steamid)
+		public void OpenBackpack(string steamid, bool forceUI = false)
 		{
 			if (ActivePlayer == null && steamid == null)
 			{
 				return;
+			}
+
+			if (forceUI)
+			{
+				if (steamid != null)
+				{
+					SteamIDBox.Text = steamid;
+				}
+				else
+				{
+					throw new ArgumentException("steamid cannot be null if forceUI is true.");
+				}
 			}
 
 			FriendLoadingBar.Visibility = Visibility.Visible;
@@ -134,13 +152,13 @@ namespace TF2TradingToolkit.View
 
 			BackpackItemsControl.Dispatcher.Invoke(() => {
 				BackpackPages.Clear();
-				BackpackPageControl newItems = new BackpackPageControl(CurrentBackpack, -1);
+				BackpackPageControl newItems = new BackpackPageControl(this, CurrentBackpack, -1);
 				newItems.Margin = new Thickness(5);
 				BackpackPages.Add(newItems);
 
 				for (int i = 0; i < CurrentBackpack.Pages.Length; i++)
 				{
-					BackpackPageControl bpc = new BackpackPageControl(CurrentBackpack, i);
+					BackpackPageControl bpc = new BackpackPageControl(this, CurrentBackpack, i);
 					bpc.Margin = new Thickness(5);
 					BackpackPages.Add(bpc);
 				}

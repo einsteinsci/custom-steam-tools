@@ -22,6 +22,8 @@
     <ContextMenu x:Key="ItemContextMenu">
       <MenuItem Header="Add to Calculator"
                 Click="CalcAddItem_Click" />
+      <MenuItem Header="Search Classifieds"
+                Click="SearchClassifiedsItem_Click" />
     </ContextMenu>
     <ContextMenu x:Key="CalcItemContextMenu">
       <MenuItem Header="Edit" />

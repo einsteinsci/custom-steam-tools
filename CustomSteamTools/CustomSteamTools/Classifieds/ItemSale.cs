@@ -16,6 +16,8 @@ namespace CustomSteamTools.Classifieds
 
 		public Item Item => Pricing.Item;
 
+		public Quality Quality => Pricing.Quality;
+
 		public List<ClassifiedsListing> Sellers
 		{ get; private set; }
 

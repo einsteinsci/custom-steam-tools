@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CustomSteamTools.Backpacks;
 using TF2TradingToolkit.ViewModel;
+using UltimateUtil;
 
 namespace TF2TradingToolkit.View
 {
@@ -26,6 +27,9 @@ namespace TF2TradingToolkit.View
 	/// </summary>
 	public partial class BackpackPageControl : UserControl
 	{
+		public BackpackView OwnerView
+		{ get; private set; }
+
 		public ItemInstance[] Items
 		{ get; private set; }
 
@@ -35,9 +39,10 @@ namespace TF2TradingToolkit.View
 		public ObservableCollection<ItemSlotViewModel> ItemsVM
 		{ get; private set; }
 
-		public BackpackPageControl(Backpack backpack, int page)
+		public BackpackPageControl(BackpackView view, Backpack backpack, int page)
 		{
 			InitializeComponent();
+			OwnerView = view;
 
 			PageNum = page;
 			if (PageNum == -1)
@@ -56,6 +61,34 @@ namespace TF2TradingToolkit.View
 			}
 
 			PageControl.ItemsSource = ItemsVM;
+		}
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (PageNum == -1 && Items.HasItems())
+			{
+				PageNumTxt.Text = "New Items";
+			}
+			else if (PageNum == -1)
+			{
+				PageNumTxt.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				PageNumTxt.Text = "Page " + (PageNum + 1).ToString();
+			}
+		}
+
+		private void SlotShowClassifiedsItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			ItemInstance inst = item.Tag as ItemInstance;
+
+			if (inst != null)
+			{
+				OwnerView.OwnerWindow.MainTabControl.SelectedIndex = 2;
+				OwnerView.OwnerWindow.ClassifiedsView.ShowClassifieds(inst.ToPriceInfo());
+			}
 		}
 	}
 }

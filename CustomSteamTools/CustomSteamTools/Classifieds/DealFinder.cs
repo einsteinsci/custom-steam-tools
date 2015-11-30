@@ -26,12 +26,12 @@ namespace CustomSteamTools.Classifieds
 		public static event ProgressChangedEventHandler OnProgressChanged;
 
 		public static FlaggedResult<List<ItemSale>, KeyValuePair<ItemSale, string>> FindDealsFlagged(
-			string steamid, Filters filters, bool beep = false)
+			string steamid, DealsFilters filters, bool beep = false)
 		{
 			if (filters == null)
 			{
 				VersatileIO.Warning("Deals filters object was null. Setting to default.");
-				filters = new Filters();
+				filters = new DealsFilters();
 			}
 			
 			VersatileIO.Info("Filters: " + filters.ToString());
@@ -59,7 +59,7 @@ namespace CustomSteamTools.Classifieds
 
 			return results;
 		}
-		public static List<ItemSale> FindDeals(string steamid, Filters filters, bool beep = false)
+		public static List<ItemSale> FindDeals(string steamid, DealsFilters filters, bool beep = false)
 		{
 			return FindDealsFlagged(steamid, filters, beep).Result;
 		}
@@ -115,7 +115,7 @@ namespace CustomSteamTools.Classifieds
 			List<Quality> qualitiesAllowed, List<ItemSlotPlain> slotsAllowed,
 			bool? craftable = true, bool? halloween = null, bool? botkiller = null)
 		{
-			Filters deals = new Filters()
+			DealsFilters deals = new DealsFilters()
 			{
 				Qualities = qualitiesAllowed,
 				Slots = slotsAllowed,
@@ -127,7 +127,7 @@ namespace CustomSteamTools.Classifieds
 			return FindPricingsInRange(range, deals);
 		}
 
-		public static List<ItemPricing> FindPricingsInRange(PriceRange range, Filters filters)
+		public static List<ItemPricing> FindPricingsInRange(PriceRange range, DealsFilters filters)
 		{
 			List<ItemPricing> results = new List<ItemPricing>();
 

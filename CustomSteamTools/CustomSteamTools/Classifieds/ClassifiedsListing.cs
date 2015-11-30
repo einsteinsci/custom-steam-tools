@@ -51,13 +51,16 @@ namespace CustomSteamTools.Classifieds
 			ItemInstance = inst;
 			Price = price;
 			ListerSteamID64 = steamID;
-			ListerNickname = nickname;
-			BuyoutOnly = buyoutOnly;
-
-			Comment = comment;
-			if (!Comment.IsNullOrWhitespace())
+			if (nickname != null)
 			{
-				Comment = WebUtility.HtmlDecode(Comment);
+				ListerNickname = WebUtility.HtmlDecode(nickname);
+			}
+
+			BuyoutOnly = buyoutOnly;
+			
+			if (!comment.IsNullOrWhitespace())
+			{
+				Comment = WebUtility.HtmlDecode(comment);
 			}
 
 			OrderType = order;

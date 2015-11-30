@@ -18,7 +18,7 @@ namespace CustomSteamTools.Commands
 
 		public string RegistryName => "range";
 
-		public string Syntax => "range {priceMinRef} {priceMaxRef} " + Filters.GetSyntax(false);
+		public string Syntax => "range {priceMinRef} {priceMaxRef} " + DealsFilters.GetSyntax(false);
 
 		public void RunCommand(CommandHandler sender, List<string> args)
 		{
@@ -40,7 +40,7 @@ namespace CustomSteamTools.Commands
 			}
 			PriceRange range = new PriceRange(min, max);
 
-			Filters filters = new Filters();
+			DealsFilters filters = new DealsFilters();
 			for (int i = 2; i < args.Count; i++)
 			{
 				filters.HandleArg(args[i]);
@@ -57,7 +57,7 @@ namespace CustomSteamTools.Commands
 			VersatileIO.Info("{0} pricings matching filters [{1}].", res.Count, filters.ToString());
 		}
 
-		public static List<ItemPricing> GetInRange(PriceRange range, Filters filters)
+		public static List<ItemPricing> GetInRange(PriceRange range, DealsFilters filters)
 		{
 			return DataManager.PriceData.Prices.FindAll((p) => filters.MatchesPricing(p) && range.Contains(p.Pricing));
 		}

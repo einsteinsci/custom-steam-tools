@@ -19,14 +19,14 @@ namespace CustomSteamTools.Commands
 
 		public string RegistryName => "deals";
 
-		public string Syntax => "deals [steamID64] " + Filters.GetSyntax(true);
+		public string Syntax => "deals [steamID64] " + DealsFilters.GetSyntax(true);
 
 		public static bool DoBeepOnFinished
 		{ get; set; }
 
 		public void RunCommand(CommandHandler sender, List<string> args)
 		{
-			Filters filters = new Filters();
+			DealsFilters filters = new DealsFilters();
 
 			string steamid = Settings.Instance.HomeSteamID64;
 			

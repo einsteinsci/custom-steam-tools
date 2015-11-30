@@ -103,12 +103,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MultiSelectorEventArgs.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ViewModel\ClassifiedsListingViewModel.cs" />
+    <Compile Include="ViewModel\DealExclusionViewModel.cs" />
     <Compile Include="ViewModel\ItemSlotViewModel.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\PlayerViewModel.cs" />
     <Compile Include="ViewModel\PricedViewModel.cs" />
+    <Compile Include="ViewModel\SaleViewModel.cs" />
     <Compile Include="ViewModel\UnusualViewModel.cs" />
     <Compile Include="View\BackpackPageControl.xaml.cs">
       <DependentUpon>BackpackPageControl.xaml</DependentUpon>
@@ -119,6 +122,9 @@
     <Compile Include="View\ClassifiedsView.xaml.cs">
       <DependentUpon>ClassifiedsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ClassMultiSelector.xaml.cs">
+      <DependentUpon>ClassMultiSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ItemsView.xaml.cs">
       <DependentUpon>ItemsView.xaml</DependentUpon>
     </Compile>
@@ -127,6 +133,9 @@
     </Compile>
     <Compile Include="View\QualitySelector.xaml.cs">
       <DependentUpon>QualitySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SlotMultiSelector.xaml.cs">
+      <DependentUpon>SlotMultiSelector.xaml</DependentUpon>
     </Compile>
     <Page Include="InitWindow.xaml">
       <SubType>Designer</SubType>
@@ -173,6 +182,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ClassMultiSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ItemsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +195,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\QualitySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SlotMultiSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -214,7 +231,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="assets\demo.png" />
+    <Resource Include="assets\engie.png" />
+    <Resource Include="assets\heavy.png" />
+    <Resource Include="assets\medic.png" />
+    <Resource Include="assets\pyro.png" />
+    <Resource Include="assets\scout.png" />
+    <Resource Include="assets\sniper.png" />
+    <Resource Include="assets\soldier.png" />
+    <Resource Include="assets\spy.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CustomSteamTools\CustomSteamTools.csproj">
       <Project>{41b19086-bc2a-4035-bb99-e17dff7567dc}</Project>

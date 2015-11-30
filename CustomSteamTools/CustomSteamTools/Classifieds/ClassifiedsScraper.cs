@@ -13,6 +13,7 @@ using UltimateUtil;
 using HtmlAgilityPack;
 using UltimateUtil.UserInteraction;
 using CustomSteamTools.Backpacks;
+using CustomSteamTools.Market;
 
 namespace CustomSteamTools.Classifieds
 {
@@ -71,6 +72,8 @@ namespace CustomSteamTools.Classifieds
 						continue;
 					}
 
+					Item foundItem = item;
+
 					string sellItemName = sellData.Attributes["data-name"].Value; // not really necessary
 					string sellTradable = sellData.Attributes["data-tradable"]?.Value; // or this
 					string sellCraftable = sellData.Attributes["data-craftable"]?.Value; // or this
@@ -86,6 +89,16 @@ namespace CustomSteamTools.Classifieds
 					string sellCustomName = sellData.Attributes["data-custom-name"]?.Value;
 					string sellCustomDesc = sellData.Attributes["data-custom-desc"]?.Value;
 					string sellBuyoutOnly = sellData.Attributes["data-listing-buyout"]?.Value ?? "0";
+					string sellMarketName = sellData.Attributes["data-market-name"]?.Value;
+
+					if (sellMarketName != null)
+					{
+						MarketPricing mp = DataManager.MarketPrices.GetPricing(sellMarketName);
+						if (mp != null && mp.GunMettleSkin != null)
+						{
+							foundItem = mp.GunMettleSkin.GetItemForm(DataManager.Schema);
+						}
+					}
 
 					ulong id = ulong.Parse(sellID); // really funky syntax down here -v
 					ulong? originalID = sellOriginalID != null ? new ulong?(ulong.Parse(sellOriginalID)) : null;
@@ -93,7 +106,7 @@ namespace CustomSteamTools.Classifieds
 					int level = int.Parse(sellLevel);
 					bool buyoutOnly = BooleanUtil.ParseLoose(sellBuyoutOnly);
 
-					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
+					ItemInstance instance = new ItemInstance(foundItem, id, level, quality, craftable,
 						sellCustomName, sellCustomDesc, originalID, tradable);
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, 
 						sellerNickname, sellOfferUrl, sellComment, buyoutOnly, OrderType.Sell);
@@ -130,6 +143,8 @@ namespace CustomSteamTools.Classifieds
 						continue;
 					}
 
+					Item foundItem = item;
+
 					string buyItemName = buyData.Attributes["data-name"].Value; // not really necessary
 					string buyTradable = buyData.Attributes["data-tradable"]?.Value; // or this
 					string buyCraftable = buyData.Attributes["data-craftable"]?.Value; // or this
@@ -145,6 +160,16 @@ namespace CustomSteamTools.Classifieds
 					string buyCustomName = buyData.Attributes["data-custom-name"]?.Value;
 					string buyCustomDesc = buyData.Attributes["data-custom-desc"]?.Value;
 					string buyBuyoutOnly = buyData.Attributes["data-listing-buyout"]?.Value ?? "0";
+					string buyMarketName = buyData.Attributes["data-market-name"]?.Value;
+
+					if (buyMarketName != null)
+					{
+						MarketPricing mp = DataManager.MarketPrices.GetPricing(buyMarketName);
+						if (mp != null && mp.GunMettleSkin != null)
+						{
+							foundItem = mp.GunMettleSkin.GetItemForm(DataManager.Schema);
+						}
+					}
 
 					ulong id = ulong.Parse(buyID == "" ? "0" : buyID); // really funky syntax down here -v
 					ulong? originalID = buyOriginalID != null ? new ulong?(ulong.Parse(buyOriginalID == "" ? "0" : buyOriginalID)) : null;
@@ -152,7 +177,7 @@ namespace CustomSteamTools.Classifieds
 					int level = int.Parse(buyLevel);
 					bool buyoutOnly = BooleanUtil.ParseLoose(buyBuyoutOnly);
 
-					ItemInstance instance = new ItemInstance(item, id, level, quality, craftable,
+					ItemInstance instance = new ItemInstance(foundItem, id, level, quality, craftable,
 						buyCustomName, buyCustomDesc, originalID, tradable);
 					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname, 
 						buyOfferUrl, buyComment, buyoutOnly, OrderType.Buy);

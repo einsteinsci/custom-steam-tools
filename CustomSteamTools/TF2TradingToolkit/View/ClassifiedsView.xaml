@@ -24,7 +24,7 @@
           Margin="10">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
-        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -45,7 +45,8 @@
                  BorderThickness="1"
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 SelectionChanged="ItemSearchResultList_SelectionChanged">
+                 SelectionChanged="ItemSearchResultList_SelectionChanged"
+                 Height="208">
           <ListBox.ItemTemplate>
             <DataTemplate>
               <Grid Margin="5,0"
@@ -105,7 +106,6 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock x:Name="ListedPriceTxt"
-                   Text="Listed Price: 0 ref"
                    FontSize="16"
                    VerticalAlignment="Center" />
         <Button x:Name="ClassifiedsSearchBtn"
@@ -115,8 +115,8 @@
                 VerticalAlignment="Center"
                 Click="ClassifiedsSearchBtn_Click" />
       </Grid>
-      
-      <ProgressBar x:Name="ClassifiedsProgress" 
+
+      <ProgressBar x:Name="ClassifiedsProgress"
                    Grid.Row="3"
                    Height="16"
                    Margin="0,10,0,0"
@@ -137,11 +137,19 @@
             <ListBox x:Name="SellersList"
                      HorizontalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     Margin="0,0,0,10"
+                     Margin="0,0,5,10"
                      BorderThickness="1">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <Grid ToolTip="{Binding Tooltip}">
+                    <Grid.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="Show seller's Backpack"
+                                  Tag="{Binding Listing}"
+                                  Click="ClassifiedsShowBackpack_Click" />
+                      </ContextMenu>
+                    </Grid.ContextMenu>
+                    
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="Auto" />
                       <ColumnDefinition Width="*" />
@@ -161,7 +169,8 @@
                             Tag="{Binding OfferLink}"
                             Visibility="{Binding ShowOfferBtn}"
                             Grid.Column="2"
-                            Click="Classifieds_OfferBtn_Click" />
+                            Click="Classifieds_OfferBtn_Click"
+                            BorderBrush="White" />
                   </Grid>
                 </DataTemplate>
               </ListBox.ItemTemplate>
@@ -173,7 +182,7 @@
               </Grid.ColumnDefinitions>
 
               <TextBlock x:Name="BestSellerText"
-                         Text="Lowest Price: No results found"
+                         Text="No sellers found."
                          FontSize="20" />
               <Button x:Name="ClassifiedsBestSellerBtn"
                       Content="Offer"
@@ -186,6 +195,14 @@
         <TabItem x:Name="BuyersTab"
                  Header="Buyers">
           <Grid>
+            <Grid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Show buyer's Backpack"
+                          Tag="{Binding Listing}"
+                          Click="ClassifiedsShowBackpack_Click" />
+              </ContextMenu>
+            </Grid.ContextMenu>
+
             <Grid.RowDefinitions>
               <RowDefinition Height="*" />
               <RowDefinition Height="Auto" />
@@ -194,7 +211,7 @@
             <ListBox x:Name="BuyersList"
                      HorizontalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     Margin="0,0,0,5"
+                     Margin="0,0,5,10"
                      BorderThickness="1">
               <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -217,7 +234,8 @@
                             Tag="{Binding OfferLink}"
                             Visibility="{Binding ShowOfferBtn}"
                             Grid.Column="2"
-                            Click="Classifieds_OfferBtn_Click" />
+                            Click="Classifieds_OfferBtn_Click"
+                            BorderBrush="White" />
                   </Grid>
                 </DataTemplate>
               </ListBox.ItemTemplate>
@@ -229,7 +247,7 @@
               </Grid.ColumnDefinitions>
 
               <TextBlock x:Name="BestBuyerText"
-                         Text="Highest Price: No results found"
+                         Text="No buyers found."
                          FontSize="20" />
               <Button x:Name="ClassifiedsBestBuyerBtn"
                       Content="Offer"
@@ -240,6 +258,271 @@
           </Grid>
         </TabItem>
       </TabControl>
+    </Grid>
+
+    <Grid Tag="Deals"
+          Grid.Column="1"
+          Margin="10">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <TextBlock Text="Deals"
+                 FontSize="24"
+                 Margin="0,0,0,10" />
+      <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Qualities:"
+                   FontSize="16"
+                   VerticalAlignment="Center"
+                   Margin="10,0,0,0" />
+        <TextBlock Text="Slots:"
+                   FontSize="16"
+                   VerticalAlignment="Center"
+                   Grid.Row="1"
+                   Margin="10,0,0,0" />
+        <TextBlock Text="Classes:"
+                   FontSize="16"
+                   VerticalAlignment="Top"
+                   Grid.Row="2"
+                   Margin="10,5,0,0" />
+
+        <local:QualitySelector x:Name="DealsQualities"
+                               AllowMultiple="True"
+                               MultiSelectionChanged="DealsQualities_MultiSelectionChanged"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center" />
+        <local:SlotMultiSelector x:Name="DealsSlots"
+                                 SelectionChanged="DealsSlots_SelectionChanged"
+                                 Grid.Column="1"
+                                 Grid.Row="1"
+                                 Margin="0,10" />
+        <local:ClassMultiSelector x:Name="DealsClasses"
+                                  SelectionChanged="DealsClasses_SelectionChanged"
+                                  Grid.Column="1"
+                                  Grid.Row="2" />
+      </Grid>
+      <Grid Grid.Row="2"
+            Margin="10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <CheckBox x:Name="DealsCraftableCheck"
+                  Content="Craftable"
+                  ToolTip="Show craftable items only"
+                  IsThreeState="True"
+                  IsChecked="True"
+                  Click="DealsCraftableCheck_Click" />
+        <CheckBox x:Name="DealsHalloweenCheck"
+                  Content="Halloween"
+                  ToolTip="Include halloween-only items"
+                  IsThreeState="True"
+                  IsChecked="{x:Null}"
+                  Grid.Column="1"
+                  Click="DealsHalloweenCheck_Click" />
+        <CheckBox x:Name="DealsBotkillerCheck"
+                  Content="Botkillers"
+                  ToolTip="Include botkillers"
+                  IsThreeState="True"
+                  IsChecked="{x:Null}"
+                  Grid.Column="2"
+                  Click="DealsBotkillerCheck_Click" />
+        <CheckBox x:Name="DealsAllClassCheck"
+                  Content="All-Class"
+                  ToolTip="Show all-class items"
+                  IsChecked="True"
+                  Grid.Column="3"
+                  Click="DealsAllClassCheck_Click" />
+      </Grid>
+
+      <Grid Grid.Row="3"
+            Margin="10,0,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="96" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Min Profit:"
+                   FontSize="16"
+                   VerticalAlignment="Center" />
+        <TextBox x:Name="DealsMinProfitBox"
+                 Text="0.33"
+                 BorderThickness="1"
+                 Grid.Column="1"
+                 Margin="10,0"
+                 HorizontalContentAlignment="Right"
+                 FontSize="16"
+                 BorderBrush="Gray"
+                 TextChanged="DealsMinProfitBox_TextChanged" />
+        <TextBlock Text="ref"
+                   Grid.Column="2"
+                   FontSize="16"
+                   VerticalAlignment="Center" />
+        <Button x:Name="DealsSearchBtn"
+                Content="Search Deals"
+                Padding="20,6"
+                Grid.Column="4"
+                Click="DealsSearchBtn_Click" />
+      </Grid>
+
+      <TabControl Grid.Row="4"
+                  Margin="0,10">
+        <TabItem x:Name="DealsResultsTab"
+                 Header="Results">
+          <ListBox x:Name="DealsResultsList"
+                   HorizontalContentAlignment="Stretch"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                   BorderThickness="1">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid ToolTipService.ShowDuration="15000">
+                  <Grid.ToolTip>
+                    <StackPanel Orientation="Horizontal">
+                      <Image Source="{Binding ImageURL}"
+                             Width="96"
+                             Height="96"
+                             Margin="10,0" />
+                      <Label Content="{Binding Tooltip}" />
+                    </StackPanel>
+                  </Grid.ToolTip>
+
+                  <Grid.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Show In Classifieds"
+                                Click="DealsShowClassifiedsItem_Click"
+                                Tag="{Binding Sale}" />
+                      <MenuItem Header="Show Best Seller's Backpack"
+                                Tag="{Binding Sale}"
+                                Click="DealsShowBackpack_Click" />
+                    </ContextMenu>
+                  </Grid.ContextMenu>
+
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+
+                  <Image Source="{Binding ImageURL}"
+                         Width="24"
+                         Height="24"
+                         Margin="10,0" />
+                  <TextBlock Text="[QUICK]"
+                             Foreground="Green"
+                             FontSize="16"
+                             VerticalAlignment="Center"
+                             Visibility="{Binding ShowQuickBuyLabel}"
+                             Grid.Column="1" />
+                  <TextBlock Text="{Binding ItemString}"
+                             Foreground="{Binding QualityBrush}"
+                             FontWeight="SemiBold"
+                             FontSize="16"
+                             VerticalAlignment="Center"
+                             Grid.Column="2" />
+                  <TextBlock Text="{Binding PriceString}"
+                             FontSize="14"
+                             Margin="10,0"
+                             VerticalAlignment="Center"
+                             Grid.Column="3" />
+                  <Button Tag="{Binding OfferURL}"
+                          Content="Offer"
+                          BorderBrush="White"
+                          VerticalAlignment="Center"
+                          Margin="10,0"
+                          Visibility="{Binding ShowOfferBtn}"
+                          Grid.Column="4"
+                          Click="Deals_OfferBtn_Click" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </TabItem>
+        <TabItem x:Name="DealsExcludedTab"
+                 Header="Excluded">
+          <ListBox x:Name="DealsExcludedList"
+                   HorizontalContentAlignment="Stretch"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                   BorderThickness="1">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid ToolTipService.ShowDuration="15000">
+                  <Grid.ToolTip>
+                    <StackPanel Orientation="Horizontal">
+                      <Image Source="{Binding ImageURL}"
+                             Width="96"
+                             Height="96"
+                             Margin="10,0" />
+                      <Label Content="{Binding Tooltip}" />
+                    </StackPanel>
+                  </Grid.ToolTip>
+                  
+                  <Grid.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Show In Classifieds"
+                                Click="DealsShowClassifiedsItem_Click"
+                                Tag="{Binding Excluded}" />
+                      <MenuItem Header="Show Best Seller's Backpack"
+                                Tag="{Binding Excluded}"
+                                Click="DealsShowBackpack_Click" />
+                    </ContextMenu>
+                  </Grid.ContextMenu>
+
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+
+                  <Image Source="{Binding ImageURL}"
+                         Width="24"
+                         Height="24"
+                         Margin="10,0" />
+                  <TextBlock Text="{Binding ItemString}"
+                             Foreground="{Binding QualityBrush}"
+                             FontWeight="SemiBold"
+                             FontSize="16"
+                             VerticalAlignment="Center"
+                             Grid.Column="1" />
+                  <TextBlock Text="{Binding ReasonReadable}"
+                             Margin="10,0"
+                             VerticalAlignment="Center"
+                             TextWrapping="Wrap"
+                             Grid.Column="3" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </TabItem>
+      </TabControl>
+
+      <ProgressBar x:Name="DealsProgress"
+                   Height="16"
+                   Visibility="Collapsed"
+                   Grid.Row="5" />
     </Grid>
   </Grid>
 </UserControl>

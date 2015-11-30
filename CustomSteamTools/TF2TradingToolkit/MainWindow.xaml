@@ -24,6 +24,9 @@
           Loaded="Window_Loaded"
           MinWidth="1415"
           MinHeight="768">
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo x:Name="ItemInfo" />
+  </Window.TaskbarItemInfo>
   <Window.Resources>
     <ContextMenu x:Key="K_RefreshMenu"
                  ep:Manager.Theme="Light">

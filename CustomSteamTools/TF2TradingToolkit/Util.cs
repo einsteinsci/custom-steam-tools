@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using CustomSteamTools.Schema;
 
@@ -19,7 +20,7 @@ namespace TF2TradingToolkit
 			case Quality.Genuine:
 				return Colors.Green;
 			case Quality.Vintage:
-				return Colors.Navy;
+				return Colors.CornflowerBlue;
 			case Quality.Unusual:
 				return Colors.MediumPurple;
 			case Quality.Unique:
@@ -76,6 +77,11 @@ namespace TF2TradingToolkit
 		public static void OpenLink(string url)
 		{
 			System.Diagnostics.Process.Start(url);
+		}
+
+		public static Visibility ToVisibility(this bool b)
+		{
+			return b ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 }

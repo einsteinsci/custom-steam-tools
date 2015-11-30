@@ -10,7 +10,7 @@ using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Classifieds
 {
-	public class Filters
+	public class DealsFilters
 	{
 		public List<Quality> Qualities
 		{ get; set; }
@@ -36,7 +36,7 @@ namespace CustomSteamTools.Classifieds
 		public bool AllowAllClass
 		{ get; set; }
 
-		public Filters()
+		public DealsFilters()
 		{
 			Craftable = true;
 			AllowAllClass = true;

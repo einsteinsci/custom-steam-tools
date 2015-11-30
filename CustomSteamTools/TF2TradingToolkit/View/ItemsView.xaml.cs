@@ -27,6 +27,9 @@ namespace TF2TradingToolkit.View
 	/// </summary>
 	public partial class ItemsView : UserControl
 	{
+		public MainWindow OwnerWindow
+		{ get; private set; }
+
 		public sealed class DeleteCalcCommand : ICommand
 		{
 			public ItemsView View
@@ -263,9 +266,11 @@ namespace TF2TradingToolkit.View
 			RefreshPriceLabels();
 		}
 
-		public void PostLoad()
+		public void PostLoad(MainWindow window)
 		{
 			_loaded = true;
+
+			OwnerWindow = window;
 
 			ItemSearchBox.Focus();
 			ItemSearchBox_TextChanged(null, null);
@@ -442,6 +447,12 @@ namespace TF2TradingToolkit.View
 		private void CalcRemoveBtn_Click(object sender, RoutedEventArgs e)
 		{
 			DeleteCalcCmd.Execute(null);
+		}
+
+		private void SearchClassifiedsItem_Click(object sender, RoutedEventArgs e)
+		{
+			OwnerWindow.MainTabControl.SelectedIndex = 2;
+			OwnerWindow.ClassifiedsView.ShowClassifieds(Info);
 		}
 	}
 }

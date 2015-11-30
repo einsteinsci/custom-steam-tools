@@ -54,6 +54,8 @@ namespace TF2TradingToolkit.View
 
 		public event EventHandler<Quality> QualityChanged;
 
+		public event MultiQualitySelectorEventHandler MultiSelectionChanged;
+
 		public void UpdateQualities()
 		{
 			for (Quality q = Quality.Stock; q <= Quality.Decorated; q++)
@@ -72,6 +74,14 @@ namespace TF2TradingToolkit.View
 			SelectedQualities = new ObservableCollection<Quality>();
 
 			InitializeComponent();
+		}
+
+		private void _fireMultiSelectionChanged(Quality q, SelectorActionType t)
+		{
+			if (MultiSelectionChanged != null)
+			{
+				MultiSelectionChanged(this, new MultiQualitySelectorEventArgs(q, t));
+			}
 		}
 
 		private ToggleButton _getButtonFromQuality(Quality q)
@@ -183,11 +193,13 @@ namespace TF2TradingToolkit.View
 				{
 					SelectedQualities.Remove(q);
 					UpdateQualities();
+					_fireMultiSelectionChanged(q, SelectorActionType.Remove);
 				}
 				else
 				{
 					SelectedQualities.Add(q);
 					UpdateQualities();
+					_fireMultiSelectionChanged(q, SelectorActionType.Add);
 				}
 			}
 			else
@@ -233,6 +245,12 @@ namespace TF2TradingToolkit.View
 
 		public void SelectFirstAvailable()
 		{
+			if (AllowMultiple)
+			{
+				SelectedQualities.Clear();
+				UpdateQualities();
+			}
+
 			if (AvailableQualities.IsNullOrEmpty())
 			{
 				SelectedQuality = Quality.Unique;

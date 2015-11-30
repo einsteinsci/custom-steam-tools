@@ -14,11 +14,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Shell;
 using CustomSteamTools;
 using CustomSteamTools.Classifieds;
 using CustomSteamTools.Commands;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Schema;
+using CustomSteamTools.Utils;
 using TF2TradingToolkit.ViewModel;
 using UltimateUtil;
 
@@ -29,6 +31,9 @@ namespace TF2TradingToolkit.View
 	/// </summary>
 	public partial class ClassifiedsView : UserControl
 	{
+		public MainWindow OwnerWindow
+		{ get; private set; }
+
 		public ItemViewModel ActiveItem => ItemSearchResultList.SelectedItem as ItemViewModel;
 
 		public ItemPriceInfo Info
@@ -60,6 +65,34 @@ namespace TF2TradingToolkit.View
 		public BackgroundWorker ClassifiedsLoader
 		{ get; private set; }
 
+		public DealsFilters Filters
+		{ get; private set; }
+
+		public ObservableCollection<SaleViewModel> DealsResults
+		{ get; private set; }
+
+		public ObservableCollection<DealExclusionViewModel> DealsExcluded
+		{ get; private set; }
+
+		public bool IsMinProfitValid
+		{
+			get
+			{
+				if (!_loaded)
+				{
+					return true;
+				}
+
+				double buf;
+				return double.TryParse(DealsMinProfitBox.Text, out buf);
+			}
+		}
+
+		public Brush MinProfitBorder => new SolidColorBrush(IsMinProfitValid ? Colors.Gray : Colors.Red);
+
+		public BackgroundWorker DealsLoader
+		{ get; private set; }
+
 		private bool _loaded = false;
 		private bool _changingQuality = false;
 
@@ -79,14 +112,61 @@ namespace TF2TradingToolkit.View
 
 			Buyers = new ObservableCollection<ClassifiedsListingViewModel>();
 			BuyersList.ItemsSource = Buyers;
+
+			Filters = new DealsFilters();
+			Filters.Qualities.Add(Quality.Unique);
+
+			DealsLoader = new BackgroundWorker();
+			DealsLoader.WorkerReportsProgress = true;
+			DealsLoader.DoWork += DealsLoader_DoWork;
+			DealsLoader.RunWorkerCompleted += DealsLoader_RunWorkerCompleted;
+			DealsLoader.ProgressChanged += DealsLoader_ProgressChanged;
+
+			DealFinder.OnProgressChanged += DealFinder_OnProgressChanged;
+
+			DealsResults = new ObservableCollection<SaleViewModel>();
+			DealsResultsList.ItemsSource = DealsResults;
+
+			DealsExcluded = new ObservableCollection<DealExclusionViewModel>();
+			DealsExcludedList.ItemsSource = DealsExcluded;
 		}
 
-		public void PostLoad()
+		public void PostLoad(MainWindow window)
 		{
 			_loaded = true;
 
+			OwnerWindow = window;
+
 			ItemSearchBox.Focus();
 			ItemSearchBox_TextChanged(ItemSearchBox, null);
+
+			if (IsMinProfitValid)
+			{
+				double minProfit = double.Parse(DealsMinProfitBox.Text);
+				Filters.DealsMinProfit = new Price(minProfit);
+			}
+
+			_updateDealsFiltersTooltip();
+		}
+
+		public void ShowClassifieds(ClassifiedsListing listing)
+		{
+			ItemPriceInfo buf = new ItemPriceInfo(listing.ItemInstance);
+			ShowClassifieds(buf);
+		}
+		public void ShowClassifieds(ItemPriceInfo info)
+		{
+			ItemSearchBox.Text = info.Item.ImproperName; // triggers TextChanged event
+			ClassifiedsQualities.SelectedQuality = info.Quality; // triggers QualityChanged event
+			ClassifiedsCraftableCheck.IsChecked = info.Craftable;
+			ClassifiedsCraftableCheck_Click(ClassifiedsCraftableCheck, null); // must be manually triggered
+			ClassifiedsTradableCheck.IsChecked = info.Tradable;
+			ClassifiedsTradableCheck_Click(ClassifiedsTradableCheck, null); // must be manually triggered
+			ClassifiedsAustraliumCheck.IsChecked = info.Australium;
+			ClassifiedsAustraliumCheck_Click(ClassifiedsAustraliumCheck, null); // must be manually triggered
+
+			// And...SEARCH!
+			ClassifiedsSearchBtn_Click(ClassifiedsSearchBtn, null);
 		}
 
 		public void RefreshPriceLabel()
@@ -142,6 +222,17 @@ namespace TF2TradingToolkit.View
 			}
 		}
 
+		private void _updateDealsFiltersTooltip()
+		{
+			if (!_loaded)
+			{
+				return;
+			}
+
+			string s = Filters.ToString();
+			DealsSearchBtn.ToolTip = "Filters: { " + s + " }";
+		}
+
 		private void ClassifiedsLoader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			ClassifiedsProgress.Visibility = Visibility.Collapsed;
@@ -192,7 +283,7 @@ namespace TF2TradingToolkit.View
 			{
 				BestSeller = null;
 				BestSellerText.Dispatcher.Invoke(() => {
-					BestSellerText.Text = "No buyers found.";
+					BestSellerText.Text = "No sellers found.";
 					BestSellerText.ToolTip = null;
 				});
 			}
@@ -238,6 +329,71 @@ namespace TF2TradingToolkit.View
 			});
 			ClassifiedsBestBuyerBtn.Dispatcher.Invoke(() => {
 				ClassifiedsBestBuyerBtn.IsEnabled = Buyers.HasItems();
+			});
+		}
+
+		private void DealsLoader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			DealsProgress.Value = 100;
+			DealsProgress.Visibility = Visibility.Collapsed;
+			OwnerWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+		}
+
+		private void DealsLoader_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			int percent = e.ProgressPercentage;
+			DealsProgress.Value = percent;
+			OwnerWindow.TaskbarItemInfo.ProgressValue = percent / 100.0;
+
+			List<ItemSale> sales = e.UserState as List<ItemSale>;
+
+			DealsResults.Clear();
+			foreach (ItemSale s in sales)
+			{
+				SaleViewModel vm = new SaleViewModel(s);
+				DealsResults.Add(vm);
+			}
+
+			if (DealsResults.HasItems())
+			{
+				SaleViewModel last = DealsResults.Last();
+				DealsResultsList.ScrollIntoView(last);
+			}
+		}
+
+		private void DealFinder_OnProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			DealsLoader.ReportProgress(e.ProgressPercentage, e.UserState);
+		}
+
+		private void DealsLoader_DoWork(object sender, DoWorkEventArgs e)
+		{
+			DealsFilters filters = e.Argument as DealsFilters;
+
+			var flagged = DealFinder.FindDealsFlagged(Settings.Instance.HomeSteamID64, filters);
+
+			List<ItemSale> results = new List<ItemSale>(flagged.Result);
+			results.Sort((a, b) => a.Profit.TotalRefined.CompareTo(b.Profit.TotalRefined));
+
+			var excluded = flagged.Flags;
+			excluded.Sort((a, b) => a.Value.CompareTo(b.Value));
+
+			DealsResultsList.Dispatcher.Invoke(() => {
+				DealsResults.Clear();
+				foreach (ItemSale s in results)
+				{
+					SaleViewModel vm = new SaleViewModel(s);
+					DealsResults.Add(vm);
+				}
+			});
+
+			DealsExcludedList.Dispatcher.Invoke(() => {
+				DealsExcluded.Clear();
+				foreach (var kvp in excluded)
+				{
+					DealExclusionViewModel vm = new DealExclusionViewModel(kvp.Key, kvp.Value);
+					DealsExcluded.Add(vm);
+				}
 			});
 		}
 
@@ -409,11 +565,177 @@ namespace TF2TradingToolkit.View
 		private void Classifieds_OfferBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Button btn = sender as Button;
-			string offerURL = btn.Tag as string;
+			string offerURL = btn?.Tag as string;
 
 			if (offerURL != null)
 			{
 				Util.OpenLink(offerURL);
+			}
+		}
+
+		private void ClassifiedsShowBackpack_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			ClassifiedsListing listing = item?.Tag as ClassifiedsListing;
+
+			if (listing != null)
+			{
+				OwnerWindow.MainTabControl.SelectedIndex = 1;
+				OwnerWindow.BackpackView.OpenBackpack(listing.ListerSteamID64, true);
+			}
+		}
+
+		private void DealsCraftableCheck_Click(object sender, RoutedEventArgs e)
+		{
+			Filters.Craftable = DealsCraftableCheck.IsChecked;
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsHalloweenCheck_Click(object sender, RoutedEventArgs e)
+		{
+			Filters.Halloween = DealsHalloweenCheck.IsChecked;
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsBotkillerCheck_Click(object sender, RoutedEventArgs e)
+		{
+			Filters.Botkiller = DealsBotkillerCheck.IsChecked;
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsAllClassCheck_Click(object sender, RoutedEventArgs e)
+		{
+			Filters.AllowAllClass = DealsAllClassCheck.IsChecked ?? true;
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsMinProfitBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (!_loaded)
+			{
+				return;
+			}
+
+			DealsMinProfitBox.BorderBrush = MinProfitBorder;
+			if (IsMinProfitValid)
+			{
+				double d = double.Parse(DealsMinProfitBox.Text);
+				Price p = new Price(d);
+				DealsMinProfitBox.ToolTip = "USD: " + p.TotalUSD.ToCurrency();
+
+				Filters.DealsMinProfit = p;
+				DealsSearchBtn.IsEnabled = true;
+				_updateDealsFiltersTooltip();
+			}
+			else
+			{
+				DealsMinProfitBox.ToolTip = "Not a valid number";
+				DealsSearchBtn.IsEnabled = false;
+			}
+		}
+
+		private void DealsSearchBtn_Click(object sender, RoutedEventArgs e)
+		{
+			DealsResults.Clear();
+			DealsExcluded.Clear();
+
+			DealsProgress.Value = 0;
+			DealsProgress.Visibility = Visibility.Visible;
+			OwnerWindow.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+			DealsLoader.RunWorkerAsync(Filters);
+		}
+
+		private void DealsQualities_MultiSelectionChanged(object sender, MultiQualitySelectorEventArgs e)
+		{
+			if (e.ActionType == SelectorActionType.Add)
+			{
+				if (!Filters.Qualities.Contains(e.Selection))
+				{
+					Filters.Qualities.Add(e.Selection);
+				}
+			}
+			else
+			{
+				if (Filters.Qualities.Contains(e.Selection))
+				{
+					Filters.Qualities.Remove(e.Selection);
+				}
+			}
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsSlots_SelectionChanged(object sender, MultiSlotSelectorEventArgs e)
+		{
+			if (e.ActionType == SelectorActionType.Add)
+			{
+				if (!Filters.Slots.Contains(e.Selection))
+				{
+					Filters.Slots.Add(e.Selection);
+				}
+			}
+			else
+			{
+				if (Filters.Slots.Contains(e.Selection))
+				{
+					Filters.Slots.Remove(e.Selection);
+				}
+			}
+			_updateDealsFiltersTooltip();
+		}
+
+		private void DealsClasses_SelectionChanged(object sender, MultiClassSelectorEventArgs e)
+		{
+			if (e.ActionType == SelectorActionType.Add)
+			{
+				if (!Filters.Classes.Contains(e.Selection))
+				{
+					Filters.Classes.Add(e.Selection);
+				}
+			}
+			else
+			{
+				if (Filters.Classes.Contains(e.Selection))
+				{
+					Filters.Classes.Remove(e.Selection);
+				}
+			}
+			_updateDealsFiltersTooltip();
+		}
+
+		private void Deals_OfferBtn_Click(object sender, RoutedEventArgs e)
+		{
+			Button btn = sender as Button;
+			string offerURL = btn?.Tag as string;
+
+			if (offerURL != null)
+			{
+				Util.OpenLink(offerURL);
+			}
+		}
+
+		private void DealsShowClassifiedsItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			ItemSale sale = item?.Tag as ItemSale;
+
+			if (sale == null)
+			{
+				return;
+			}
+
+			ShowClassifieds(sale.CheapestSeller);
+		}
+
+		private void DealsShowBackpack_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			ItemSale sale = item?.Tag as ItemSale;
+
+			if (sale != null)
+			{
+
+				OwnerWindow.MainTabControl.SelectedIndex = 1;
+				OwnerWindow.BackpackView.OpenBackpack(sale.CheapestSeller.ListerSteamID64, true);
 			}
 		}
 	}

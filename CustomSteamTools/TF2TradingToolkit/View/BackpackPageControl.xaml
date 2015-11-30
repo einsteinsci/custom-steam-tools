@@ -6,41 +6,69 @@
              xmlns:local="clr-namespace:TF2TradingToolkit.View"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="550">
-  <ItemsControl x:Name="PageControl">
-    <ItemsControl.Template>
-      <ControlTemplate>
-        <WrapPanel  Width="{TemplateBinding Width}"
-                    Height="{TemplateBinding Height}"
-                    FlowDirection="LeftToRight"
-                    IsItemsHost="true">
-        </WrapPanel>
-      </ControlTemplate>
-    </ItemsControl.Template>
-    <ItemsControl.ItemTemplate>
-      <DataTemplate>
-        <Grid ToolTip="{Binding Tooltip}"
-              ToolTipService.ShowDuration="15000"
-              Width="96"
-              Height="108"
-              Margin="3">
-          <Rectangle Stroke="{Binding BorderBrush}"
-                     StrokeDashArray="{Binding BorderDash}"
-                     StrokeThickness="2"
-                     Fill="#FF2B2B2B">
-          </Rectangle>
-          <Image Source="{Binding ImageURL}"
-                 Margin="{Binding ImageMargin}"
-                 VerticalAlignment="Bottom" />
-          <TextBlock Text="{Binding Title}"
-                     Foreground="{Binding TextColor}"
-                     TextWrapping="Wrap"
-                     VerticalAlignment="Top"
-                     FontSize="11"
-                     Margin="3,5,3,0"
-                     TextAlignment="Center" />
-        </Grid>
-      </DataTemplate>
-    </ItemsControl.ItemTemplate>
-  </ItemsControl>
+             d:DesignWidth="550"
+             Loaded="UserControl_Loaded">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    
+    <TextBlock x:Name="PageNumTxt"
+               Text="NOT LOADED YET"
+               FontSize="16"
+               FontWeight="SemiBold"
+               Margin="10,0,0,0" />
+    <ItemsControl x:Name="PageControl"
+                  Grid.Row="1">
+      <ItemsControl.Template>
+        <ControlTemplate>
+          <WrapPanel  Width="{TemplateBinding Width}"
+                      Height="{TemplateBinding Height}"
+                      FlowDirection="LeftToRight"
+                      IsItemsHost="true">
+          </WrapPanel>
+        </ControlTemplate>
+      </ItemsControl.Template>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid ToolTip="{Binding Tooltip}"
+                ToolTipService.ShowDuration="15000"
+                Width="96"
+                Height="108"
+                Margin="3">
+            <Grid.ContextMenu>
+              <ContextMenu IsEnabled="{Binding ShowContextMenu}">
+                <MenuItem Header="Show Classifieds"
+                          Tag="{Binding Item}"
+                          Click="SlotShowClassifiedsItem_Click" />
+              </ContextMenu>
+            </Grid.ContextMenu>
+            
+            <Rectangle Stroke="{Binding BorderBrush}"
+                       StrokeDashArray="{Binding BorderDash}"
+                       StrokeThickness="2"
+                       Fill="#FF2B2B2B">
+            </Rectangle>
+            <Image Source="{Binding ImageURL}"
+                   Margin="{Binding ImageMargin}"
+                   VerticalAlignment="Bottom" />
+            <TextBlock Text="{Binding Title}"
+                       Foreground="{Binding TextColor}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Top"
+                       FontSize="11"
+                       Margin="3,5,3,0"
+                       TextAlignment="Center" />
+            <TextBlock Text="{Binding PriceString}"
+                       Foreground="{Binding TradableBrush}"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Right"
+                       FontSize="11"
+                       Margin="5" />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </Grid>
 </UserControl>
