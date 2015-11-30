@@ -140,6 +140,21 @@ namespace TF2TradingToolkit
 			return int.TryParse(str, out buf);
 		}
 
+		public static string GetWikiLink(this Item i)
+		{
+			if (i.IsSkin())
+			{
+				return "https://wiki.teamfortress.com/wiki/Decorated";
+			}
+
+			return "https://wiki.teamfortress.com/wiki/" + i.ImproperName;
+		}
+
+		public static string GetStatsLink(this Item i)
+		{
+			return "http://stats.tf/item/" + i.ID.ToString();
+		}
+
 		public static StackPanel GetTooltip(this DealsFilters filters)
 		{
 			StackPanel res = new StackPanel();

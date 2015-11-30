@@ -88,16 +88,9 @@ namespace BackpackTFConsole
 			VersatileIO.Info("Starting program...");
 
 			CommandHandler.Initialize();
-			CommandHandler.Instance.OnPreCommand += PreCommand;
 
 			DataManager.AutoSetup(true);
 			CmdDeals.DoBeepOnFinished = true;
-		}
-
-		// might be used in the future
-		private static bool PreCommand(object sender, PreCommandArgs e)
-		{
-			return false;
 		}
 	}
 }

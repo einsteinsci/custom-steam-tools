@@ -42,6 +42,12 @@
                 <MenuItem Header="Show Classifieds"
                           Tag="{Binding Item}"
                           Click="SlotShowClassifiedsItem_Click" />
+                <MenuItem Header="Wiki Page..."
+                          Tag="{Binding WikiLink}"
+                          Click="FollowLink_Click" />
+                <MenuItem Header="Statistics from stats.tf..."
+                          Tag="{Binding StatsLink}"
+                          Click="FollowLink_Click" />
               </ContextMenu>
             </Grid.ContextMenu>
             

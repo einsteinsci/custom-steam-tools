@@ -281,6 +281,10 @@ namespace TF2TradingToolkit.View
 			{
 				Filters.Qualities.Remove(e.Selection);
 			}
+
+			CraftableCheck.IsEnabled = Filters.Qualities.Contains(Quality.Unique) || Filters.Qualities.IsEmpty();
+			BotkillerCheck.IsEnabled = Filters.Qualities.Contains(Quality.Strange) || Filters.Qualities.IsEmpty();
+
 			RunFilter();
 		}
 
@@ -358,6 +362,17 @@ namespace TF2TradingToolkit.View
 			{
 				OwnerWindow.MainTabControl.SelectedIndex = 2;
 				OwnerWindow.ClassifiedsView.ShowClassifieds(info);
+			}
+		}
+
+		private void FollowLink_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			string link = item.Tag as string;
+
+			if (link != null)
+			{
+				Util.OpenLink(link);
 			}
 		}
 	}

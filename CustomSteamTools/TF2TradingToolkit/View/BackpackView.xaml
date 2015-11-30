@@ -52,7 +52,15 @@
                Grid.Row="1"
                FontSize="28"
                Margin="0,10"
-               ToolTip="SteamID of backpack to search" />
+               ToolTip="SteamID of backpack to search">
+        <TextBox.ContextMenu>
+          <ContextMenu>
+            <MenuItem x:Name="SteamIDBoxContextProfileItem"
+                      Header="Profile Page..."
+                      Click="SteamIDBoxContextProfileItem_Click" />
+          </ContextMenu>
+        </TextBox.ContextMenu>
+      </TextBox>
       <Grid Grid.Row="2">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
@@ -102,6 +110,18 @@
               <StackPanel Orientation="Vertical"
                           Grid.Column="1"
                           Margin="10,0,0,0">
+                <StackPanel.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Profile Page..."
+                              Tag="{Binding ProfileLink}"
+                              Click="FollowLink_Click" />
+                    <MenuItem Header="Current Game on Steam..."
+                              Tag="{Binding ActiveGameLink}"
+                              Visibility="{Binding ShowActiveGame}"
+                              Click="FollowLink_Click" />
+                  </ContextMenu>
+                </StackPanel.ContextMenu>
+                
                 <TextBlock Text="{Binding PersonaName}"
                            FontSize="16" />
                 <TextBlock Text="{Binding CurrentState}"

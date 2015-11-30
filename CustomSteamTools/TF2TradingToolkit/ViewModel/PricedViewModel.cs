@@ -28,6 +28,9 @@ namespace TF2TradingToolkit.ViewModel
 		public string PriceString => Price.ToString();
 		public Brush QualityDarkBrush => new SolidColorBrush(Info.Quality.ToWPFBorderColor());
 
+		public string WikiLink => Info.Item.GetWikiLink();
+		public string StatsLink => Info.Item.GetStatsLink();
+
 		public PricedViewModel(ItemPriceInfo info, PriceRange range)
 		{
 			Info = info;

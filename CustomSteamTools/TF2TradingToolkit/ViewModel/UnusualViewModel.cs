@@ -9,18 +9,29 @@ namespace TF2TradingToolkit.ViewModel
 {
 	public sealed class UnusualViewModel
 	{
-		public string Name => Effect.Name;
+		public static readonly UnusualViewModel None = new UnusualViewModel(true);
 
-		public int ID => Effect.ID;
+		public string Name => IsNone ? "None" : Effect.Name;
 
-		public string BpTfURL => "http://backpack.tf/images/440/particles/" + ID.ToString() + "_94x94.png";
+		public int ID => IsNone ? -1 : Effect.ID;
+
+		public string BpTfURL => IsNone ? null : ("http://backpack.tf/images/440/particles/" + 
+			ID.ToString() + "_94x94.png");
 
 		public UnusualEffect Effect
+		{ get; private set; }
+
+		public bool IsNone
 		{ get; private set; }
 
 		public UnusualViewModel(UnusualEffect fx)
 		{
 			Effect = fx;
+		}
+
+		private UnusualViewModel(bool empty)
+		{
+			IsNone = empty;
 		}
 	}
 }

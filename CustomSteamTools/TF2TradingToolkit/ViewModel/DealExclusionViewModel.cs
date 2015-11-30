@@ -49,6 +49,9 @@ namespace TF2TradingToolkit.ViewModel
 
 		public Brush QualityBrush => new SolidColorBrush(Excluded.Quality.ToWPFBorderColor());
 
+		public string WikiLink => Excluded.Item.GetWikiLink();
+		public string StatsLink => Excluded.Item.GetStatsLink();
+
 		public DealExclusionViewModel(ItemSale excluded, string reason)
 		{
 			Excluded = excluded;

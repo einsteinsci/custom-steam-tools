@@ -254,15 +254,16 @@ namespace TF2TradingToolkit.View
 			UnusualEffectsDropdown.IsEnabled = Qualities.SelectedQuality == Quality.Unusual;
 			if (!UnusualEffectsDropdown.IsEnabled)
 			{
-				UnusualEffectsDropdown.SelectedIndex = -1;
+				UnusualEffectsDropdown.SelectedIndex = 0;
 			}
 
 			Unusuals.Clear();
+			Unusuals.Add(UnusualViewModel.None);
 			if (ActiveItem != null)
 			{
 				List<UnusualViewModel> ues = pcr.Unusuals.ConvertAll((cp) => new UnusualViewModel(cp.Unusual));
 				Unusuals.AddRange(ues);
-				UnusualEffectsDropdown.SelectedIndex = Unusuals.IsNullOrEmpty() ? -1 : 0;
+				UnusualEffectsDropdown.SelectedIndex = 0;
 				Info.Unusual = ActiveUnusual?.Effect;
 			}
 
@@ -331,6 +332,11 @@ namespace TF2TradingToolkit.View
 
 			Info.Quality = Qualities.SelectedQuality;
 			UnusualEffectsDropdown.IsEnabled = Qualities.SelectedQuality == Quality.Unusual;
+			if (Qualities.SelectedQuality != Quality.Unusual)
+			{
+				UnusualEffectsDropdown.SelectedIndex = -1;
+			}
+			CraftableCheckbox.IsEnabled = Qualities.SelectedQuality == Quality.Unique;
 
 			RefreshPriceLabels();
 		}
@@ -426,6 +432,17 @@ namespace TF2TradingToolkit.View
 
 		private void CalcEditBtn_Click(object sender, RoutedEventArgs e)
 		{
+			if (IsCalcEditing)
+			{
+				IsCalcEditing = false;
+				CalcEditBtn.Content = "Edit";
+				CalcList.SelectedIndex = -1;
+				return;
+			}
+
+			IsCalcEditing = true;
+			CalcEditBtn.Content = "Done Editing";
+
 			PricedViewModel selected = CalcList.SelectedItem as PricedViewModel;
 			if (selected == null)
 			{
@@ -445,7 +462,7 @@ namespace TF2TradingToolkit.View
 			}
 			else
 			{
-				UnusualEffectsDropdown.SelectedIndex = -1;
+				UnusualEffectsDropdown.SelectedIndex = 0;
 			}
 		}
 
@@ -458,6 +475,17 @@ namespace TF2TradingToolkit.View
 		{
 			OwnerWindow.MainTabControl.SelectedIndex = 2;
 			OwnerWindow.ClassifiedsView.ShowClassifieds(Info);
+		}
+
+		private void FollowLink_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			string link = item.Tag as string;
+
+			if (link != null)
+			{
+				Util.OpenLink(link);
+			}
 		}
 	}
 }

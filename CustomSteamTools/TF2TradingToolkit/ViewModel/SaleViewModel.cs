@@ -30,6 +30,9 @@ namespace TF2TradingToolkit.ViewModel
 
 		public string OfferURL => Sale.CheapestSeller.OfferURL;
 
+		public string WikiLink => Sale.Item.GetWikiLink();
+		public string StatsLink => Sale.Item.GetStatsLink();
+
 		public StackPanel Tooltip => GetTooltip();
 
 		public Visibility ShowQuickBuyLabel => Sale.HasQuickDeal ?

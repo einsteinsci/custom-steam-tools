@@ -57,6 +57,17 @@
                   <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <Grid.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Wiki Page..."
+                              Tag="{Binding WikiLink}"
+                              Click="FollowLink_Click" />
+                    <MenuItem Header="Item Statistics on stats.tf..."
+                              Tag="{Binding StatsLink}"
+                              Click="FollowLink_Click" />
+                  </ContextMenu>
+                </Grid.ContextMenu>
+
                 <Image Source="{Binding ImageURL}"
                        Height="48"
                        Width="48" />
@@ -147,6 +158,12 @@
                         <MenuItem Header="Show seller's Backpack"
                                   Tag="{Binding Listing}"
                                   Click="ClassifiedsShowBackpack_Click" />
+                        <MenuItem Header="Wiki Page..."
+                                  Tag="{Binding WikiLink}"
+                                  Click="FollowLink_Click" />
+                        <MenuItem Header="Item Statistics on stats.tf..."
+                                  Tag="{Binding StatsLink}"
+                                  Click="FollowLink_Click" />
                       </ContextMenu>
                     </Grid.ContextMenu>
                     
@@ -200,6 +217,12 @@
                 <MenuItem Header="Show buyer's Backpack"
                           Tag="{Binding Listing}"
                           Click="ClassifiedsShowBackpack_Click" />
+                <MenuItem Header="Wiki Page..."
+                          Tag="{Binding WikiLink}"
+                          Click="FollowLink_Click" />
+                <MenuItem Header="Item Statistics on stats.tf..."
+                          Tag="{Binding StatsLink}"
+                          Click="FollowLink_Click" />
               </ContextMenu>
             </Grid.ContextMenu>
 
@@ -413,6 +436,12 @@
                       <MenuItem Header="Show Best Seller's Backpack"
                                 Tag="{Binding Sale}"
                                 Click="DealsShowBackpack_Click" />
+                      <MenuItem Header="Wiki Page..."
+                                Tag="{Binding WikiLink}"
+                                Click="FollowLink_Click" />
+                      <MenuItem Header="Item Statistics on stats.tf..."
+                                Tag="{Binding StatsLink}"
+                                Click="FollowLink_Click" />
                     </ContextMenu>
                   </Grid.ContextMenu>
 
@@ -485,6 +514,12 @@
                       <MenuItem Header="Show Best Seller's Backpack"
                                 Tag="{Binding Excluded}"
                                 Click="DealsShowBackpack_Click" />
+                      <MenuItem Header="Wiki Page..."
+                                Tag="{Binding WikiLink}"
+                                Click="FollowLink_Click" />
+                      <MenuItem Header="Item Statistics on stats.tf..."
+                                Tag="{Binding StatsLink}"
+                                Click="FollowLink_Click" />
                     </ContextMenu>
                   </Grid.ContextMenu>
 

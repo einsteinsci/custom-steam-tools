@@ -33,6 +33,9 @@ namespace TF2TradingToolkit.ViewModel
 
 		public Visibility ShowContextMenu => (Item != null).ToVisibility();
 
+		public string WikiLink => Item?.Item.GetWikiLink();
+		public string StatsLink => Item?.Item.GetStatsLink();
+
 		public DoubleCollection BorderDash
 		{
 			get

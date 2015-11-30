@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using CustomSteamTools.Friends;
 
@@ -18,6 +19,11 @@ namespace TF2TradingToolkit.ViewModel
 		public string PersonaName => Player.Name;
 		public string CurrentState => GetCurrentStateString();
 		public string SteamID => Player.SteamID64;
+
+		public string ProfileLink => "https://steamcommunity.com/profiles/" + SteamID;
+		public string ActiveGameLink => "http://store.steampowered.com/app/" + Player.CurrentGame.ToString();
+
+		public Visibility ShowActiveGame => Player.IsInGame.ToVisibility();
 
 		public SolidColorBrush StateColor => new SolidColorBrush(GetStateColor());
 

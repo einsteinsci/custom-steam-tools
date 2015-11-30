@@ -39,6 +39,9 @@ namespace TF2TradingToolkit.ViewModel
 
 		public string Tooltip => GetItemTooltip(Item);
 
+		public string WikiLink => Item.GetWikiLink();
+		public string StatsLink => Item.GetStatsLink();
+
 		public ItemViewModel(Item item, QualitySelector selector)
 		{
 			Item = item;

@@ -307,5 +307,22 @@ namespace TF2TradingToolkit.View
 				LoadFriends(vm.SteamID);
 			}
 		}
+
+		private void FollowLink_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			string link = item.Tag as string;
+
+			if (link != null)
+			{
+				Util.OpenLink(link);
+			}
+		}
+
+		private void SteamIDBoxContextProfileItem_Click(object sender, RoutedEventArgs e)
+		{
+			string link = "https://steamcommunity.com/profiles/" + SteamIDBox.Text;
+			Util.OpenLink(link);
+		}
 	}
 }

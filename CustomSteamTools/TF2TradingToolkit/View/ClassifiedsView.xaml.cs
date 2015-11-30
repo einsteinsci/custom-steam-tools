@@ -461,6 +461,8 @@ namespace TF2TradingToolkit.View
 
 			Info.Quality = ClassifiedsQualities.SelectedQuality;
 
+			ClassifiedsCraftableCheck.IsEnabled = ClassifiedsQualities.SelectedQuality == Quality.Unique;
+
 			RefreshPriceLabel();
 		}
 
@@ -700,6 +702,9 @@ namespace TF2TradingToolkit.View
 					Filters.Qualities.Remove(e.Selection);
 				}
 			}
+
+			DealsCraftableCheck.IsEnabled = Filters.Qualities.Contains(Quality.Unique) || Filters.Qualities.IsEmpty();
+			DealsBotkillerCheck.IsEnabled = Filters.Qualities.Contains(Quality.Strange) || Filters.Qualities.IsEmpty();
 			RefreshDealsFiltersTooltip();
 		}
 
@@ -775,6 +780,17 @@ namespace TF2TradingToolkit.View
 
 				OwnerWindow.MainTabControl.SelectedIndex = 1;
 				OwnerWindow.BackpackView.OpenBackpack(sale.CheapestSeller.ListerSteamID64, true);
+			}
+		}
+
+		private void FollowLink_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			string link = item.Tag as string;
+
+			if (link != null)
+			{
+				Util.OpenLink(link);
 			}
 		}
 	}

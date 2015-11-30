@@ -45,7 +45,12 @@ namespace TF2TradingToolkit.ViewModel
 			}
 		}
 
+		public Visibility ShowContextMenu => (!Failed).ToVisibility();
+
 		public string OfferLink => Listing?.OfferURL;
+
+		public string WikiLink => Listing?.ItemInstance.Item.GetWikiLink();
+		public string StatsLink => Listing?.ItemInstance.Item.GetStatsLink();
 
 		public string Comment
 		{

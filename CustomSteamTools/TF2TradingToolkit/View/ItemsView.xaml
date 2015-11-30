@@ -66,6 +66,17 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
 
+              <Grid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Wiki Page..."
+                            Tag="{Binding WikiLink}"
+                            Click="FollowLink_Click" />
+                  <MenuItem Header="Item Statistics on stats.tf..."
+                            Tag="{Binding StatsLink}"
+                            Click="FollowLink_Click" />
+                </ContextMenu>
+              </Grid.ContextMenu>
+
               <Image Source="{Binding ImageURL}"
                      Height="48"
                      Width="48" />
@@ -258,9 +269,16 @@
               </Grid.ColumnDefinitions>
               <Grid.ContextMenu>
                 <ContextMenu>
-                  <MenuItem Header="Edit"
+                  <MenuItem Header="Toggle Edit"
                             Click="CalcEditBtn_Click" />
-                  <MenuItem Header="Remove" />
+                  <MenuItem Header="Remove"
+                            Click="CalcRemoveBtn_Click" />
+                  <MenuItem Header="Wiki Page..."
+                            Tag="{Binding WikiLink}"
+                            Click="FollowLink_Click" />
+                  <MenuItem Header="Item Statistics on stats.tf..."
+                            Tag="{Binding StatsLink}"
+                            Click="FollowLink_Click" />
                 </ContextMenu>
               </Grid.ContextMenu>
 

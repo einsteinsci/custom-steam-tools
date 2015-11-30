@@ -206,6 +206,12 @@
                   <MenuItem Header="Show in Classifieds"
                             Tag="{Binding Info}"
                             Click="ShowClassifiedsItem_Click" />
+                  <MenuItem Header="Wiki Page..."
+                            Tag="{Binding WikiLink}"
+                            Click="FollowLink_Click" />
+                  <MenuItem Header="Item Statistics on stats.tf..."
+                            Tag="{Binding StatsLink}"
+                            Click="FollowLink_Click" />
                 </ContextMenu>
               </StackPanel.ContextMenu>
               

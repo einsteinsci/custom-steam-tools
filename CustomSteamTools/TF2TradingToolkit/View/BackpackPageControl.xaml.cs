@@ -90,5 +90,16 @@ namespace TF2TradingToolkit.View
 				OwnerView.OwnerWindow.ClassifiedsView.ShowClassifieds(inst.ToPriceInfo());
 			}
 		}
+
+		private void FollowLink_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			string link = item.Tag as string;
+
+			if (link != null)
+			{
+				Util.OpenLink(link);
+			}
+		}
 	}
 }
