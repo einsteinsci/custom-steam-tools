@@ -31,6 +31,8 @@ namespace TF2TradingToolkit.ViewModel
 		public bool Tradable => Item?.Tradable ?? false;
 		public SolidColorBrush TradableBrush => new SolidColorBrush(Tradable ? Colors.White : Colors.Salmon);
 
+		public Visibility ShowContextMenu => (Item != null).ToVisibility();
+
 		public DoubleCollection BorderDash
 		{
 			get

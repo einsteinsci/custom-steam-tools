@@ -38,7 +38,7 @@
                 Height="108"
                 Margin="3">
             <Grid.ContextMenu>
-              <ContextMenu IsEnabled="{Binding ShowContextMenu}">
+              <ContextMenu Visibility="{Binding ShowContextMenu}">
                 <MenuItem Header="Show Classifieds"
                           Tag="{Binding Item}"
                           Click="SlotShowClassifiedsItem_Click" />
