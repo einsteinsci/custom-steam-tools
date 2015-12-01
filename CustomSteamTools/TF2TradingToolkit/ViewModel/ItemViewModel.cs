@@ -37,7 +37,7 @@ namespace TF2TradingToolkit.ViewModel
 
 		public WrapPanel QualityPriceUI => GetPriceStamps();
 
-		public string Tooltip => GetItemTooltip(Item);
+		public StackPanel Tooltip => GetItemTooltip();
 
 		public string WikiLink => Item.GetWikiLink();
 		public string StatsLink => Item.GetStatsLink();
@@ -70,33 +70,78 @@ namespace TF2TradingToolkit.ViewModel
 			}
 		}
 
-		public static string GetItemTooltip(Item item)
+		public StackPanel GetItemTooltip()
 		{
-			string nl = Environment.NewLine;
+			StackPanel res = new StackPanel();
 
-			string res = item.ToString();
-			res += nl + "  " + item.GetSubtext();
-			res += nl + " - Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "";
-			res += nl + " - Defindex: " + item.ID;
-			res += nl + " - Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot);
-			res += nl + " - Classes: " + item.ValidClasses.ToReadableString(includeBraces: false);
-			if (item.IsSkin())
+			TextBlock t = new TextBlock();
+			t.Text = Item.ToString();
+			t.Foreground = new SolidColorBrush(Item.DefaultQuality.ToWPFBorderColor());
+			t.FontSize = 16;
+			t.FontWeight = FontWeights.SemiBold;
+			res.Children.Add(t);
+
+			t = new TextBlock();
+			t.Text = Item.GetSubtext();
+			t.Foreground = new SolidColorBrush(ItemSlotViewModel.SEMI_DARK_GRAY);
+			t.FontSize = 12;
+			t.Margin = new Thickness(0, 0, 0, 5);
+			res.Children.Add(t);
+
+			string desc = Item.Description;
+			if (!desc.IsNullOrWhitespace())
 			{
-				Skin skin = item.GetSkin();
-				res += nl + " - " + skin.Description;
+				desc = desc.Replace('\t', ' ');
+				t = new TextBlock();
+				t.Text = desc;
+				t.TextWrapping = TextWrapping.Wrap;
+				t.MaxWidth = 512;
+				t.Margin = new Thickness(0, 0, 0, 5);
+				res.Children.Add(t);
 			}
-			if (item.CanBeAustralium())
+
+			#region bullets
+			t = new TextBlock();
+			t.Text = " - Defindex: " + Item.Defindex.ToString();
+			res.Children.Add(t);
+
+			if (Item.PlainSlot != ItemSlotPlain.Unused)
 			{
-				res += nl + " - Can be Australium";
+				t = new TextBlock();
+				t.Text = " - Slot: {0} ({1})".Fmt(Item.PlainSlot, Item.Slot);
+				res.Children.Add(t);
 			}
-			if (item.IsCheapWeapon())
+
+			if (Item.ValidClasses.HasItems())
 			{
-				res += nl + " - Drop weapon";
+				t = new TextBlock();
+				t.Text = " - Classes: " + Item.ValidClasses.ToReadableString(includeBraces: false);
+				res.Children.Add(t);
 			}
-			if (item.HalloweenOnly || item.HasHauntedVersion == true)
+
+			if (Item.CanBeAustralium())
 			{
-				res += nl + " - Halloween only";
+				t = new TextBlock();
+				t.Text = " - Can be Australium";
+				t.Foreground = new SolidColorBrush(Colors.DarkGoldenrod);
+				res.Children.Add(t);
 			}
+
+			if (Item.IsCheapWeapon())
+			{
+				t = new TextBlock();
+				t.Text = " - Drop weapon";
+				res.Children.Add(t);
+			}
+
+			if (Item.HalloweenOnly || Item.HasHauntedVersion == true)
+			{
+				t = new TextBlock();
+				t.Text = " - Halloween only";
+				t.Foreground = new SolidColorBrush(Colors.Teal);
+				res.Children.Add(t);
+			}
+			#endregion
 
 			return res;
 		}
@@ -134,8 +179,9 @@ namespace TF2TradingToolkit.ViewModel
 		public Grid GetPriceStamp(CheckedPrice cp)
 		{
 			Grid res = new Grid();
-			res.ToolTip = Item.ToString(cp.Quality, cp.Pricing?.Australium ?? false) + 
-				":\n  " + cp.Price.ToString() + "\n  (" + cp.Price.ToStringUSD() + ")";
+			ItemPriceInfo info = new ItemPriceInfo(cp.Pricing.Item, cp.Quality);
+			PricedViewModel pvm = new PricedViewModel(info, cp.Price);
+			res.ToolTip = pvm.Tooltip;
 			res.Margin = new Thickness(2);
 
 			string priceText = cp.Price.ToString();

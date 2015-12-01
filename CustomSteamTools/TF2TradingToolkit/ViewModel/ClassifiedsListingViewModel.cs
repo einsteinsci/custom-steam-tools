@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using CustomSteamTools.Classifieds;
+using CustomSteamTools.Schema;
 
 namespace TF2TradingToolkit.ViewModel
 {
@@ -114,6 +115,15 @@ namespace TF2TradingToolkit.ViewModel
 			t.Text = Listing.ItemInstance.GetSubtext();
 			t.Margin = new Thickness(0, 0, 0, 5);
 			res.Children.Add(t);
+
+			UnusualEffect fx = Listing.ItemInstance.GetUnusual();
+			if (fx != null)
+			{
+				t = new TextBlock();
+				t.Text = "Unusual: " + fx.Name + " (" + fx.ID + ")";
+				t.Foreground = QualityColorBrush;
+				res.Children.Add(t);
+			}
 
 			if (Listing.Comment != null)
 			{

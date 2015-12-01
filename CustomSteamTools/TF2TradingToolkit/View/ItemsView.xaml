@@ -7,10 +7,7 @@
              xmlns:e="http://schemas.codeplex.com/elysium"
              xmlns:ep="http://schemas.codeplex.com/elysium/params"
              xmlns:ex="http://schemas.extra.com/ui"
-             ep:Design.Theme="Light"
-             ep:Manager.Theme="Light"
-             ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-             ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             xmlns:m="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DesignHeight="667"
              d:DesignWidth="1387">
@@ -55,7 +52,7 @@
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                SelectionChanged="ItemSearchResultList_SelectionChanged"
                Margin="0,10,10,10"
-               BorderThickness="1">
+               Style="{DynamicResource BorderedListBox}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid Margin="5,0"
@@ -122,7 +119,8 @@
                   Margin="5,0,0,0"
                   HorizontalAlignment="Left"
                   Checked="AustraliumCheckbox_Checked"
-                  IsEnabled="False" />
+                  IsEnabled="False"
+                  FontSize="13.333" />
         <Label x:Name="KillstreakLbl"
                IsEnabled="{Binding ElementName=Killstreaks, Path=IsEnabled}"
                Content="Killstreak Tier:"
@@ -151,15 +149,17 @@
                   IsChecked="True"
                   VerticalAlignment="Center"
                   Click="CraftableCheckbox_Click"
-                  IsEnabled="False" />
+                  IsEnabled="False"
+                  FontSize="13.333" />
         <CheckBox x:Name="TradableCheckbox"
                   Content="Tradable"
                   IsChecked="True"
                   Grid.Column="1"
                   VerticalAlignment="Center"
-                  Margin="10,0,0,0"
+                  Margin="15,0,0,0"
                   Click="TradableCheckbox_Click"
-                  IsEnabled="False" />
+                  IsEnabled="False"
+                  FontSize="13.333" />
         <Label x:Name="UnusualLbl"
                Content="Unusual Effect:"
                IsEnabled="{Binding ElementName=UnusualEffectsDropdown, Path=IsEnabled}"
@@ -256,9 +256,9 @@
       <ListBox x:Name="CalcList"
                Grid.Row="1"
                HorizontalContentAlignment="Stretch"
-               BorderThickness="1"
                Margin="0,10,0,0"
-               SelectionChanged="CalcList_SelectionChanged">
+               SelectionChanged="CalcList_SelectionChanged"
+               Style="{DynamicResource BorderedListBox}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid>

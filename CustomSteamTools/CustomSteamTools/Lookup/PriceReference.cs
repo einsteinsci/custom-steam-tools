@@ -60,7 +60,7 @@ namespace CustomSteamTools.Lookup
 			List<ItemPricing> res = new List<ItemPricing>();
 			foreach (ItemPricing p in Prices)
 			{
-				if (p.Items.Exists((i) => i.ID == item.ID))
+				if (p.Items.Exists((i) => i.Defindex == item.Defindex))
 				{
 					res.Add(p);
 				}

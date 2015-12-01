@@ -59,7 +59,7 @@ namespace CustomSteamTools.Schema
 		{
 			foreach (Item i in Items)
 			{
-				if (i.ID == id)
+				if (i.Defindex == id)
 				{
 					return i;
 				}

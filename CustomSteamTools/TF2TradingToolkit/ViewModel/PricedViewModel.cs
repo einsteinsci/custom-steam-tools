@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using CustomSteamTools;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Schema;
+using UltimateUtil;
 
 namespace TF2TradingToolkit.ViewModel
 {
@@ -31,6 +32,8 @@ namespace TF2TradingToolkit.ViewModel
 		public string WikiLink => Info.Item.GetWikiLink();
 		public string StatsLink => Info.Item.GetStatsLink();
 
+		public StackPanel Tooltip => GetTooltip();
+
 		public PricedViewModel(ItemPriceInfo info, PriceRange range)
 		{
 			Info = info;
@@ -48,10 +51,87 @@ namespace TF2TradingToolkit.ViewModel
 			return res;
 		}
 
+		public StackPanel GetTooltip()
+		{
+			StackPanel res = new StackPanel();
+
+			TextBlock t = new TextBlock();
+			t.Text = Info.Item.ToString(Info.Quality, Info.Australium, Info.Killstreak);
+			t.Foreground = new SolidColorBrush(Info.Quality.ToWPFBorderColor());
+			t.FontSize = 16;
+			t.FontWeight = FontWeights.SemiBold;
+			res.Children.Add(t);
+
+			t = new TextBlock();
+			t.Text = Info.Item.GetSubtext();
+			t.Foreground = new SolidColorBrush(ItemSlotViewModel.SEMI_DARK_GRAY);
+			t.FontSize = 12;
+			t.Margin = new Thickness(0, 0, 0, 5);
+			res.Children.Add(t);
+
+			string desc = Info.Item.Description;
+			if (!desc.IsNullOrWhitespace())
+			{
+				desc = desc.Replace('\t', ' ');
+				t = new TextBlock();
+				t.Text = desc;
+				t.TextWrapping = TextWrapping.Wrap;
+				t.MaxWidth = 512;
+				t.Margin = new Thickness(0, 0, 0, 5);
+				res.Children.Add(t);
+			}
+			
+			if (Info.Unusual != null)
+			{
+				t = new TextBlock();
+				t.Text = "Unusual: " + Info.Unusual.Name + " (" + Info.Unusual.ID + ")";
+				t.Foreground = QualityDarkBrush;
+				t.Margin = new Thickness(0, 0, 0, 5);
+				res.Children.Add(t);
+			}
+
+			#region bullets
+			t = new TextBlock();
+			t.Text = " - Defindex: " + Info.Item.Defindex.ToString();
+			res.Children.Add(t);
+
+			if (Info.Item.PlainSlot != ItemSlotPlain.Unused)
+			{
+				t = new TextBlock();
+				t.Text = " - Slot: {0} ({1})".Fmt(Info.Item.PlainSlot, Info.Item.Slot);
+				res.Children.Add(t);
+			}
+
+			if (Info.Item.ValidClasses.HasItems())
+			{
+				t = new TextBlock();
+				t.Text = " - Classes: " + Info.Item.ValidClasses.ToReadableString(includeBraces: false);
+				res.Children.Add(t);
+			}
+
+			if (Info.Item.IsCheapWeapon() && Info.Quality == Quality.Unique)
+			{
+				t = new TextBlock();
+				t.Text = " - Drop weapon";
+				res.Children.Add(t);
+			}
+
+			if (Info.Item.HalloweenOnly || Info.Item.HasHauntedVersion == true)
+			{
+				t = new TextBlock();
+				t.Text = " - Halloween only";
+				t.Foreground = new SolidColorBrush(Colors.Teal);
+				res.Children.Add(t);
+			}
+			#endregion
+
+			return res;
+		}
+
 		public Grid GetPriceTag()
 		{
 			Grid res = new Grid();
-			res.ToolTip = ItemString + ":\n  " + Price.ToString() + "\n  (" + Price.ToStringUSD() + ")";
+			res.ToolTip = GetTooltip();
 			res.Margin = new Thickness(3);
 
 			string priceText = Price.ToString();

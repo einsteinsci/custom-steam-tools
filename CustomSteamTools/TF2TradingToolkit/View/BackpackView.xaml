@@ -7,10 +7,7 @@
              xmlns:e="http://schemas.codeplex.com/elysium"
              xmlns:ep="http://schemas.codeplex.com/elysium/params"
              xmlns:ex="http://schemas.extra.com/ui"
-             ep:Design.Theme="Light"
-             ep:Manager.Theme="Light"
-             ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-             ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
+             xmlns:m="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DesignHeight="667"
              d:DesignWidth="1387">
@@ -95,7 +92,8 @@
                HorizontalContentAlignment="Stretch"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                SelectionChanged="FriendsList_SelectionChanged"
-               Margin="0,10,0,0">
+               Margin="0,10,0,0"
+               Style="{DynamicResource BorderedListBox}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid ToolTip="{Binding SteamID}">
@@ -131,11 +129,12 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
-      <ProgressBar x:Name="FriendLoadingBar"
-                   Grid.Row="4"
-                   Height="16"
-                   Margin="0,10,0,0"
-                   IsIndeterminate="True" />
+      <m:MetroProgressBar x:Name="FriendLoadingBar"
+                          Foreground="{Binding AccentColorBrush}"
+                          Grid.Row="4"
+                          Height="16"
+                          Margin="0,10,0,0"
+                          IsIndeterminate="True" />
     </Grid>
 
     <Grid Tag="BackpackDisplay"

@@ -152,7 +152,7 @@ namespace TF2TradingToolkit
 
 		public static string GetStatsLink(this Item i)
 		{
-			return "http://stats.tf/item/" + i.ID.ToString();
+			return "http://stats.tf/item/" + i.Defindex.ToString();
 		}
 
 		public static StackPanel GetTooltip(this DealsFilters filters)

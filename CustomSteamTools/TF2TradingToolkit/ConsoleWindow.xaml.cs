@@ -23,7 +23,7 @@ namespace TF2TradingToolkit
 	/// <summary>
 	/// Interaction logic for ConsoleWindow.xaml
 	/// </summary>
-	public partial class ConsoleWindow : Window
+	public partial class ConsoleWindow : MahApps.Metro.Controls.MetroWindow
 	{
 		public MainWindow OwningWindow
 		{ get; private set; }

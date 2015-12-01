@@ -21,7 +21,7 @@ namespace TF2TradingToolkit
 	/// <summary>
 	/// Interaction logic for SettingsWindow.xaml
 	/// </summary>
-	public partial class SettingsWindow : Elysium.Controls.Window
+	public partial class SettingsWindow : MahApps.Metro.Controls.MetroWindow
 	{
 		public Settings Instance
 		{ get; private set; }

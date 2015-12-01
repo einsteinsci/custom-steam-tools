@@ -123,9 +123,19 @@ namespace TF2TradingToolkit.ViewModel
 				res.Children.Add(t);
 			}
 
+			UnusualEffect fx = Item.GetUnusual();
+			if (fx != null)
+			{
+				t = new TextBlock();
+				t.Text = "Unusual: " + fx.Name + " (" + fx.ID + ")";
+				t.Foreground = TextColor;
+				t.Margin = new Thickness(0, 0, 0, 5);
+				res.Children.Add(t);
+			}
+
 			#region bullets
 			t = new TextBlock();
-			t.Text = " - Defindex: " + Item.Item.ID.ToString();
+			t.Text = " - Defindex: " + Item.Item.Defindex.ToString();
 			res.Children.Add(t);
 
 			if (Item.Item.PlainSlot != ItemSlotPlain.Unused)

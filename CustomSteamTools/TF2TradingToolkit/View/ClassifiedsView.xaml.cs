@@ -412,7 +412,7 @@ namespace TF2TradingToolkit.View
 			var flagged = DealFinder.FindDealsFlagged(Settings.Instance.HomeSteamID64, filters);
 
 			List<ItemSale> results = new List<ItemSale>(flagged.Result);
-			results.Sort((a, b) => a.Profit.TotalRefined.CompareTo(b.Profit.TotalRefined));
+			results.Sort((a, b) => b.Profit.TotalRefined.CompareTo(a.Profit.TotalRefined));
 
 			var excluded = flagged.Flags;
 			excluded.Sort((a, b) => a.Value.CompareTo(b.Value));

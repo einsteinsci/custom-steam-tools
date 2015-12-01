@@ -12,9 +12,113 @@
              ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
              ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
              mc:Ignorable="d"
-             d:DesignHeight="96"
+             d:DesignHeight="64"
              d:DesignWidth="560">
   <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    
+    <ToggleButton x:Name="ScoutBtn"
+                  ToolTip="Scout"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="0"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="ScoutBtn_Click">
+      <Image Source="../assets/scout.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="SoldierBtn"
+                  ToolTip="Soldier"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="1"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="SoldierBtn_Click">
+      <Image Source="../assets/soldier.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="PyroBtn"
+                  ToolTip="Pyro"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="2"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="PryoBtn_Click">
+      <Image Source="../assets/pyro.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="DemomanBtn"
+                  ToolTip="Demoman"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="3"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="DemomanBtn_Click">
+      <Image Source="../assets/demo.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="HeavyBtn"
+                  ToolTip="Heavy"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="4"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="HeavyBtn_Click">
+      <Image Source="../assets/heavy.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="EngineerBtn"
+                  ToolTip="Engineer"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="5"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="EngineerBtn_Click">
+      <Image Source="../assets/engie.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="MedicBtn"
+                  ToolTip="Medic"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="6"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="MedicBtn_Click">
+      <Image Source="../assets/medic.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="SniperBtn"
+                  ToolTip="Sniper"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="7"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="SniperBtn_Click">
+      <Image Source="../assets/sniper.png"
+             Stretch="None" />
+    </ToggleButton>
+    <ToggleButton x:Name="SpyBtn"
+                  ToolTip="Spy"
+                  Width="48"
+                  Height="48"
+                  Grid.Column="8"
+                  Style="{DynamicResource MetroCircleToggleButtonStyle}"
+                  Click="SpyBtn_Click">
+      <Image Source="../assets/spy.png"
+             Stretch="None" />
+    </ToggleButton>
+  </Grid>
+  <!--<Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition />
       <ColumnDefinition />
@@ -124,5 +228,5 @@
         <TextBlock Text="Spy" />
       </StackPanel>
     </ToggleButton>
-  </Grid>
+  </Grid>-->
 </UserControl>

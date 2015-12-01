@@ -8,10 +8,6 @@
              xmlns:ep="http://schemas.codeplex.com/elysium/params"
              xmlns:ex="http://schemas.extra.com/ui"
              xmlns:vm="clr-namespace:TF2TradingToolkit.ViewModel"
-             ep:Design.Theme="Light"
-             ep:Manager.Theme="Light"
-             ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-             ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
              mc:Ignorable="d"
              d:DesignHeight="667"
              d:DesignWidth="1387">
@@ -126,7 +122,7 @@
       <local:SlotMultiSelector x:Name="Slots"
                                SelectionChanged="Slots_SelectionChanged" />
 
-      <Grid Margin="0,10,0,5">
+      <Grid Margin="0,20,0,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="Auto" />
@@ -141,12 +137,14 @@
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   Click="AllClassCheck_Click"
-                  IsChecked="True" />
+                  IsChecked="True"
+                  FontSize="13.333" />
       </Grid>
       <local:ClassMultiSelector x:Name="Classes"
-                                SelectionChanged="Classes_SelectionChanged" />
+                                SelectionChanged="Classes_SelectionChanged"
+                                Margin="0,2,0,0" />
 
-      <Grid Margin="0,10">
+      <Grid Margin="0,20,0,10">
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
           <ColumnDefinition />
@@ -157,19 +155,22 @@
                   Content="Craftable"
                   IsThreeState="True"
                   IsChecked="True"
-                  Click="CraftableCheck_Click" />
+                  Click="CraftableCheck_Click"
+                  FontSize="13.333" />
         <CheckBox x:Name="HalloweenCheck"
                   Content="Halloween"
                   IsThreeState="True"
                   IsChecked="{x:Null}"
                   Grid.Column="1"
-                  Click="HalloweenCheck_Click" />
+                  Click="HalloweenCheck_Click"
+                  FontSize="13.333" />
         <CheckBox x:Name="BotkillerCheck"
                   Content="Botkiller"
                   IsThreeState="True"
                   IsChecked="{x:Null}"
                   Grid.Column="2"
-                  Click="BotkillerCheck_Click" />
+                  Click="BotkillerCheck_Click"
+                  FontSize="13.333" />
       </Grid>
 
       <Button x:Name="SearchBtn"
@@ -188,7 +189,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      
+
       <TextBlock x:Name="PricingsCountTxt"
                  Text="Click search to filter items"
                  FontSize="21.333"
@@ -197,10 +198,12 @@
                Grid.Row="1"
                HorizontalContentAlignment="Stretch"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-               BorderThickness="1">
+               BorderThickness="1"
+               Style="{DynamicResource BorderedListBox}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        ToolTip="{Binding Tooltip}">
               <StackPanel.ContextMenu>
                 <ContextMenu>
                   <MenuItem Header="Show in Classifieds"
@@ -214,7 +217,7 @@
                             Click="FollowLink_Click" />
                 </ContextMenu>
               </StackPanel.ContextMenu>
-              
+
               <Image Source="{Binding ImageURL}"
                      Width="32"
                      Height="32"
@@ -226,12 +229,12 @@
                          Foreground="{Binding QualityDarkBrush}" />
               <TextBlock Text="for"
                          VerticalAlignment="Center"
-                         Foreground="#FF444444"
-                         FontSize="14"
+                         FontSize="16"
                          Margin="5,0" />
               <TextBlock Text="{Binding PriceString}"
                          FontSize="16"
-                         VerticalAlignment="Center" />
+                         VerticalAlignment="Center"
+                         FontWeight="SemiBold" />
             </StackPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>

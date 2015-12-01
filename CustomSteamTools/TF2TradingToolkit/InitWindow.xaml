@@ -1,35 +1,38 @@
-﻿<e:Window x:Class="TF2TradingToolkit.InitWindow"
-          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-          xmlns:e="http://schemas.codeplex.com/elysium"
-          xmlns:ep="http://schemas.codeplex.com/elysium/params"
-          xmlns:ex="http://schemas.extra.com/ui"
-          xmlns:local="clr-namespace:TF2TradingToolkit"
-          mc:Ignorable="d"
-          ep:Design.Theme="Light"
-          ep:Manager.Theme="Light"
-          ep:Design.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-          ep:Manager.AccentBrush="{x:Static e:AccentBrushes.Orange}"
-          BorderBrush="{x:Static e:AccentBrushes.Orange}"
-          Title="Initializing..."
-          Progress="{Binding InitProgressVal}"
-          MinHeight="100"
-          MinWidth="400"
-          Height="300" 
-          Width="500"
-          ResizeMode="CanResize"
-          Closing="Window_Closing"
-          Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
-          SizeToContent="Height"
-          Loaded="Window_Loaded"
-          WindowStartupLocation="CenterScreen">
-  <e:Window.TaskbarItemInfo>
+﻿<m:MetroWindow x:Class="TF2TradingToolkit.InitWindow"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:e="http://schemas.codeplex.com/elysium"
+               xmlns:ep="http://schemas.codeplex.com/elysium/params"
+               xmlns:ex="http://schemas.extra.com/ui"
+               xmlns:m="http://metro.mahapps.com/winfx/xaml/controls"
+               xmlns:local="clr-namespace:TF2TradingToolkit"
+               mc:Ignorable="d"
+               Title="Initializing..."
+               MinHeight="100"
+               MinWidth="400"
+               Height="300" 
+               Width="500"
+               ResizeMode="CanResize"
+               Closing="Window_Closing"
+               Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
+               SizeToContent="Height"
+               Loaded="Window_Loaded"
+               WindowStartupLocation="CenterScreen"
+               GlowBrush="{DynamicResource AccentColorBrush}"
+               IsMaxRestoreButtonEnabled="False"
+               IsCloseButtonEnabled="False"
+               ShowIconOnTitleBar="False"
+               ShowMaxRestoreButton="False"
+               ShowMinButton="False"
+               IsMinButtonEnabled="False"
+               ShowTitleBar="False">
+  <Window.TaskbarItemInfo>
     <TaskbarItemInfo x:Name="TaskbarInfo"
                      ProgressState="Normal"
                      ProgressValue="{Binding InitProgressVal}" />
-  </e:Window.TaskbarItemInfo>
+  </Window.TaskbarItemInfo>
   <Grid Margin="10">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -40,13 +43,14 @@
     
     <TextBlock Text="Loading..."
                x:Name="LastItemText"
-               FontSize="14"
+               FontSize="16"
                Margin="0,0,0,5" />
-    <ProgressBar x:Name="InitProgress"
-                 MinHeight="16"
-                 Value="{Binding InitProgressVal}"
-                 Grid.Row="1"
-                 Margin="0,0,0,5" />
+    <m:MetroProgressBar x:Name="InitProgress"
+                        MinHeight="16"
+                        Value="{Binding InitProgressVal}"
+                        Grid.Row="1"
+                        Margin="0,0,0,5"
+                        Foreground="{DynamicResource AccentColorBrush}" />
     <Button x:Name="ToggleLog"
             Content="Hide Log"
             Grid.Row="2"
@@ -65,4 +69,4 @@
              BorderThickness="1"
              HorizontalScrollBarVisibility="Auto" />
   </Grid>
-</e:Window>
+</m:MetroWindow>

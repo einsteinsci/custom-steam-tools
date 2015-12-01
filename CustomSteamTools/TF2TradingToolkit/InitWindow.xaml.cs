@@ -24,7 +24,7 @@ namespace TF2TradingToolkit
 	/// <summary>
 	/// Interaction logic for InitWindow.xaml
 	/// </summary>
-	public partial class InitWindow : Elysium.Controls.Window
+	public partial class InitWindow : MahApps.Metro.Controls.MetroWindow
 	{
 		public sealed class InitVersatileHandler : VersatileHandlerBase
 		{
@@ -154,7 +154,6 @@ namespace TF2TradingToolkit
 		private void InitWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
 			InitProgress.Value = e.ProgressPercentage;
-			Progress = e.ProgressPercentage;
 
 			double p = e.ProgressPercentage / 100.0;
 			TaskbarInfo.ProgressValue = p;

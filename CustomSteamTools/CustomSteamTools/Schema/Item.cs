@@ -30,7 +30,7 @@ namespace CustomSteamTools.Schema
 		public bool IsProper
 		{ get; set; }
 
-		public long ID
+		public long Defindex
 		{ get; set; }
 
 		public string Description
@@ -86,7 +86,7 @@ namespace CustomSteamTools.Schema
 			Name = (json.proper_name ? "The " : "") + json.item_name;
 			ImproperName = json.item_name;
 			IsProper = json.proper_name;
-			ID = json.defindex;
+			Defindex = json.defindex;
 			Description = json.item_description;
 			Type = json.item_type_name;
 			DefaultQuality = (Quality)json.item_quality;
@@ -115,8 +115,8 @@ namespace CustomSteamTools.Schema
 
 		public bool IsCurrency()
 		{
-			return ID == Price.REF_DEFINDEX || ID == Price.REC_DEFINDEX || 
-				ID == Price.SCRAP_DEFINDEX || ID == Price.KEY_DEFINDEX;
+			return Defindex == Price.REF_DEFINDEX || Defindex == Price.REC_DEFINDEX || 
+				Defindex == Price.SCRAP_DEFINDEX || Defindex == Price.KEY_DEFINDEX;
 		}
 
 		public Price GetCurrencyPrice()
@@ -126,7 +126,7 @@ namespace CustomSteamTools.Schema
 				throw new ArgumentException("Item must be currency.");
 			}
 
-			switch (ID)
+			switch (Defindex)
 			{
 				case Price.REF_DEFINDEX:
 					return Price.OneRef;
@@ -210,7 +210,7 @@ namespace CustomSteamTools.Schema
 		{
 			if (obj is Item)
 			{
-				return (obj as Item).ID == ID;
+				return (obj as Item).Defindex == Defindex;
 			}
 
 			return false;
@@ -218,7 +218,7 @@ namespace CustomSteamTools.Schema
 
 		public override int GetHashCode()
 		{
-			return ID.GetHashCode();
+			return Defindex.GetHashCode();
 		}
 
 		public bool IsBotkiller()
@@ -309,7 +309,7 @@ namespace CustomSteamTools.Schema
 					{
 						if (i.ImproperName == targetImpName)
 						{
-							return i.ID;
+							return i.Defindex;
 						}
 					}
 
@@ -318,7 +318,7 @@ namespace CustomSteamTools.Schema
 			}
 			else if (IsStrangifier())
 			{
-				if (ID == 5633) // strange bacon grease
+				if (Defindex == 5633) // strange bacon grease
 				{
 					return 264; // frying pan
 				}
@@ -348,7 +348,7 @@ namespace CustomSteamTools.Schema
 					{
 						if (i.ImproperName == targetImpName)
 						{
-							return i.ID;
+							return i.Defindex;
 						}
 					}
 				}

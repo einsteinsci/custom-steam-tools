@@ -113,10 +113,16 @@ namespace TF2TradingToolkit.View
 
 			List<ItemPricing> cmdRes = CmdRange.GetInRange(Range, Filters);
 
-			Pricings.Clear();
+			List<ItemPricing> buf = new List<ItemPricing>();
 			for (int i = 0; i < MAX_SHOWN && i < cmdRes.Count; i++)
 			{
-				ItemPricing p = cmdRes[i];
+				buf.Add(cmdRes[i]);
+			}
+			buf.Sort((a, b) => a.Pricing.Low.TotalRefined.CompareTo(b.Pricing.Low.TotalRefined));
+
+			Pricings.Clear();
+			foreach (ItemPricing p in buf)
+			{
 				ItemPriceInfo info = new ItemPriceInfo(p.Item, p.Quality);
 
 				if (info.Quality == Quality.Unusual && p.PriceIndex > 0)

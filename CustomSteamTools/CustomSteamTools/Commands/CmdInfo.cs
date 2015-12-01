@@ -41,7 +41,7 @@ namespace CustomSteamTools.Commands
 
 			VersatileIO.WriteLine(item.ToString(), ConsoleColor.White);
 			VersatileIO.WriteLine("  Description: " + item.Description?.Shorten(120).Replace('\n', ' ') ?? "", ConsoleColor.Gray);
-			VersatileIO.WriteLine("  Defindex: " + item.ID, ConsoleColor.Gray);
+			VersatileIO.WriteLine("  Defindex: " + item.Defindex, ConsoleColor.Gray);
 			VersatileIO.WriteLine("  Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
 			VersatileIO.WriteLine("  Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
 			VersatileIO.WriteLine("  " + item.GetSubtext());
@@ -88,7 +88,7 @@ namespace CustomSteamTools.Commands
 				{
 					if (isNum)
 					{
-						if (i.ID == id)
+						if (i.Defindex == id)
 						{
 							item = i;
 							break;
