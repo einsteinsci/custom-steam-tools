@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSteamTools", "CustomS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TF2TradingToolkit", "TF2TradingToolkit\TF2TradingToolkit.csproj", "{525A557F-1909-49EB-B81D-C0EDACAF9075}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAttachedNotifier", "SteamAttachedNotifier\SteamAttachedNotifier.csproj", "{8BC557BB-6B3D-4B36-966F-4451ECBFCD09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{525A557F-1909-49EB-B81D-C0EDACAF9075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{525A557F-1909-49EB-B81D-C0EDACAF9075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{525A557F-1909-49EB-B81D-C0EDACAF9075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BC557BB-6B3D-4B36-966F-4451ECBFCD09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BC557BB-6B3D-4B36-966F-4451ECBFCD09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BC557BB-6B3D-4B36-966F-4451ECBFCD09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BC557BB-6B3D-4B36-966F-4451ECBFCD09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
