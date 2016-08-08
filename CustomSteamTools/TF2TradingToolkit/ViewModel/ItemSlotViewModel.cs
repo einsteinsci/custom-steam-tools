@@ -78,14 +78,7 @@ namespace TF2TradingToolkit.ViewModel
 			else if (Item.Tradable)
 			{
 				PriceRange? p = PriceChecker.GetPrice(Item);
-				if (p != null)
-				{
-					PriceString = p.ToString();
-				}
-				else
-				{
-					PriceString = "Price Unknown";
-				}
+				PriceString = p != null ? p.ToString() : "Price Unknown";
 			}
 			else
 			{

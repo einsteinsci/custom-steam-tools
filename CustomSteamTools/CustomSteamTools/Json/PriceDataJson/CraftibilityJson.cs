@@ -5,17 +5,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json.Linq;
+
 namespace CustomSteamTools.Json.PriceDataJson
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class CraftibilityJson
 	{
 		[JsonProperty]
-		public Dictionary<string, TypeIndexPricingJson> Craftable
+		public JToken Craftable
 		{ get; private set; }
 
 		[JsonProperty("Non-Craftable")]
-		public Dictionary<string, TypeIndexPricingJson> NonCraftable
+		public JToken NonCraftable
 		{ get; set; }
+
+		public override string ToString()
+		{
+			string res = "";
+
+			if (Craftable != null)
+			{
+				res += "Craftable";
+			}
+
+			if (NonCraftable != null)
+			{
+				if (res != "")
+				{
+					res += ", ";
+				}
+
+				res += "Non-Craftable";
+			}
+
+			return res == "" ? "???" : res;
+		}
 	}
 }

@@ -199,7 +199,7 @@ namespace TF2TradingToolkit
 
 		private void ConsoleBtn_Click(object sender, RoutedEventArgs e)
 		{
-			if (_consoleWindow?.IsShown ?? false)
+			if (_consoleWindow != null && _consoleWindow.IsShown && !_consoleWindow.CommandShutdown)
 			{
 				_consoleWindow.Focus();
 			}

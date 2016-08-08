@@ -8,6 +8,10 @@ using CustomSteamTools.Utils;
 using CustomSteamTools.Schema;
 using CustomSteamTools.Json.PriceDataJson;
 using CustomSteamTools.Classifieds;
+
+using Newtonsoft.Json.Linq;
+
+using UltimateUtil;
 using UltimateUtil.UserInteraction;
 
 namespace CustomSteamTools.Lookup
@@ -93,12 +97,12 @@ namespace CustomSteamTools.Lookup
 					}
 				}
 
-				if (items.Count == 0)
+				if (items.Count == 0 && ipj.defindex.HasItems())
 				{
 					string s_ids = "[ ";
 					foreach (long l in ipj.defindex)
 					{
-						s_ids += l.ToString() + " ";
+						s_ids += l + " ";
 					}
 					s_ids += "]";
 					VersatileIO.Error("Could not find item with any ID among " + s_ids);
@@ -117,25 +121,11 @@ namespace CustomSteamTools.Lookup
 
 						if (cfj.Craftable != null)
 						{
-							foreach (KeyValuePair<string, TypeIndexPricingJson> kvp2 in cfj.Craftable)
-							{
-								TypeIndexPricingJson pricing = kvp2.Value;
-								string priceIndex = kvp2.Key;
-
-								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
-									pricing.value_high, priceIndex, true, true, australium));
-							}
+							AddPricings(MakePricings(cfj.Craftable), items, quality, true, true, australium);
 						}
 						if (cfj.NonCraftable != null)
 						{
-							foreach (KeyValuePair<string, TypeIndexPricingJson> kvp2 in cfj.NonCraftable)
-							{
-								TypeIndexPricingJson pricing = kvp2.Value;
-								string priceIndex = kvp2.Key;
-
-								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
-									pricing.value_high, priceIndex, false, true, australium));
-							}
+							AddPricings(MakePricings(cfj.NonCraftable), items, quality, true, false, australium);
 						}
 					}
 
@@ -145,29 +135,85 @@ namespace CustomSteamTools.Lookup
 
 						if (cfj.Craftable != null)
 						{
-							foreach (KeyValuePair<string, TypeIndexPricingJson> kvp2 in cfj.Craftable)
-							{
-								TypeIndexPricingJson pricing = kvp2.Value;
-								string priceIndex = kvp2.Key;
-
-								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
-									pricing.value_high, priceIndex, true, false, australium));
-							}
+							AddPricings(MakePricings(cfj.Craftable), items, quality, false, true, australium);
 						}
 						if (cfj.NonCraftable != null)
 						{
-							foreach (KeyValuePair<string, TypeIndexPricingJson> kvp2 in cfj.NonCraftable)
-							{
-								TypeIndexPricingJson pricing = kvp2.Value;
-								string priceIndex = kvp2.Key;
-
-								Prices.Add(new ItemPricing(items, quality, pricing.currency, pricing.value, 
-									pricing.value_high, priceIndex, false, false, australium));
-							}
+							AddPricings(MakePricings(cfj.NonCraftable), items, quality, false, false, australium);
 						}
 					}
 				}
 			}
 		} // Sheesh...Thanks a ton backpack.tf...
+
+		public static Dictionary<string, TypeIndexPricingJson> MakePricings(JToken json)
+		{
+			Dictionary<string, TypeIndexPricingJson> res = new Dictionary<string, TypeIndexPricingJson>();
+
+			JArray arr = json as JArray;
+			if (arr != null)
+			{
+				dynamic dyn = json;
+
+				for (int i = 0; i < arr.Count; i++)
+				{
+					if (dyn[i].currency == null)
+					{
+						continue;
+					}
+
+					TypeIndexPricingJson tipj = new TypeIndexPricingJson
+					{
+						currency = dyn[i].currency,
+						last_update = (long)(dyn[i].last_update ?? 0),
+						difference = dyn[i].difference ?? 0,
+						value = dyn[i].value ?? 0,
+						value_high = dyn[i].value_high ?? (dyn[i].value ?? 0)
+					};
+
+					res.Add(i.ToString(), tipj);
+				}
+
+				return res;
+			}
+
+			JObject obj = json as JObject;
+			if (obj != null)
+			{
+				foreach (var kvp in obj)
+				{
+					string idx = kvp.Key;
+
+					dynamic dyn = kvp.Value;
+
+					TypeIndexPricingJson tipj = new TypeIndexPricingJson
+					{
+						currency = dyn.currency,
+						last_update = dyn.last_update,
+						difference = dyn.difference,
+						value = dyn.value,
+						value_high = dyn.value_high ?? dyn.value
+					};
+
+					res.Add(idx, tipj);
+				}
+
+				return res;
+			}
+
+			return res;
+		}
+
+		public void AddPricings(Dictionary<string, TypeIndexPricingJson> dict, List<Item> items, Quality quality,
+			bool tradable, bool craftable, bool australium)
+		{
+			foreach (KeyValuePair<string, TypeIndexPricingJson> kvp in dict)
+			{
+				TypeIndexPricingJson p = kvp.Value;
+				string idx = kvp.Key;
+
+				Prices.Add(new ItemPricing(items, quality, p.currency, p.value, p.value_high, idx, craftable, tradable, australium));
+			}
+		}
 	}
 }

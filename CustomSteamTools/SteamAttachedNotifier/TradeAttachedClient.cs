@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SteamAttachedNotifier.Events;
 using SteamKit2;
+#pragma warning disable 67
 
 namespace SteamAttachedNotifier
 {

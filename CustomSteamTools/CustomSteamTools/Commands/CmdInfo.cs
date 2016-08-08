@@ -45,7 +45,7 @@ namespace CustomSteamTools.Commands
 			VersatileIO.WriteLine("  Slot: {0} ({1})".Fmt(item.PlainSlot, item.Slot), ConsoleColor.Gray);
 			VersatileIO.WriteLine("  Classes: " + item.ValidClasses.ToReadableString(includeBraces: false));
 			VersatileIO.WriteLine("  " + item.GetSubtext());
-			VersatileIO.WriteComplex("  Default Quality: {0}" + item.DefaultQuality.ToString(), item.DefaultQuality.GetColor());
+			VersatileIO.WriteComplex("  Default Quality: {0}" + item.DefaultQuality, item.DefaultQuality.GetColor());
 			if (!item.Styles.IsNullOrEmpty())
 			{
 				VersatileIO.WriteLine("  Styles: " + item.Styles.ToReadableString(includeBraces: false));
@@ -104,7 +104,7 @@ namespace CustomSteamTools.Commands
 					}
 				}
 
-				foreach (Skin s in GunMettleSkins.Skins)
+				foreach (Skin s in WeaponSkins.Skins)
 				{
 					if (s.Name.EqualsIgnoreCase(query))
 					{

@@ -28,13 +28,13 @@ namespace CustomSteamTools.Utils
 		}
 
 		public RetrievalFailedException(RetrievalType retrieval) : 
-			base("Unable to retrieve " + retrieval.ToString())
+			base("Unable to retrieve " + retrieval)
 		{
 			Retrieval = retrieval;
 		}
 
 		public RetrievalFailedException(RetrievalType retrieval, Exception inner) : 
-			base("Unable to retrieve " + retrieval.ToString(), inner)
+			base("Unable to retrieve " + retrieval, inner)
 		{
 			Retrieval = retrieval;
 		}

@@ -145,11 +145,13 @@ namespace CustomSteamTools.Commands
 			}
 			#endregion props
 
-			ListingProperties props = new ListingProperties();
-			props.Quality = quality;
-			props.Australium = australium;
-			props.Craftable = craftable;
-			props.Tradable = tradable;
+			ListingProperties props = new ListingProperties
+			{
+				Quality = quality,
+				Australium = australium,
+				Craftable = craftable,
+				Tradable = tradable
+			};
 
 			List<ClassifiedsListing> res = GetListings(item, props, orderType);
 

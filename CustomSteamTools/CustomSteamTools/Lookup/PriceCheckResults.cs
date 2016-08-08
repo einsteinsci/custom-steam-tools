@@ -128,7 +128,7 @@ namespace CustomSteamTools.Lookup
 			}
 			if (HasUnusuals)
 			{
-				options.Add("u", Unusuals.Count.ToString() + " Unusual Effects");
+				options.Add("u", Unusuals.Count + " Unusual Effects");
 			}
 			return options;
 		}

@@ -78,8 +78,9 @@
                      Height="48"
                      Width="48" />
               <TextBlock Text="{Binding Name}"
-                         FontSize="24"
+                         FontSize="20"
                          VerticalAlignment="Center"
+                         TextTrimming="CharacterEllipsis"
                          Grid.Column="1"
                          Margin="5,0,0,0" />
               <Label Content="{Binding QualityPriceUI}"
@@ -288,9 +289,10 @@
                      Height="64" />
               <TextBlock Text="{Binding ItemString}"
                          Grid.Column="1"
-                         FontSize="24"
+                         FontSize="20"
                          VerticalAlignment="Center"
-                         HorizontalAlignment="Left" />
+                         HorizontalAlignment="Left"
+                         TextTrimming="CharacterEllipsis" />
               <Label Content="{Binding PriceTag}"
                      VerticalAlignment="Center"
                      Grid.Column="2" />

@@ -19,10 +19,16 @@ namespace CustomSteamTools.Json.PriceDataJson
 		public double value_high
 		{ get; set; }
 
-		public int last_update
+		public long last_update
 		{ get; set; }
 
 		public double difference
 		{ get; set; }
+
+		public override string ToString()
+		{
+			return $"Currency: {currency}, Value: {value}, Value (High): {value_high}, " + 
+				$"Last Update: {last_update}, Difference: {difference}";
+		}
 	}
 }

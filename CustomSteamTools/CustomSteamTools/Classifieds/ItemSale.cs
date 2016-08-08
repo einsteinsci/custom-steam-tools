@@ -94,8 +94,8 @@ namespace CustomSteamTools.Classifieds
 			ClassifiedsListing cheapest = CheapestSeller;
 
 			res += Pricing.ToUnpricedString();
-			res += " > Starting at " + cheapest.Price.ToString();
-			res += " (" + Profit.ToString() + " profit)";
+			res += " > Starting at " + cheapest.Price;
+			res += " (" + Profit + " profit)";
 			res += " from " + (cheapest.ListerNickname ?? cheapest.ListerSteamID64);
 
 			return res;
@@ -144,9 +144,9 @@ namespace CustomSteamTools.Classifieds
 			res.Add(" > Starting at ");
 
 			res.Add(ConsoleColor.Gray);
-			res.Add(cheapest.Price.ToString() + " (");
+			res.Add(cheapest.Price + " (");
 			res.Add(ConsoleColor.White);
-			res.Add(Profit.ToString() + " profit");
+			res.Add(Profit + " profit");
 
 			res.Add(ConsoleColor.Gray);
 			res.Add(") from ");

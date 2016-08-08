@@ -37,24 +37,24 @@ namespace CustomSteamTools.Market
 		{
 			string s = input.ToLower().Trim();
 
-			if (s == "" || s == "none")
+			if (s == "" || s == "none" || s == "0")
 			{
 				return KillstreakType.None;
 			}
 
-			if (s == "killstreak" || s == "basic" || s == "ks")
+			if (s == "killstreak" || s == "basic" || s == "ks" || s == "1")
 			{
 				return KillstreakType.Basic;
 			}
 
 			if (s == "specialized killstreak" || s == "specialized" || 
-				s == "spec" || s == "spec ks")
+				s == "spec" || s == "spec ks" || s == "2")
 			{
 				return KillstreakType.Specialized;
 			}
 
 			if (s == "professional killstreak" || s == "professional" || 
-				s == "prof" || s == "prof ks")
+				s == "prof" || s == "prof ks" || s == "3")
 			{
 				return KillstreakType.Professional;
 			}

@@ -34,7 +34,7 @@ namespace CustomSteamTools.Classifieds
 				filters = new DealsFilters();
 			}
 			
-			VersatileIO.Info("Filters: " + filters.ToString());
+			VersatileIO.Info("Filters: " + filters);
 			
 			Price? max = GetMaxPrice();
 			if (max == null)

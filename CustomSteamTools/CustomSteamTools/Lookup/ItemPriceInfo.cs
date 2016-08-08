@@ -63,7 +63,7 @@ namespace CustomSteamTools.Lookup
 			Item = item;
 			Quality = quality;
 			Killstreak = KillstreakType.None;
-			_skin = Item.GetSkin();
+			_skin = Item?.GetSkin();
 
 			Craftable = true;
 			Tradable = true;
@@ -95,16 +95,16 @@ namespace CustomSteamTools.Lookup
 
 		public override string ToString()
 		{
-			string res = Item.ToString(Quality, Australium, Killstreak);
+			string res = Item?.ToString(Quality, Australium, Killstreak) ?? "NULL";
 			if (Unusual != null)
 			{
-				res += " (" + Unusual.ToString() + ")";
+				res += " (" + Unusual + ")";
 			}
-			else if (IsCrate)
+			else if (IsCrate && CrateSeries != null)
 			{
-				res += " No. " + CrateSeries.Value.ToString();
+				res += " No. " + CrateSeries.Value;
 			}
-			else if (Skin != null)
+			else if (Skin != null && SkinWear != null)
 			{
 				res += " (" + SkinWear.Value.ToReadableString() + ")";
 			}

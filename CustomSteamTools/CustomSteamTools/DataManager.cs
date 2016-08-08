@@ -114,12 +114,12 @@ namespace CustomSteamTools
 		public static void Initialize()
 		{
 			string _cachelocation = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "CUSTOM-STEAM-TOOLS");
-			string _bptffilename = "bptf-pricedata.json";
-			string _itemfilename = "tf2-itemdata.json";
-			string _bpdatafilename = "steam-backpackdata-homeuser.json";
-			string _marketfilename = "bptf-marketdata.json";
-			string _friendsfilename = "friendslist-homeuser.json";
-			Initialize(_cachelocation, _bptffilename, _itemfilename, _bpdatafilename, _marketfilename, _friendsfilename);
+			const string BPTF_FILENAME = "bptf-pricedata.json";
+			const string ITEM_FILENAME = "tf2-itemdata.json";
+			const string BP_DATA_FILENAME = "steam-backpackdata-homeuser.json";
+			const string MARKET_FILENAME = "bptf-marketdata.json";
+			const string FRIENDS_FILENAME = "friendslist-homeuser.json";
+			Initialize(_cachelocation, BPTF_FILENAME, ITEM_FILENAME, BP_DATA_FILENAME, MARKET_FILENAME, FRIENDS_FILENAME);
 
 			BackpackCaches = new Dictionary<string, string>();
 			BackpackDataRaw = new Dictionary<string, TF2BackpackJson>();
@@ -310,7 +310,6 @@ namespace CustomSteamTools
 				offline = false;
 			}
 
-			DateTime currentAccess = DateTime.Now;
 			bool failed = false;
 			string friendsListCache = null;
 			if (!offline)
@@ -330,7 +329,7 @@ namespace CustomSteamTools
 
 			if (friendsListCache != null)
 			{
-				FriendsListJson listjson = null;
+				FriendsListJson listjson;
 				try
 				{
 					listjson = JsonConvert.DeserializeObject<FriendsListJson>(friendsListCache);
@@ -715,8 +714,13 @@ namespace CustomSteamTools
 			PriceDataRaw = JsonConvert.DeserializeObject<BpTfPriceDataJson>(PricesCache);
 			VersatileIO.Verbose("  Parse complete.");
 
-			Price.RefinedPerKey = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX)
-				.prices["6"].Tradable.Craftable["0"].value;
+			CraftibilityJson tradable = PriceDataRaw.response.GetDataFromID(Price.KEY_DEFINDEX).prices["6"].Tradable;
+			dynamic craftable = tradable.Craftable;
+			Price.RefinedPerKey = craftable[0].value;
+
+			tradable = PriceDataRaw.response.GetDataFromID(Price.TEXAS_TEN_GALLON_DEFINDEX).prices["6"].Tradable;
+			craftable = tradable.Craftable;
+			Price.RefinedPerHat = craftable[0].value;
 
 			return PriceDataRaw;
 		}
@@ -829,7 +833,7 @@ namespace CustomSteamTools
 				}
 				catch (RetrievalFailedException e)
 				{
-					VersatileIO.Fatal("Details: " + e.ToString());
+					VersatileIO.Fatal("Details: " + e);
 					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
 					FireProgressChanged(worker, pct, true);
 

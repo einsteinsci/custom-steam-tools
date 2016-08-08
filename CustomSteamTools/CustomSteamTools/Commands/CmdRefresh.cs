@@ -81,7 +81,7 @@ namespace CustomSteamTools.Commands
 				}
 				catch (RetrievalFailedException e)
 				{
-					VersatileIO.Fatal("Details: " + e.ToString());
+					VersatileIO.Fatal("Details: " + e);
 					VersatileIO.Warning("Retrieval failed. Attempting again in 10 seconds.");
 
 					Thread.Sleep(10000);

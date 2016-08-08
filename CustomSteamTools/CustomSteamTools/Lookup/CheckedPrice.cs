@@ -68,7 +68,7 @@ namespace CustomSteamTools.Lookup
 		{
 			if (Skin != null)
 			{
-				return SkinWear.Value.ToReadableString() + " " + Skin.Name + ": " + Price.ToString();
+				return SkinWear.Value.ToReadableString() + " " + Skin.Name + ": " + Price;
 			}
 			else
 			{

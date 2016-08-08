@@ -61,7 +61,7 @@ namespace CustomSteamTools.Commands
 				{
 					if (!item.Item.IsCheapWeapon() || !noWeapons)
 					{
-						VersatileIO.WriteLine("  " + item.ToString() + ": Not Tradable", ConsoleColor.DarkGray);
+						VersatileIO.WriteLine("  " + item + ": Not Tradable", ConsoleColor.DarkGray);
 					}
 					continue;
 				}
@@ -72,7 +72,7 @@ namespace CustomSteamTools.Commands
 				string priceString = "&cUNKNOWN";
 				if (price != null)
 				{
-					priceString = "&f" + price.Value.ToString();
+					priceString = "&f" + price.Value;
 
 					netWorth += price.Value;
 				}
@@ -95,14 +95,14 @@ namespace CustomSteamTools.Commands
 
 					if (price != null)
 					{
-						priceString = qualityMarker + price.Value.ToString();
+						priceString = qualityMarker + price.Value;
 					}
 				}
 
 				if (item.Item.IsCurrency())
 				{
 					qualityMarker = "&f";
-					priceString = qualityMarker + item.Item.GetCurrencyPrice().ToString();
+					priceString = qualityMarker + item.Item.GetCurrencyPrice();
 
 					totalPure += item.Item.GetCurrencyPrice();
 				}
@@ -114,11 +114,11 @@ namespace CustomSteamTools.Commands
 					prefix += "&a[New] ";
 				}
 
-				VersatileIO.WriteComplex(prefix + qualityMarker + item.ToString() + "&7: " + priceString);
+				VersatileIO.WriteComplex(prefix + qualityMarker + item + "&7: " + priceString);
 			}
 
-			VersatileIO.Info("Net worth: " + netWorth.ToString());
-			VersatileIO.Info("Total pure: " + totalPure.ToString());
+			VersatileIO.Info("Net worth: " + netWorth);
+			VersatileIO.Info("Total pure: " + totalPure);
 		}
 
 		public static Backpack GetBackpack(string id)

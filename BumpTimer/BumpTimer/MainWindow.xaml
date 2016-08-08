@@ -9,7 +9,8 @@
         Icon="clock.ico"
         MaxHeight="200" MaxWidth="800"
         MinHeight="130" MinWidth="300"
-        Height="140" Width="400" Initialized="Window_Initialized" Activated="Window_Activated">
+        Height="160" Width="400" Initialized="Window_Initialized" Activated="Window_Activated"
+        Loaded="Window_Loaded">
   <Window.TaskbarItemInfo>
     <TaskbarItemInfo x:Name="taskbarItemInfo">
       <TaskbarItemInfo.ThumbButtonInfos>
@@ -26,13 +27,39 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     
     <ProgressBar x:Name="timerBar" 
                  Value="100"
-                 Margin="5" />
+                 Margin="5,5,5,0" />
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      
+      <Slider x:Name="timeSlider"
+              Minimum="1"
+              Maximum="120"
+              Value="30"
+              Margin="5"
+              ValueChanged="timeSlider_ValueChanged"
+              SmallChange="1"
+              LargeChange="5"
+              ToolTip="Time between rings"
+              IsSnapToTickEnabled="True" />
+      <TextBlock x:Name="maxTimeText"
+                 Grid.Column="1"
+                 Text="0:30:00"
+                 FontSize="14.667"
+                 Margin="5,0,10,0"
+                 VerticalAlignment="Center"
+                 Width="48"
+                 TextAlignment="Right" />
+    </Grid>
     <TextBlock x:Name="timerText"
-               Grid.Row="1"
+               Grid.Row="2"
                Text="30:00"
                FontSize="32"
                FontWeight="Bold"
@@ -40,7 +67,7 @@
                VerticalAlignment="Center"
                Margin="5,0,5,5" />
     <Button x:Name="timerResetBtn"
-            Grid.Row="1"
+            Grid.Row="2"
             Content="Click to Reset"
             FontSize="24"
             FontWeight="Bold"

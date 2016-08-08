@@ -18,7 +18,7 @@ namespace CustomSteamTools.Json.ItemDataJson
 
 		public override string ToString()
 		{
-			return type + " (" + usage_capabilities.ToString() + ")";
+			return type + " (" + usage_capabilities + ")";
 		}
 	}
 
@@ -30,7 +30,7 @@ namespace CustomSteamTools.Json.ItemDataJson
 
 		public override string ToString()
 		{
-			return "decodable: " + decodable.ToString();
+			return "decodable: " + decodable;
 		}
 	}
 }

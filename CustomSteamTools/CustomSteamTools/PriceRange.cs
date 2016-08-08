@@ -87,7 +87,7 @@ namespace CustomSteamTools
 				return Low.ToString();
 			}
 
-			return Low.ToString() + " - " + High.ToString();
+			return Low + " - " + High;
 		}
 
 		public string ToStringUSD()

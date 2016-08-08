@@ -9,8 +9,8 @@
                xmlns:v="clr-namespace:TF2TradingToolkit.View"
                xmlns:m="http://metro.mahapps.com/winfx/xaml/controls"
                mc:Ignorable="d"
-               Height="768"
-               Width="1415"
+               Width="1430"
+               Height="680"
                Title="TF2 Trading Toolkit"
                GlowBrush="{DynamicResource AccentColorBrush}"
                WindowStartupLocation="CenterScreen"
@@ -18,8 +18,8 @@
                Initialized="Window_Initialized"
                Icon="assets/smallnflat_wrench-screwdriver-24x-buf.png"
                Loaded="Window_Loaded"
-               MinWidth="1415"
-               MinHeight="768">
+               MinWidth="1260"
+               MinHeight="680">
   <Window.TaskbarItemInfo>
     <TaskbarItemInfo x:Name="ItemInfo" />
   </Window.TaskbarItemInfo>

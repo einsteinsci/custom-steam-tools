@@ -18,7 +18,7 @@ namespace CustomSteamTools.Json.BackpackDataJson
 
 		public override string ToString()
 		{
-			return "Class " + @class.ToString() + ": slot " + slot.ToString();
+			return "Class " + @class + ": slot " + slot;
 		}
 	}
 }

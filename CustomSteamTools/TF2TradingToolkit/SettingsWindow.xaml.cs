@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CustomSteamTools.Utils;
 using UltimateUtil;
-using UltimateUtil.UserInteraction;
 
 namespace TF2TradingToolkit
 {
@@ -26,7 +25,7 @@ namespace TF2TradingToolkit
 		public Settings Instance
 		{ get; private set; }
 
-		private bool _loaded = false;
+		private bool _loaded;
 
 		public SettingsWindow()
 		{

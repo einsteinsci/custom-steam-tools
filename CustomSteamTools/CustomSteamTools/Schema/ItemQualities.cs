@@ -133,7 +133,7 @@ namespace CustomSteamTools.Schema
 			ConsoleColor color = q.GetColor();
 			byte b = (byte)color;
 			string hex = b.ToString("X").ToLower();
-			return esc.ToString() + hex;
+			return esc + hex;
 		}
 	}
 }

@@ -125,7 +125,7 @@ namespace CustomSteamTools.Classifieds
 				return "Not Tradable";
 			}
 
-			return (Pricing.IsOnePrice ? "~" : "") + Pricing.ToString();
+			return (Pricing.IsOnePrice ? "~" : "") + Pricing;
 		}
 
 		public override string ToString()
@@ -134,7 +134,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (PriceIndex != 0)
 			{
-				res += " [" + PriceIndex.ToString() + "]";
+				res += " [" + PriceIndex + "]";
 			}
 
 			res += ": " + GetPriceString();
@@ -162,7 +162,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (PriceIndex != 0)
 			{
-				res += " [" + PriceIndex.ToString() + "]";
+				res += " [" + PriceIndex + "]";
 			}
 
 			if (Australium)

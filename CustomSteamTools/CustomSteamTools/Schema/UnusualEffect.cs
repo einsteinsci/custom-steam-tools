@@ -24,7 +24,7 @@ namespace CustomSteamTools.Schema
 
 		public override string ToString()
 		{
-			return "#" + ID.ToString() + ": " + Name;
+			return "#" + ID + ": " + Name;
 		}
 	}
 }

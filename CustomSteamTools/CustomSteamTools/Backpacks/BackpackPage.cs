@@ -73,7 +73,7 @@ namespace CustomSteamTools.Backpacks
 				}
 			}
 
-			return "Page " + PageID.ToString() + ": " + notNull + " items";
+			return "Page " + PageID + ": " + notNull + " items";
 		}
 	}
 }

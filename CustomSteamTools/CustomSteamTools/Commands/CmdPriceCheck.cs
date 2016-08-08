@@ -54,12 +54,12 @@ namespace CustomSteamTools.Commands
 			}
 			foreach (CheckedPrice c in results.Uniques)
 			{
-				VersatileIO.WriteLine("  " + c.ToString(), c.Quality.GetColor());
+				VersatileIO.WriteLine("  " + c, c.Quality.GetColor());
 			}
 
 			foreach (CheckedPrice c in results.Others)
 			{
-				VersatileIO.WriteLine("  " + c.ToString(), c.Quality.GetColor());
+				VersatileIO.WriteLine("  " + c, c.Quality.GetColor());
 			}
 
 			if (results.HasUnusuals)
@@ -76,7 +76,7 @@ namespace CustomSteamTools.Commands
 						total += u.Pricing.Pricing.Mid;
 					}
 					Price avg = total / results.Unusuals.Count;
-					VersatileIO.Info("Average Unusual Price: " + avg.ToString());
+					VersatileIO.Info("Average Unusual Price: " + avg);
 				}
 			}
 		}

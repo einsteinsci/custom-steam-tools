@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Schema;
 
+using UltimateUtil;
+
 namespace CustomSteamTools.Skins
 {
 	public class Skin
@@ -16,7 +18,7 @@ namespace CustomSteamTools.Skins
 		public string UnlocalizedName
 		{ get; private set; }
 
-		public GunMettleCase Collection
+		public CaseType Collection
 		{ get; private set; }
 
 		public SkinGrade Grade
@@ -27,7 +29,7 @@ namespace CustomSteamTools.Skins
 
 		public string Description => Grade.ToReadableString() + " " + BaseWeapon;
 
-		public Skin(string name, string weapon, GunMettleCase collection, SkinGrade grade)
+		public Skin(string name, string weapon, CaseType collection, SkinGrade grade)
 		{
 			Name = name;
 			BaseWeapon = weapon;
@@ -36,8 +38,8 @@ namespace CustomSteamTools.Skins
 
 			string weaponDesc = weapon.ToLower().Replace(" ", "");
 
-			UnlocalizedName = collection.GetPrefixString() + weaponDesc + "_" +
-				Name.ToLower().Replace(" ", "").Replace(",", "").Replace("-", "");
+			UnlocalizedName = collection.GetPrefixString() + "_" + weaponDesc + "_" +
+				Name.ToLower().RemoveChars(' ', ',', '-', '\'');
 		}
 
 		public string GetMarketHash(SkinWear? wear)
@@ -65,7 +67,7 @@ namespace CustomSteamTools.Skins
 
 		public override string ToString()
 		{
-			return Name + " (" + Collection.ToString() + ")";
+			return Name + " " + BaseWeapon + " (" + Collection + ")";
 		}
 	}
 }

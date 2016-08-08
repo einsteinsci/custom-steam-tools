@@ -34,7 +34,7 @@ namespace CustomSteamTools.Commands
 			string query = string.Join(" ", args);
 
 			Skin skin = null;
-			foreach (Skin s in GunMettleSkins.Skins)
+			foreach (Skin s in WeaponSkins.Skins)
 			{
 				if (s.Name.EqualsIgnoreCase(query))
 				{
@@ -49,7 +49,7 @@ namespace CustomSteamTools.Commands
 				VersatileIO.WriteLine("Searching skins...", ConsoleColor.Gray);
 
 				List<Skin> matches = new List<Skin>();
-				foreach (Skin s in GunMettleSkins.Skins)
+				foreach (Skin s in WeaponSkins.Skins)
 				{
 					if (s.Name.ContainsIgnoreCase(query))
 					{
@@ -93,8 +93,7 @@ namespace CustomSteamTools.Commands
 			Dictionary<SkinWear, Price> prices = GetSkinPrices(skin);
 
 			VersatileIO.Write("Skin: ", ConsoleColor.White);
-			VersatileIO.WriteLine("{0} ({1} {2})".Fmt(skin.Name, skin.Grade.ToReadableString(), 
-				skin.BaseWeapon), skin.Grade.GetColor());
+			VersatileIO.WriteLine($"{skin.Name} ({skin.Grade.ToReadableString()} {skin.BaseWeapon})", skin.Grade.GetColor());
 
 			prices.ForEach((w, p) => 
 			{

@@ -24,7 +24,7 @@ namespace CustomSteamTools.Json.ItemDataJson
 
 		public override string ToString()
 		{
-			return @class + ": " + value.ToString();
+			return @class + ": " + value;
 		}
 	}
 }

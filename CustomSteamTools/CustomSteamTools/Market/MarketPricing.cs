@@ -73,7 +73,8 @@ namespace CustomSteamTools.Market
 				hash.StartsWith("Strange Filter:") || 
 				hash.StartsWith("Strange Cosmetic Part:") ||
 				hash == "Naughty Winter Crate Key 2014" ||	// these aren't even usable anymore
-				hash == "Nice Winter Crate Key 2014")
+				hash == "Nice Winter Crate Key 2014" ||
+				hash == "Strange Count Transfer Tool")
 			{
 				Failed = true;
 				return;
@@ -86,7 +87,13 @@ namespace CustomSteamTools.Market
 		{
 			string hash = hashStart.Trim();
 
-			#region qualites
+			bool isFestive = hash.StartsWith("Festive ");
+			if (isFestive)
+			{
+				hash = hash.Substring("Festive ".Length);
+			}
+
+			#region qualities
 			bool hasQualitiesLeft = true;
 			Quality? q = null;
 			while (hasQualitiesLeft) // Sometimes items glitch into having multiple qualities.
@@ -104,7 +111,13 @@ namespace CustomSteamTools.Market
 				hash = res.Item2;
 			}
 			Quality = q.Value;
-			#endregion qualites
+			#endregion qualities
+
+			isFestive = hash.StartsWith("Festive ");
+			if (isFestive)
+			{
+				hash = hash.Substring("Festive ".Length);
+			}
 
 			Tuple<KillstreakType, string> ksRes = GetKillstreakFromHash(hash);
 			Killstreak = ksRes.Item1;
@@ -115,7 +128,7 @@ namespace CustomSteamTools.Market
 			hash = swRes.Item2;
 
 			#region skin
-			foreach (Skin s in GunMettleSkins.Skins)
+			foreach (Skin s in WeaponSkins.Skins)
 			{
 				if (s.GetMarketHash(Wear) == hashPreSkin)
 				{
@@ -129,6 +142,11 @@ namespace CustomSteamTools.Market
 			{
 				VersatileIO.Error("No skin was found for skin '{0}'.", hashPreSkin);
 				return true;
+			}
+
+			if (isFestive)
+			{
+				hash = "Festive " + hash;
 			}
 			#endregion
 
@@ -167,7 +185,7 @@ namespace CustomSteamTools.Market
 				hash = "Pile of Robo Community Crate Key Gifts";
 			}
 
-			if (hash.Contains("Creature’s Grin"))
+			if (hash.Contains("Creature’s Grin")) // yes, that is a stylized apostrophe
 			{
 				Item = lookup.GetItem(30525); // do it manually.
 			}

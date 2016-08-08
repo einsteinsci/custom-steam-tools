@@ -18,6 +18,8 @@ using CustomSteamTools.Classifieds;
 using CustomSteamTools.Commands;
 using CustomSteamTools.Lookup;
 using CustomSteamTools.Schema;
+using CustomSteamTools.Utils;
+
 using TF2TradingToolkit.ViewModel;
 using UltimateUtil;
 
@@ -85,6 +87,31 @@ namespace TF2TradingToolkit.View
 			MaxPriceUnitCombo.Items.Add(new PriceUnitViewModel(Price.CURRENCY_KEYS));
 			MaxPriceUnitCombo.Items.Add(new PriceUnitViewModel(Price.CURRENCY_CASH));
 
+			Price min = new Price(Settings.Instance.RangeLastMinPrice);
+			Price max = new Price(Settings.Instance.RangeLastMaxPrice);
+
+			if (min.TotalKeys >= 2.0)
+			{
+				MinPriceBox.Text = min.TotalKeys.ToString();
+				MinPriceUnitCombo.SelectedIndex = 1;
+			}
+			else
+			{
+				MinPriceBox.Text = min.TotalRefined.ToString();
+				MinPriceUnitCombo.SelectedIndex = 0;
+			}
+
+			if (max.TotalKeys >= 2.0)
+			{
+				MaxPriceBox.Text = max.TotalKeys.ToString();
+				MaxPriceUnitCombo.SelectedIndex = 1;
+			}
+			else
+			{
+				MaxPriceBox.Text = max.TotalRefined.ToString();
+				MaxPriceUnitCombo.SelectedIndex = 0;
+			}
+
 			_loaded = true;
 
 			OwnerWindow = window;
@@ -137,12 +164,12 @@ namespace TF2TradingToolkit.View
 
 			if (cmdRes.Count > MAX_SHOWN)
 			{
-				PricingsCountTxt.Text = Pricings.Count.ToString() + " pricings shown (" +
-					cmdRes.Count.ToString() + " results found)";
+				PricingsCountTxt.Text = Pricings.Count + " pricings shown (" +
+					cmdRes.Count + " results found)";
 			}
 			else
 			{
-				PricingsCountTxt.Text = Pricings.Count.ToString() + " pricings found matching filters";
+				PricingsCountTxt.Text = Pricings.Count + " pricings found matching filters";
 			}
 		}
 
@@ -174,6 +201,9 @@ namespace TF2TradingToolkit.View
 					tooltip += Environment.NewLine + " - " + MinPrice.TotalUSD.ToCurrency();
 				}
 				MinPriceBox.ToolTip = tooltip;
+
+				Settings.Instance.RangeLastMinPrice = MinPrice.TotalRefined;
+				Settings.Instance.SaveOnOtherThread();
 			}
 			else
 			{
@@ -214,7 +244,7 @@ namespace TF2TradingToolkit.View
 				string tooltip = "Equivalent to:";
 				if (SelectedMaxUnit.Unit != Price.CURRENCY_REF)
 				{
-					tooltip += Environment.NewLine + " - " + MaxPrice.TotalRefined.ToString() + " ref";
+					tooltip += Environment.NewLine + " - " + MaxPrice.TotalRefined + " ref";
 				}
 				if (SelectedMaxUnit.Unit != Price.CURRENCY_KEYS)
 				{
@@ -225,6 +255,9 @@ namespace TF2TradingToolkit.View
 					tooltip += Environment.NewLine + " - " + MaxPrice.TotalUSD.ToCurrency();
 				}
 				MaxPriceBox.ToolTip = tooltip;
+
+				Settings.Instance.RangeLastMaxPrice = MaxPrice.TotalRefined;
+				Settings.Instance.SaveOnOtherThread();
 			}
 			else
 			{

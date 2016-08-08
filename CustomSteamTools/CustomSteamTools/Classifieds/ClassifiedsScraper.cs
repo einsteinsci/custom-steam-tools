@@ -30,12 +30,12 @@ namespace CustomSteamTools.Classifieds
 		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
-			string url = "http://backpack.tf/classifieds?item=";
+			string url = "https://backpack.tf/classifieds?item=";
 			url += item.ImproperName;
-			url += "&quality=" + ((int)quality).ToString();
-			url += "&tradable=" + (tradable ? 1 : -1).ToString();
-			url += "&craftable=" + (craftable ? 1 : -1).ToString();
-			url += "&australium=" + (australium ? 1 : -1).ToString();
+			url += "&quality=" + (int)quality;
+			url += "&tradable=" + (tradable ? 1 : -1);
+			url += "&craftable=" + (craftable ? 1 : -1);
+			url += "&australium=" + (australium ? 1 : -1);
 			url += "&killstreak_tier=0";
 			
 			VersatileIO.Verbose("Downloading listings from {0}...", url.Shorten(100, ""));
@@ -52,8 +52,8 @@ namespace CustomSteamTools.Classifieds
 			HtmlNode root = doc.DocumentNode;
 
 			#region sells
-			HtmlNode sellOrderRoot = root.Descendants("ul").Where((n) => n.Attributes.Contains("class") && 
-				n.Attributes["class"].Value == "media-list").FirstOrDefault();
+			HtmlNode sellOrderRoot = root.Descendants("ul").FirstOrDefault(n => n.Attributes.Contains("class") && 
+				n.Attributes["class"].Value == "media-list");
 
 			if (sellOrderRoot == null)
 			{
@@ -78,23 +78,23 @@ namespace CustomSteamTools.Classifieds
 					string sellTradable = sellData.Attributes["data-tradable"]?.Value; // or this
 					string sellCraftable = sellData.Attributes["data-craftable"]?.Value; // or this
 					string sellQuality = sellData.Attributes["data-quality"].Value; // or even this
-					string sellComment = sellData.Attributes["data-listing-comment"]?.Value;
-					string sellPrice = sellData.Attributes["data-listing-price"].Value;
-					string sellLevel = sellData.Attributes["data-level"].Value;
+					string sellComment = sellData.Attributes["data-listing_comment"]?.Value;
+					string sellPrice = sellData.Attributes["data-listing_price"].Value;
+					string sellLevel = sellData.Attributes["data-level"]?.Value ?? "-1";
 					string sellID = sellData.Attributes["data-id"].Value;
-					string sellerSteamID64 = sellData.Attributes["data-listing-steamid"].Value;
-					string sellerNickname = sellData.Attributes["data-listing-name"]?.Value;
-					string sellOfferUrl = sellData.Attributes["data-listing-offers-url"]?.Value;
-					string sellOriginalID = sellData.Attributes["data-original-id"]?.Value;
-					string sellCustomName = sellData.Attributes["data-custom-name"]?.Value;
-					string sellCustomDesc = sellData.Attributes["data-custom-desc"]?.Value;
-					string sellBuyoutOnly = sellData.Attributes["data-listing-buyout"]?.Value ?? "0";
+					string sellerSteamID64 = sellData.Attributes["data-listing_account_id"].Value;
+					string sellerNickname = sellData.Attributes["data-listing_name"]?.Value;
+					string sellOfferUrl = sellData.Attributes["data-listing_offers_url"]?.Value;
+					string sellOriginalID = sellData.Attributes["data-original_id"]?.Value;
+					string sellCustomName = sellData.Attributes["data-custom_name"]?.Value;
+					string sellCustomDesc = sellData.Attributes["data-custom_desc"]?.Value;
+					string sellBuyoutOnly = sellData.Attributes["data-listing_buyout"]?.Value ?? "0";
 					string sellMarketName = sellData.Attributes["data-market-name"]?.Value;
 
 					if (sellMarketName != null)
 					{
 						MarketPricing mp = DataManager.MarketPrices.GetPricing(sellMarketName);
-						if (mp != null && mp.GunMettleSkin != null)
+						if (mp?.GunMettleSkin != null)
 						{
 							foundItem = mp.GunMettleSkin.GetItemForm(DataManager.Schema);
 						}
@@ -123,8 +123,8 @@ namespace CustomSteamTools.Classifieds
 			#endregion sells
 
 			#region buys
-			HtmlNode buyOrderRoot = root.Descendants("ul").Where((n) => n.Attributes.Contains("class") &&
-				n.Attributes["class"].Value == "media-list").LastOrDefault();
+			HtmlNode buyOrderRoot = root.Descendants("ul").LastOrDefault(n => n.Attributes.Contains("class") &&
+				n.Attributes["class"].Value == "media-list");
 
 			if (buyOrderRoot == null)
 			{
@@ -149,17 +149,17 @@ namespace CustomSteamTools.Classifieds
 					string buyTradable = buyData.Attributes["data-tradable"]?.Value; // or this
 					string buyCraftable = buyData.Attributes["data-craftable"]?.Value; // or this
 					string buyQuality = buyData.Attributes["data-quality"].Value; // or even this
-					string buyComment = buyData.Attributes["data-listing-comment"]?.Value;
-					string buyPrice = buyData.Attributes["data-listing-price"].Value;
-					string buyLevel = buyData.Attributes["data-level"]?.Value ?? "0";
+					string buyComment = buyData.Attributes["data-listing_comment"]?.Value;
+					string buyPrice = buyData.Attributes["data-listing_price"].Value;
+					string buyLevel = buyData.Attributes["data-level"]?.Value ?? "-1";
 					string buyID = buyData.Attributes["data-id"]?.Value ?? "0";
-					string buyerSteamID64 = buyData.Attributes["data-listing-steamid"].Value;
-					string buyerSteamNickname = buyData.Attributes["data-listing-name"]?.Value;
-					string buyOfferUrl = buyData.Attributes["data-listing-offers-url"]?.Value;
-					string buyOriginalID = buyData.Attributes["data-original-id"]?.Value;
-					string buyCustomName = buyData.Attributes["data-custom-name"]?.Value;
-					string buyCustomDesc = buyData.Attributes["data-custom-desc"]?.Value;
-					string buyBuyoutOnly = buyData.Attributes["data-listing-buyout"]?.Value ?? "0";
+					string buyerSteamID64 = buyData.Attributes["data-listing_account_id"].Value;
+					string buyerSteamNickname = buyData.Attributes["data-listing_name"]?.Value;
+					string buyOfferUrl = buyData.Attributes["data-listing_offers_url"]?.Value;
+					string buyOriginalID = buyData.Attributes["data-original_id"]?.Value;
+					string buyCustomName = buyData.Attributes["data-custom_name"]?.Value;
+					string buyCustomDesc = buyData.Attributes["data-custom_desc"]?.Value;
+					string buyBuyoutOnly = buyData.Attributes["data-listing_buyout"]?.Value ?? "0";
 					string buyMarketName = buyData.Attributes["data-market-name"]?.Value;
 
 					if (buyMarketName != null)

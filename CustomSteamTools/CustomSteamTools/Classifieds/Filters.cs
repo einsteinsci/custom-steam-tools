@@ -54,6 +54,11 @@ namespace CustomSteamTools.Classifieds
 
 		public bool MatchesPricing(ItemPricing pricing)
 		{
+			if (pricing.Item == null)
+			{
+				return false;
+			}
+
 			if (Craftable != null && pricing.Craftable != Craftable.Value)
 			{
 				return false;
@@ -203,7 +208,7 @@ namespace CustomSteamTools.Classifieds
 
 			if (DealsMinProfit != null)
 			{
-				res += " MinProfit:" + DealsMinProfit.Value.TotalRefined.ToString() + "ref";
+				res += " MinProfit:" + DealsMinProfit.Value.TotalRefined + "ref";
 			}
 
 			if (Halloween == true)

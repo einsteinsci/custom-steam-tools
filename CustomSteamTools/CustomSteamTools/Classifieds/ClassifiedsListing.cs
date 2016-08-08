@@ -78,7 +78,7 @@ namespace CustomSteamTools.Classifieds
 			else
 			{
 				res = "[" + OrderType.ToString().ToUpper() + "] ";
-				res += ItemInstance.ToString() + " at " + Price.ToString() + " from " + (ListerNickname ?? ListerSteamID64);
+				res += ItemInstance + " at " + Price + " from " + (ListerNickname ?? ListerSteamID64);
 			}
 
 			if (commentLength != -1 && Comment != null)

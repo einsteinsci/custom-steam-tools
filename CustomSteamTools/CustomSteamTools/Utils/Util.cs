@@ -27,39 +27,39 @@ namespace CustomSteamTools.Utils
 			switch (col)
 			{
 			case ConsoleColor.Black:
-				return esc.ToString() + "0";
+				return esc + "0";
 			case ConsoleColor.DarkBlue:
-				return esc.ToString() + "1";
+				return esc + "1";
 			case ConsoleColor.DarkGreen:
-				return esc.ToString() + "2";
+				return esc + "2";
 			case ConsoleColor.DarkCyan:
-				return esc.ToString() + "3";
+				return esc + "3";
 			case ConsoleColor.DarkRed:
-				return esc.ToString() + "4";
+				return esc + "4";
 			case ConsoleColor.DarkMagenta:
-				return esc.ToString() + "5";
+				return esc + "5";
 			case ConsoleColor.DarkYellow:
-				return esc.ToString() + "6";
+				return esc + "6";
 			case ConsoleColor.Gray:
-				return esc.ToString() + "7";
+				return esc + "7";
 			case ConsoleColor.DarkGray:
-				return esc.ToString() + "8";
+				return esc + "8";
 			case ConsoleColor.Blue:
-				return esc.ToString() + "9";
+				return esc + "9";
 			case ConsoleColor.Green:
-				return esc.ToString() + "a";
+				return esc + "a";
 			case ConsoleColor.Cyan:
-				return esc.ToString() + "b";
+				return esc + "b";
 			case ConsoleColor.Red:
-				return esc.ToString() + "c";
+				return esc + "c";
 			case ConsoleColor.Magenta:
-				return esc.ToString() + "d";
+				return esc + "d";
 			case ConsoleColor.Yellow:
-				return esc.ToString() + "e";
+				return esc + "e";
 			case ConsoleColor.White:
-				return esc.ToString() + "f";
+				return esc + "f";
 			default:
-				return esc.ToString() + "?";
+				return esc + "?";
 			}
 		}
 

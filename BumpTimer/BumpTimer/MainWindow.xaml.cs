@@ -29,7 +29,11 @@ namespace BumpTimer
 		public FlashWindowHelper FlashHelper
 		{ get; private set; }
 
-		public readonly TimeSpan MAX_TIME = TimeSpan.FromMinutes(30);
+		public TimeSpan MaxTime = TimeSpan.FromMinutes(30);
+
+		public const string TIME_FORMAT = "h\\:mm\\:ss";
+
+		bool _hasLoaded = false;
 
 		public MainWindow()
 		{
@@ -43,9 +47,10 @@ namespace BumpTimer
 		{
 			timerResetBtn.Visibility = Visibility.Hidden;
 			resetThumbBtn.Visibility = Visibility.Collapsed;
+			timeSlider.IsEnabled = false;
 
 			timerBar.Value = 0;
-			timerBar.Maximum = MAX_TIME.TotalSeconds;
+			timerBar.Maximum = MaxTime.TotalSeconds;
 
 			timerText.Text = "00:00";
 
@@ -71,19 +76,20 @@ namespace BumpTimer
 		private void WorkerThread_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
 			timerBar.Value = e.ProgressPercentage;
-			taskbarItemInfo.ProgressValue = e.ProgressPercentage / MAX_TIME.TotalSeconds;
+			taskbarItemInfo.ProgressValue = e.ProgressPercentage / MaxTime.TotalSeconds;
 			TimeSpan time = TimeSpan.FromSeconds(e.ProgressPercentage + 1);
-			timerText.Text = time.ToString("mm\\:ss");
+			timerText.Text = time.ToString(TIME_FORMAT);
 			timerBar.ToolTip = time.Minutes.ToString() + ":" + time.Seconds.ToString();
 		}
 
 		private void WorkerThread_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			timerBar.Value = MAX_TIME.TotalSeconds;
-			timerText.Text = MAX_TIME.ToString("mm\\:ss");
+			timerBar.Value = MaxTime.TotalSeconds;
+			timerText.Text = MaxTime.ToString(TIME_FORMAT);
 
 			timerResetBtn.Visibility = Visibility.Visible;
 			resetThumbBtn.Visibility = Visibility.Visible;
+			timeSlider.IsEnabled = true;
 
 			SystemSounds.Asterisk.Play();
 			FlashHelper.FlashApplicationWindow();
@@ -94,16 +100,11 @@ namespace BumpTimer
 			Thread.Sleep(2); // to help rounding
 
 			DateTime timeStarted = DateTime.Now;
-			for (int i = 0; i <= MAX_TIME.TotalSeconds * 2; i++)
+			for (int i = 0; i <= MaxTime.TotalSeconds * 2; i++)
 			{
-				if (i > 6)
-				{
-					int stuppid = 0;
-				}
-
 				Thread.Sleep(500);
 
-				double progress = (i * 500) / MAX_TIME.TotalMilliseconds;
+				double progress = (i * 500) / MaxTime.TotalMilliseconds;
 				int pct = (int)Math.Min(progress * 100.0, 100.0);
 				BackgroundWorker bg = sender as BackgroundWorker;
 
@@ -115,6 +116,22 @@ namespace BumpTimer
 		private void Window_Activated(object sender, EventArgs e)
 		{
 			FlashHelper.StopFlashing();
+		}
+
+		private void timeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			if (!_hasLoaded)
+			{
+				return;
+			}
+
+			MaxTime = TimeSpan.FromMinutes(timeSlider.Value);
+			maxTimeText.Text = MaxTime.ToString(TIME_FORMAT);
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			_hasLoaded = true;
 		}
 	}
 }

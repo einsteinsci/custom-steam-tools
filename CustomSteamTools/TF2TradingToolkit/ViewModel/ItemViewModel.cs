@@ -179,7 +179,7 @@ namespace TF2TradingToolkit.ViewModel
 		public Grid GetPriceStamp(CheckedPrice cp)
 		{
 			Grid res = new Grid();
-			ItemPriceInfo info = new ItemPriceInfo(cp.Pricing.Item, cp.Quality);
+			ItemPriceInfo info = new ItemPriceInfo(cp.Pricing?.Item, cp.Quality);
 			PricedViewModel pvm = new PricedViewModel(info, cp.Price);
 			res.ToolTip = pvm.Tooltip;
 			res.Margin = new Thickness(2);

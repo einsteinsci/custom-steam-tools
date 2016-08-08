@@ -140,7 +140,7 @@ namespace CustomSteamTools.Backpacks
 				return Item.GetSkin().Description;
 			}
 
-			return "Level " + Level.ToString() + " " + Item.Type;
+			return "Level " + Level + " " + Item.Type;
 		}
 
 		public string GetDescription()
@@ -161,10 +161,10 @@ namespace CustomSteamTools.Backpacks
 
 			if (!Item.IsCurrency())
 			{
-				res += " #" + InstanceID.ToString();
+				res += " #" + InstanceID;
 				if (OriginalInstanceID != InstanceID)
 				{
-					res += " [Formerly #" + OriginalInstanceID.ToString() + "]";
+					res += " [Formerly #" + OriginalInstanceID + "]";
 				}
 			}
 
@@ -283,12 +283,12 @@ namespace CustomSteamTools.Backpacks
 			int? series = GetCrateSeries();
 			if (series != null)
 			{
-				result += " No. " + series.Value.ToString();
+				result += " No. " + series.Value;
 			}
 			
 			if (!shortened && Count > 1)
 			{
-				result += " x" + Count.ToString();
+				result += " x" + Count;
 			}
 
 			return result;

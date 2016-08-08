@@ -56,11 +56,16 @@ namespace TF2TradingToolkit.ViewModel
 			StackPanel res = new StackPanel();
 
 			TextBlock t = new TextBlock();
-			t.Text = Info.Item.ToString(Info.Quality, Info.Australium, Info.Killstreak);
+			t.Text = Info.Item?.ToString(Info.Quality, Info.Australium, Info.Killstreak) ?? "NULL";
 			t.Foreground = new SolidColorBrush(Info.Quality.ToWPFBorderColor());
 			t.FontSize = 16;
 			t.FontWeight = FontWeights.SemiBold;
 			res.Children.Add(t);
+
+			if (Info.Item == null)
+			{
+				return res; // Yeah...we're done here.
+			}
 
 			t = new TextBlock();
 			t.Text = Info.Item.GetSubtext();

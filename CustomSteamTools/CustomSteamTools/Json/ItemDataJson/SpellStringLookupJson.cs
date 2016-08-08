@@ -18,7 +18,7 @@ namespace CustomSteamTools.Json.ItemDataJson
 
 		public override string ToString()
 		{
-			return table_name + ": " + strings.Count.ToString() + " spell strings";
+			return table_name + ": " + strings.Count + " spell strings";
 		}
 	}
 }

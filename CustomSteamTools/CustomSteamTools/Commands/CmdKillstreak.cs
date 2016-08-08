@@ -132,7 +132,7 @@ namespace CustomSteamTools.Commands
 			}
 			
 			VersatileIO.WriteComplex("{0}  Price for {1} " + item.ToString(quality.Value, aus ?? false, killstreak.Value) + 
-				"{2}: " + price.Value.ToString(), 
+				"{2}: " + price.Value, 
 				ConsoleColor.White, quality.Value.GetColor(), ConsoleColor.White);
 		}
 

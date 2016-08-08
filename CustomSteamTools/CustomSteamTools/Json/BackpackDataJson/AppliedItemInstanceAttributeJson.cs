@@ -26,10 +26,10 @@ namespace CustomSteamTools.Json.BackpackDataJson
 		{
 			if (account_info != null)
 			{
-				return "#" + defindex + ": " + account_info.ToString();
+				return "#" + defindex + ": " + account_info;
 			}
 
-			return "#" + defindex + ": " + float_value.ToString();
+			return "#" + defindex + ": " + float_value;
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace CustomSteamTools.Json.BackpackDataJson
 
 		public override string ToString()
 		{
-			return personaname + " (#" + steamid.ToString() + ")";
+			return personaname + " (#" + steamid + ")";
 		}
 	}
 }

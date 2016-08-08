@@ -20,6 +20,9 @@ using CustomSteamTools.Schema;
 using TF2TradingToolkit.ViewModel;
 using UltimateUtil;
 
+#pragma warning disable 67
+// ReSharper disable once RedundantExtendsListEntry
+
 namespace TF2TradingToolkit.View
 {
 	/// <summary>
@@ -34,7 +37,7 @@ namespace TF2TradingToolkit.View
 		{
 			public ItemsView View
 			{ get; private set; }
-
+			
 			public event EventHandler CanExecuteChanged;
 
 			public DeleteCalcCommand(ItemsView view)
@@ -92,23 +95,13 @@ namespace TF2TradingToolkit.View
 		public string CalcTotalPriceString => CalcTotalPrice.ToString();
 		public string CalcTotalPriceUSD => "USD: " + CalcTotalPrice.ToStringUSD();
 
-		private bool _loaded = false;
+		private bool _loaded;
 
 		public PriceRange? EvaluatedPrice
 		{ get; private set; }
 
-		public string EvaluatedPriceString
-		{
-			get
-			{
-				if (EvaluatedPrice == null)
-				{
-					return null;
-				}
+		public string EvaluatedPriceString => EvaluatedPrice?.ToString();
 
-				return EvaluatedPrice.Value.ToString();
-			}
-		}
 		public string EvaluatedPriceUSD
 		{
 			get
@@ -128,7 +121,7 @@ namespace TF2TradingToolkit.View
 		public bool IsCalcEditing
 		{ get; private set; }
 
-		private bool _changingQuality = false;
+		private bool _changingQuality;
 
 		public ItemsView()
 		{
@@ -160,7 +153,7 @@ namespace TF2TradingToolkit.View
 		{
 			int index = ItemSearchResultList.SelectedIndex;
 
-			List<ItemViewModel> results = CmdInfo.GetMatchingItems(ItemSearchBox.Text, 50)
+			List<ItemViewModel> results = CmdInfo.GetMatchingItems(ItemSearchBox.Text)
 							.ConvertAll((i) => new ItemViewModel(i, Qualities));
 			AvailableItems.Clear();
 			AvailableItems.AddRange(results);
@@ -181,7 +174,7 @@ namespace TF2TradingToolkit.View
 				return;
 			}
 
-			ItemSlotPlain plain = ActiveItem?.Item.PlainSlot ?? ItemSlotPlain.Unused;
+			ItemSlotPlain plain = (ItemSlotPlain)ActiveItem?.Item.PlainSlot;
 			Killstreaks.IsEnabled = plain == ItemSlotPlain.Weapon;
 			if (!Killstreaks.IsEnabled)
 			{

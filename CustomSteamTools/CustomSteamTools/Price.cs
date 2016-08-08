@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CustomSteamTools.Schema;
 
+// ReSharper disable UnusedMember.Global
+
 namespace CustomSteamTools
 {
 	public struct Price : IEquatable<Price>
@@ -12,8 +14,10 @@ namespace CustomSteamTools
 		public const string CURRENCY_KEYS = "keys";
 		public const string CURRENCY_REF = "metal";
 		public const string CURRENCY_CASH = "usd";
+		public const string CURRENCY_HAT = "hat";
 
 		public const int KEY_DEFINDEX = 5021;
+		public const int TEXAS_TEN_GALLON_DEFINDEX = 94;
 
 		public const int SCRAP_DEFINDEX = 5000;
 		public const int REC_DEFINDEX = 5001;
@@ -26,7 +30,9 @@ namespace CustomSteamTools
 		public static Price Zero => new Price(0, 0);
 
 		public static Item RefinedMetal => DataManager.Schema.GetItem(REF_DEFINDEX);
+
 		public static Item ReclaimedMetal => DataManager.Schema.GetItem(REC_DEFINDEX);
+
 		public static Item ScrapMetal => DataManager.Schema.GetItem(SCRAP_DEFINDEX);
 
 		public static Item Key => DataManager.Schema.GetItem(KEY_DEFINDEX);
@@ -49,13 +55,34 @@ namespace CustomSteamTools
 		}
 		private static double _refinedPerKey = double.NaN;
 
+		public static double RefinedPerHat
+		{
+			get
+			{
+				if (double.IsNaN(_refinedPerHat))
+				{
+					DataManager.AutoSetup(false);
+				}
+
+				return _refinedPerHat;
+			}
+			set
+			{
+				_refinedPerHat = value;
+			}
+		}
+		private static double _refinedPerHat = double.NaN;
+
 		// this is what is actually stored
 		public double TotalRefined
-		{ get; private set; }
+		{ get; }
 
 		public int Keys => (int)TotalKeys;
+		
 		public double Refined => TotalRefined - (Keys * RefinedPerKey);
+
 		public double TotalKeys => TotalRefined / RefinedPerKey;
+
 		public double TotalUSD => TotalKeys * KEY_STOREPRICE_USD;
 
 		public Price(int keys, double refined) : this(keys * RefinedPerKey + refined)
@@ -70,18 +97,21 @@ namespace CustomSteamTools
 		{
 			switch (currency.ToLower())
 			{
-				case CURRENCY_CASH:
-					double keys = amount / KEY_STOREPRICE_USD;
-					TotalRefined = keys * RefinedPerKey;
-					break;
-				case CURRENCY_KEYS:
-					TotalRefined = amount * RefinedPerKey;
-					break;
-				case CURRENCY_REF:
-					TotalRefined = amount;
-					break;
-				default:
-					throw new ArgumentException("Invalid currency: " + currency, nameof(currency));
+			case CURRENCY_CASH:
+				double keys = amount / KEY_STOREPRICE_USD;
+				TotalRefined = keys * RefinedPerKey;
+				break;
+			case CURRENCY_KEYS:
+				TotalRefined = amount * RefinedPerKey;
+				break;
+			case CURRENCY_REF:
+				TotalRefined = amount;
+				break;
+			case CURRENCY_HAT:
+				TotalRefined = amount * RefinedPerHat;
+				break;
+			default:
+				throw new ArgumentException("Invalid currency: " + currency, nameof(currency));
 			}
 		}
 
@@ -121,7 +151,7 @@ namespace CustomSteamTools
 			string buf = s.Replace("keys", "k").Replace("ref", "").Replace(" ", "").Replace("key", "k");
 			string[] split = buf.Split(',');
 
-			string sKeysWithK = null, sRef = null;
+			string sKeysWithK, sRef;
 			if (split.Length > 1)
 			{
 				sKeysWithK = split[0];
@@ -156,13 +186,13 @@ namespace CustomSteamTools
 
 			s = s.TrimEnd('k');
 
-			double d = -1;
+			double d;
 			if (!double.TryParse(s, out d))
 			{
 				throw new FormatException("Argument invalid: " + input);
 			}
 
-			return new Price(d, isKey ? Price.CURRENCY_KEYS : Price.CURRENCY_REF);
+			return new Price(d, isKey ? CURRENCY_KEYS : CURRENCY_REF);
 		}
 		public static bool TryParse(string input, out Price result)
 		{

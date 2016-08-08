@@ -115,7 +115,7 @@ namespace CustomSteamTools.Json.ItemDataJson
 			get
 			{
 				// Level 3 Chin
-				return "Level " + max_ilevel.ToString() + " " + item_type_name;
+				return "Level " + max_ilevel + " " + item_type_name;
 			}
 		}
 

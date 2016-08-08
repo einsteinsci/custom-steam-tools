@@ -63,7 +63,7 @@ namespace CustomSteamTools.Json.BackpackDataJson
 
 		public override string ToString()
 		{
-			string result = "#" + defindex.ToString();
+			string result = "#" + defindex;
 			string s_quality = ((Quality)quality).ToReadableString();
 			if (custom_name != null)
 			{

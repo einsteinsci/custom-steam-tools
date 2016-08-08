@@ -22,20 +22,15 @@ namespace TF2TradingToolkit.ViewModel
 		{
 			get
 			{
-				if (Reason == "PRICEDROPPING")
+				switch (Reason)
 				{
-					return "The price is dropping below the listed bp.tf price.";
-				}
-				else if (Reason == "NOPROFIT")
-				{
+				case "PRICEDROPPING":
+					return "The price appears to be dropping below the listed bp.tf price.";
+				case "NOPROFIT":
 					return "There was no profit seen in flipping this item.";
-				}
-				else if (Reason == "LOWPROFIT")
-				{
+				case "LOWPROFIT":
 					return "The profit from flipping this item was too small.";
-				}
-				else
-				{
+				default:
 					return Reason;
 				}
 			}

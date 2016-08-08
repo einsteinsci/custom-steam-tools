@@ -96,14 +96,14 @@ namespace CustomSteamTools.Friends
 			string res = stateCode + "[";
 			if (CurrentGame != 0)
 			{
-				res += "In-Game: " + CurrentGame.ToString() + "] " + esc.ToString() + "f";
+				res += "In-Game: " + CurrentGame + "] " + esc + "f";
 			}
 			else
 			{
-				res += PersonaState.ToReadableString() + "] " + esc.ToString() + "f";
+				res += PersonaState.ToReadableString() + "] " + esc + "f";
 			}
 
-			res += Name + " " + esc.ToString() + "7(#" + SteamID64 + ")";
+			res += Name + " " + esc + "7(#" + SteamID64 + ")";
 
 			return res;
 		}

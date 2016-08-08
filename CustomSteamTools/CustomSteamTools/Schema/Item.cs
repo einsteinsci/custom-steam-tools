@@ -37,7 +37,7 @@ namespace CustomSteamTools.Schema
 		{ get; set; }
 
 		public string Subtext
-		{ get { return "Level " + MaxLevel.ToString() + " " + Type; } }
+		{ get { return "Level " + MaxLevel + " " + Type; } }
 
 		public string Type
 		{ get; set; }
@@ -107,10 +107,10 @@ namespace CustomSteamTools.Schema
 		{
 			if (MinLevel == MaxLevel)
 			{
-				return "Level " + MinLevel.ToString() + " " + Type;
+				return "Level " + MinLevel + " " + Type;
 			}
 
-			return "Level " + MinLevel.ToString() + "-" + MaxLevel.ToString() + " " + Type;
+			return "Level " + MinLevel + "-" + MaxLevel + " " + Type;
 		}
 
 		public bool IsCurrency()
@@ -200,7 +200,8 @@ namespace CustomSteamTools.Schema
 		{
 			if (IsSkin())
 			{
-				return "[Skin] " + GetSkin()?.Name ?? "UNKNOWN";
+				Skin skin = GetSkin();
+				return "[Skin] " + (skin == null ? "NULL" : (skin.Name ?? "UNKNOWN") + " " + skin.BaseWeapon);
 			}
 
 			return Name;
@@ -208,12 +209,7 @@ namespace CustomSteamTools.Schema
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Item)
-			{
-				return (obj as Item).Defindex == Defindex;
-			}
-
-			return false;
+			return (obj as Item)?.Defindex == Defindex;
 		}
 
 		public override int GetHashCode()
@@ -231,12 +227,16 @@ namespace CustomSteamTools.Schema
 			return UnlocalizedName.StartsWith("concealedkiller_") ||
 				UnlocalizedName.StartsWith("craftsmann_") ||
 				UnlocalizedName.StartsWith("teufort_") ||
-				UnlocalizedName.StartsWith("powerhouse_");
+				UnlocalizedName.StartsWith("powerhouse_") ||
+				UnlocalizedName.StartsWith("harvest_") ||
+				UnlocalizedName.StartsWith("gentlemanne_") ||
+				UnlocalizedName.StartsWith("pyroland_") ||
+				UnlocalizedName.StartsWith("warbird_");
 		}
 
 		public Skin GetSkin()
 		{
-			return GunMettleSkins.GetSkin(UnlocalizedName);
+			return WeaponSkins.GetSkin(UnlocalizedName);
 		}
 
 		public bool IsSupplyCrate()

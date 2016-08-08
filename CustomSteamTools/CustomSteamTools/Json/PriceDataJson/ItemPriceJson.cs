@@ -19,7 +19,7 @@ namespace CustomSteamTools.Json.PriceDataJson
 
 		public override string ToString()
 		{
-			return "ID x" + (defindex?.Count ?? 0).ToString();
+			return "ID x" + (defindex?.Count ?? 0);
 		}
 	}
 }

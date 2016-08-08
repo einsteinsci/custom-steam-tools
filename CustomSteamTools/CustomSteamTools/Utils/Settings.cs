@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -79,14 +80,24 @@ namespace CustomSteamTools.Utils
 		public double DealsPriceDropThresholdPriceBelow
 		{ get; set; }
 
+		[Setting("Last minimum price (in ref) used by range command.")]
+		public double RangeLastMinPrice
+		{ get; set; }
+
+		[Setting("Last maximum price (in ref) used by range command.")]
+		public double RangeLastMaxPrice
+		{ get; set; }
+
 		#endregion settings
 
 		[JsonIgnore]
 		public TimeSpan DownloadTimeout => TimeSpan.FromSeconds(DownloadTimeoutSeconds);
 
+		private Thread _saveThread;
+
 		public static Settings Load(bool affectInstance = true)
 		{
-			Settings res = null;
+			Settings res;
 
 			VersatileIO.Debug("Loading settings");
 
@@ -148,17 +159,32 @@ namespace CustomSteamTools.Utils
 
 		public void Save()
 		{
-			VersatileIO.Debug("Saving settings");
-			
-			if (!Directory.Exists(LOCATION))
+			try
 			{
-				Directory.CreateDirectory(LOCATION);
+				VersatileIO.Debug("Saving settings");
+			
+				if (!Directory.Exists(LOCATION))
+				{
+					Directory.CreateDirectory(LOCATION);
+				}
+
+				string contents = JsonConvert.SerializeObject(this, Formatting.Indented);
+				File.WriteAllText(FILEPATH, contents);
+
+				VersatileIO.Verbose("  Settings saved.");
 			}
+			catch (IOException ex)
+			{
+				VersatileIO.Error("Save Settings Failed:");
+				VersatileIO.Error(ex.Message);
+			}
+		}
 
-			string contents = JsonConvert.SerializeObject(this, Formatting.Indented);
-			File.WriteAllText(FILEPATH, contents);
-
-			VersatileIO.Verbose("  Settings saved.");
+		public void SaveOnOtherThread()
+		{
+			_saveThread = new Thread(Save);
+			_saveThread.Name = "Save Thread";
+			_saveThread.Start();
 		}
 
 		public object Clone()
@@ -185,6 +211,9 @@ namespace CustomSteamTools.Utils
 			DownloadTimeoutSeconds = 20;
 			DealsPriceDropThresholdListingCount = 3;
 			DealsPriceDropThresholdPriceBelow = 0.97;
+			RangeLastMinPrice = 2.0;
+			RangeLastMaxPrice = 10.0;
+
 			Initialized = false;
 		}
 	}

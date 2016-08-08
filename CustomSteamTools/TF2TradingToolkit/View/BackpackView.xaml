@@ -14,7 +14,7 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
-      <ColumnDefinition MinWidth="1056"
+      <ColumnDefinition MinWidth="900"
                         Width="3*" />
     </Grid.ColumnDefinitions>
 
@@ -103,8 +103,8 @@
               </Grid.ColumnDefinitions>
 
               <Image Source="{Binding ProfilePicURL}"
-                     Width="32"
-                     Height="32" />
+                     Width="24"
+                     Height="24" />
               <StackPanel Orientation="Vertical"
                           Grid.Column="1"
                           Margin="10,0,0,0">
@@ -121,8 +121,9 @@
                 </StackPanel.ContextMenu>
                 
                 <TextBlock Text="{Binding PersonaName}"
-                           FontSize="16" />
+                           FontSize="14" />
                 <TextBlock Text="{Binding CurrentState}"
+                           FontSize="12"
                            Foreground="{Binding StateColor}"/>
               </StackPanel>
             </Grid>
