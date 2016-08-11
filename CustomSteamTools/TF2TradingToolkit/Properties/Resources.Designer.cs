@@ -59,5 +59,26 @@ namespace TF2TradingToolkit.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GNU GENERAL PUBLIC LICENSE
+        ///                       Version 2, June 1991
+        ///
+        /// Copyright (C) 1989, 1991 Free Software Foundation, Inc., &lt;http://fsf.org/&gt;
+        /// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+        /// Everyone is permitted to copy and distribute verbatim copies
+        /// of this license document, but changing it is not allowed.
+        ///
+        ///                            Preamble
+        ///
+        ///  The licenses for most software are designed to take away your
+        ///freedom to share and change it.  By contrast, the GNU General Public
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GPLv3 {
+            get {
+                return ResourceManager.GetString("GPLv3", resourceCulture);
+            }
+        }
     }
 }

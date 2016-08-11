@@ -163,6 +163,9 @@
                                                 <MenuItem Header="Item Statistics on stats.tf..."
                                                           Tag="{Binding StatsLink}"
                                                           Click="FollowLink_Click" />
+                                                <MenuItem Header="View Listing in browser..."
+                                                          Tag="{Binding ClassifiedsLink}"
+                                                          Click="FollowLink_Click" />
                                             </ContextMenu>
                                         </Grid.ContextMenu>
 
@@ -223,6 +226,9 @@
                                           Click="FollowLink_Click" />
                                 <MenuItem Header="Item Statistics on stats.tf..."
                                           Tag="{Binding StatsLink}"
+                                          Click="FollowLink_Click" />
+                                <MenuItem Header="View Listing in browser..."
+                                          Tag="{Binding ClassifiedsLink}"
                                           Click="FollowLink_Click" />
                             </ContextMenu>
                         </Grid.ContextMenu>
@@ -439,8 +445,8 @@
                                     <Grid.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Show In Classifieds"
-                                                      Click="DealsShowClassifiedsItem_Click"
-                                                      Tag="{Binding Sale}" />
+                                                      Tag="{Binding Sale}"
+                                                      Click="DealsShowClassifiedsItem_Click" />
                                             <MenuItem Header="Show Best Seller's Backpack"
                                                       Tag="{Binding Sale}"
                                                       Click="DealsShowBackpack_Click" />
@@ -449,6 +455,9 @@
                                                       Click="FollowLink_Click" />
                                             <MenuItem Header="Item Statistics on stats.tf..."
                                                       Tag="{Binding StatsLink}"
+                                                      Click="FollowLink_Click" />
+                                            <MenuItem Header="View Listing in browser..."
+                                                      Tag="{Binding ClassifiedsLink}"
                                                       Click="FollowLink_Click" />
                                         </ContextMenu>
                                     </Grid.ContextMenu>
@@ -526,6 +535,9 @@
                                                       Click="FollowLink_Click" />
                                             <MenuItem Header="Item Statistics on stats.tf..."
                                                       Tag="{Binding StatsLink}"
+                                                      Click="FollowLink_Click" />
+                                            <MenuItem Header="View Listing in browser..."
+                                                      Tag="{Binding ClassifiedsLink}"
                                                       Click="FollowLink_Click" />
                                         </ContextMenu>
                                     </Grid.ContextMenu>

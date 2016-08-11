@@ -65,6 +65,7 @@
     <Compile Include="Classifieds\ItemPricing.cs" />
     <Compile Include="Classifieds\ItemSale.cs" />
     <Compile Include="Classifieds\ListingProperties.cs" />
+    <Compile Include="Commands\CmdAbout.cs" />
     <Compile Include="Commands\CmdBackpack.cs" />
     <Compile Include="Commands\CmdBuyers.cs" />
     <Compile Include="Commands\CmdClassifiedsBase.cs" />

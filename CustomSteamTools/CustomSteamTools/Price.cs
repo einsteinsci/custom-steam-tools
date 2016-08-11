@@ -132,7 +132,7 @@ namespace CustomSteamTools
 
 		public override string ToString()
 		{
-			return Math.Abs(Keys) > 2.0 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
+			return Math.Abs(TotalKeys) > 1.2 ? (TotalKeys.ToString("F2") + " keys") : (TotalRefined.ToString("F2") + " ref");
 		}
 
 		public PriceRange ToPriceRange()

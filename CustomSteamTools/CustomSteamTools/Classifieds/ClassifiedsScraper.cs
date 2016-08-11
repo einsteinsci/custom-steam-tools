@@ -30,16 +30,10 @@ namespace CustomSteamTools.Classifieds
 		public static List<ClassifiedsListing> GetClassifieds(Item item, Quality quality,
 			bool craftable = true, bool tradable = true, bool australium = false)
 		{
-			string url = "https://backpack.tf/classifieds?item=";
-			url += item.ImproperName;
-			url += "&quality=" + (int)quality;
-			url += "&tradable=" + (tradable ? 1 : -1);
-			url += "&craftable=" + (craftable ? 1 : -1);
-			url += "&australium=" + (australium ? 1 : -1);
-			url += "&killstreak_tier=0";
-			
+			string url = MakeBpTfClassifiedsUrl(item, quality, craftable, tradable, australium);
+
 			VersatileIO.Verbose("Downloading listings from {0}...", url.Shorten(100, ""));
-			WebClient client = new WebClient();
+			WebClient client = new WebClient { Encoding = Encoding.UTF8 };
 			string html = client.DownloadString(url);
 			//Logger.Log("  Download complete.", ConsoleColor.DarkGray);
 
@@ -52,7 +46,7 @@ namespace CustomSteamTools.Classifieds
 			HtmlNode root = doc.DocumentNode;
 
 			#region sells
-			HtmlNode sellOrderRoot = root.Descendants("ul").FirstOrDefault(n => n.Attributes.Contains("class") && 
+			HtmlNode sellOrderRoot = root.Descendants("ul").FirstOrDefault(n => n.Attributes.Contains("class") &&
 				n.Attributes["class"].Value == "media-list");
 
 			if (sellOrderRoot == null)
@@ -108,7 +102,7 @@ namespace CustomSteamTools.Classifieds
 
 					ItemInstance instance = new ItemInstance(foundItem, id, level, quality, craftable,
 						sellCustomName, sellCustomDesc, originalID, tradable);
-					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64, 
+					ClassifiedsListing listing = new ClassifiedsListing(instance, price, sellerSteamID64,
 						sellerNickname, sellOfferUrl, sellComment, buyoutOnly, OrderType.Sell);
 
 					if (string.IsNullOrWhiteSpace(listing.OfferURL))
@@ -179,7 +173,7 @@ namespace CustomSteamTools.Classifieds
 
 					ItemInstance instance = new ItemInstance(foundItem, id, level, quality, craftable,
 						buyCustomName, buyCustomDesc, originalID, tradable);
-					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname, 
+					ClassifiedsListing listing = new ClassifiedsListing(instance, price, buyerSteamID64, buyerSteamNickname,
 						buyOfferUrl, buyComment, buyoutOnly, OrderType.Buy);
 
 					if (string.IsNullOrWhiteSpace(listing.OfferURL))
@@ -195,6 +189,19 @@ namespace CustomSteamTools.Classifieds
 			#endregion buys
 
 			return results;
+		}
+
+		public static string MakeBpTfClassifiedsUrl(Item item, Quality quality, bool craftable, bool tradable, bool australium)
+		{
+			string url = "https://backpack.tf/classifieds?item=";
+			url += item.ImproperName;
+			url += "&quality=" + (int)quality;
+			url += "&tradable=" + (tradable ? 1 : -1);
+			url += "&craftable=" + (craftable ? 1 : -1);
+			url += "&australium=" + (australium ? 1 : -1);
+			url += "&killstreak_tier=0";
+
+			return url;
 		}
 	}
 }

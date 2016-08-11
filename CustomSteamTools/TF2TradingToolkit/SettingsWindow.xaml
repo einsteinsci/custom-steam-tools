@@ -39,12 +39,15 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <TextBlock Text="Download Timeout (seconds):"
-               FontSize="16"
-               Margin="0,0,10,3"
-               VerticalAlignment="Bottom" />
+    <Grid ToolTip="Time before giving up while obtaining data from Backpack.tf or Steam."
+          Margin="0,0,10,3"
+          VerticalAlignment="Bottom">
+      <TextBlock Text="Download Timeout (seconds):"
+                 FontSize="16" />
+    </Grid>
     <TextBox x:Name="TimeoutBox"
              Text="20"
+             Grid.Row="0" 
              Grid.Column="1"
              BorderThickness="1"
              FontSize="16"
@@ -54,7 +57,8 @@
 
     <TextBlock Text="Steam ID (64-bit):"
                ToolTip="You will probably need to refresh after changing this."
-               Grid.Row="1"
+               Grid.Row="1" 
+               Grid.Column="0"
                FontSize="16"
                Margin="0,10,0,3"
                VerticalAlignment="Bottom" />
@@ -66,17 +70,20 @@
              Margin="0,10,0,0"
              BorderBrush="DarkGray"
              TextChanged="SteamIDBox_TextChanged" />
-    <TextBlock Grid.Row="2"
+    <TextBlock Grid.Row="2" 
+               Grid.Column="0"
                Margin="10,0,0,0">
             <Hyperlink NavigateUri="https://steamcommunity.com/sharedfiles/filedetails/?id=209000244"
-                       RequestNavigate="Hyperlink_RequestNavigate">
+                       RequestNavigate="Hyperlink_RequestNavigate"
+                       ToolTip="https://steamcommunity.com/sharedfiles/filedetails/?id=209000244">
               How to find your Steam ID
             </Hyperlink>
     </TextBlock>
 
     <TextBlock Text="Steam Name:"
                ToolTip="Your nickname, not your login username"
-               Grid.Row="3"
+               Grid.Row="3" 
+               Grid.Column="0"
                FontSize="16"
                Margin="0,10,0,3"
                VerticalAlignment="Bottom" />
@@ -91,7 +98,8 @@
 
     <TextBlock Text="backpack.tf API Key:"
                ToolTip="Your API key, not your third-party token"
-               Grid.Row="4"
+               Grid.Row="4" 
+               Grid.Column="0"
                FontSize="16"
                Margin="0,10,0,3"
                VerticalAlignment="Bottom" />
@@ -103,16 +111,19 @@
              Margin="0,10,0,0"
              BorderBrush="DarkGray"
              TextChanged="BpTfAPIKeyBox_TextChanged" />
-    <TextBlock Grid.Row="5"
+    <TextBlock Grid.Row="5" 
+               Grid.Column="0"
                Margin="10,0,0,0">
             <Hyperlink NavigateUri="http://backpack.tf/api/register"
-                       RequestNavigate="Hyperlink_RequestNavigate">
-              Find yours here
+                       RequestNavigate="Hyperlink_RequestNavigate"
+                       ToolTip="http://backpack.tf/api/register">
+              Find or create yours here
             </Hyperlink>
     </TextBlock>
 
     <TextBlock Text="Steam API Key:"
-               Grid.Row="6"
+               Grid.Row="6" 
+               Grid.Column="0"
                FontSize="16"
                Margin="0,10,0,3"
                VerticalAlignment="Bottom" />
@@ -124,11 +135,13 @@
              Margin="0,10,0,0"
              BorderBrush="DarkGray"
              TextChanged="SteamAPIKeyBox_TextChanged" />
-    <TextBlock Grid.Row="7"
+    <TextBlock Grid.Row="7" 
+               Grid.Column="0"
                Margin="10,0,0,0">
             <Hyperlink NavigateUri="https://steamcommunity.com/dev/apikey"
-                       RequestNavigate="Hyperlink_RequestNavigate">
-              Find yours here
+                       RequestNavigate="Hyperlink_RequestNavigate"
+                       ToolTip="https://steamcommunity.com/dev/apikey">
+              Find or create yours here
             </Hyperlink>
     </TextBlock>
 
@@ -136,7 +149,8 @@
                FontSize="18.667"
                FontWeight="SemiBold"
                ToolTipService.ShowDuration="15000"
-               Grid.ColumnSpan="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="2" 
                Margin="0,20,0,5"
                Grid.Row="8">
       <TextBlock.ToolTip>
@@ -155,7 +169,8 @@
     <TextBlock Text="Max Listings:"
                FontSize="16"
                Margin="10,5,0,3"
-               Grid.Row="9"
+               Grid.Row="9" 
+               Grid.Column="0"
                VerticalAlignment="Bottom" />
     <TextBox x:Name="MaxListingsBox"
              Text="3"
@@ -170,7 +185,8 @@
 
     <TextBlock Text="Price Threshold Value:"
                ToolTip="A percentage converted into a value from 0 to 1"
-               Grid.Row="10"
+               Grid.Row="10" 
+               Grid.Column="0"
                FontSize="16"
                Margin="10,5,10,3"
                VerticalAlignment="Bottom" />

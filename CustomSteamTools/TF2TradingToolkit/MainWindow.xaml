@@ -10,7 +10,7 @@
                xmlns:m="http://metro.mahapps.com/winfx/xaml/controls"
                mc:Ignorable="d"
                Width="1430"
-               Height="680"
+               Height="800"
                Title="TF2 Trading Toolkit"
                GlowBrush="{DynamicResource AccentColorBrush}"
                WindowStartupLocation="CenterScreen"
@@ -69,6 +69,18 @@
                  Height="16"
                  Margin="0,0,5,0" />
           <TextBlock Text="Console"
+                     Margin="5,0" />
+        </StackPanel>
+      </Button>
+      <Button x:Name="AboutBtn"
+              FontSize="14"
+              Click="AboutBtn_OnClick">
+        <StackPanel Orientation="Horizontal">
+          <Image Source="assets/smallnflat_info-24px.png"
+                 Width="16"
+                 Height="16"
+                 Margin="0,0,5,0" />
+          <TextBlock Text="About"
                      Margin="5,0" />
         </StackPanel>
       </Button>

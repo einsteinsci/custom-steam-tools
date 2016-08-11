@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
+using CustomSteamTools.Backpacks;
 using CustomSteamTools.Classifieds;
 using CustomSteamTools.Schema;
 
@@ -52,6 +54,20 @@ namespace TF2TradingToolkit.ViewModel
 
 		public string WikiLink => Listing?.ItemInstance.Item.GetWikiLink();
 		public string StatsLink => Listing?.ItemInstance.Item.GetStatsLink();
+
+		public string ClassifiedsLink
+		{
+			get
+			{
+				if (Listing == null)
+				{
+					return null;
+				}
+
+				ItemInstance ii = Listing.ItemInstance;
+				return ClassifiedsScraper.MakeBpTfClassifiedsUrl(ii.Item, ii.Quality, ii.Craftable, ii.Tradable, ii.IsAustralium());
+			}
+		}
 
 		public string Comment
 		{

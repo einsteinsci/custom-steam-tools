@@ -212,5 +212,11 @@ namespace TF2TradingToolkit
 				_consoleWindow.Show();
 			}
 		}
+
+		private void AboutBtn_OnClick(object sender, RoutedEventArgs e)
+		{
+			AboutWindow window = new AboutWindow();
+			window.ShowDialog();
+		}
 	}
 }
