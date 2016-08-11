@@ -8,7 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using CustomSteamTools;
 using CustomSteamTools.Backpacks;
+using CustomSteamTools.Commands;
 using CustomSteamTools.Schema;
+using CustomSteamTools.Utils;
+
+using TF2TradingToolkit.View;
+
 using UltimateUtil;
 
 namespace TF2TradingToolkit.ViewModel
@@ -18,12 +23,15 @@ namespace TF2TradingToolkit.ViewModel
 		public ItemInstance Item
 		{ get; private set; }
 
+		public Backpack Backpack
+		{ get; private set; }
+
 		public string ImageURL => Item?.Item.ImageURL;
 		public string Title => Item?.ToString(true);
 		public Thickness ImageMargin => Item != null ? new Thickness(10, 20, 10, 10) : new Thickness(0);
 
-		public static readonly Color DARK_DARK_GRAY = new Color() { R = 20, G = 20, B = 20, A = 255 };
-		public static readonly Color SEMI_DARK_GRAY = new Color() { R = 80, G = 80, B = 80, A = 255 };
+		public static readonly Color DARK_DARK_GRAY = new Color { R = 20, G = 20, B = 20, A = 255 };
+		public static readonly Color SEMI_DARK_GRAY = new Color { R = 80, G = 80, B = 80, A = 255 };
 
 		public SolidColorBrush BorderBrush => new SolidColorBrush(Item?.Quality.ToWPFBorderColor() ?? DARK_DARK_GRAY);
 		public SolidColorBrush TextColor => new SolidColorBrush(Item?.Quality.ToWPFColor() ?? Colors.White);
@@ -35,6 +43,29 @@ namespace TF2TradingToolkit.ViewModel
 
 		public string WikiLink => Item?.Item.GetWikiLink();
 		public string StatsLink => Item?.Item.GetStatsLink();
+
+		public string SellUrl => Item?.InstanceID != null ? "https://backpack.tf/classifieds/sell/" + Item.InstanceID : "https://backpack.tf";
+
+		public Visibility ShowSellOption
+		{
+			get
+			{
+				if (Item?.InstanceID == null || Backpack == null)
+				{
+					return Visibility.Collapsed;
+				}
+
+				foreach (ItemInstance item in DataManager.MyBackpackData.GetAllItems())
+				{
+					if (item.InstanceID == Item.InstanceID)
+					{
+						return Visibility.Visible;
+					}
+				}
+
+				return Visibility.Collapsed;
+			}
+		}
 
 		public DoubleCollection BorderDash
 		{
@@ -67,9 +98,10 @@ namespace TF2TradingToolkit.ViewModel
 			}
 		}
 
-		public ItemSlotViewModel(ItemInstance inst)
+		public ItemSlotViewModel(ItemInstance inst, Backpack bp)
 		{
 			Item = inst;
+			Backpack = bp;
 
 			if (Item == null)
 			{

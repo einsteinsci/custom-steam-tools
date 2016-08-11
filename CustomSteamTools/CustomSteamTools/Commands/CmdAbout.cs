@@ -58,6 +58,27 @@ namespace CustomSteamTools.Commands
 			VersatileIO.WriteLine(AsmVersion, ConsoleColor.Yellow);
 			VersatileIO.WriteLine(AsmDescription);
 			VersatileIO.WriteLine(AsmCopyright, ConsoleColor.Gray);
+
+			VersatileIO.WriteLine("License: GPL v3 (link below)");
+			VersatileIO.WriteLine("  https://github.com/einsteinsci/custom-steam-tools/blob/master/LICENSE.txt", ConsoleColor.Gray);
+			VersatileIO.WriteLine();
+
+			VersatileIO.WriteLine("Special Thanks:", ConsoleColor.Green);
+			VersatileIO.WriteLine();
+
+			VersatileIO.WriteLine("JSON.NET for all the JSON parsing");
+			VersatileIO.WriteLine("  Project: http://www.newtonsoft.com/json", ConsoleColor.Gray);
+			VersatileIO.WriteLine("  License: https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md", ConsoleColor.Gray);
+
+			VersatileIO.WriteLine("The HTML Agility Pack for all the data scraping");
+			VersatileIO.WriteLine("  Project: https://htmlagilitypack.codeplex.com/", ConsoleColor.Gray);
+			VersatileIO.WriteLine("  License: https://htmlagilitypack.codeplex.com/license", ConsoleColor.Gray);
+
+			VersatileIO.WriteLine("Backpack.tf for tons of trading data");
+			VersatileIO.WriteLine("  URL: https://backpack.tf/", ConsoleColor.Gray);
+
+			VersatileIO.WriteLine("And of course, Valve for TF2");
+			VersatileIO.WriteLine("  URL: http://www.teamfortress.com/", ConsoleColor.Gray);
 		}
 	}
 }

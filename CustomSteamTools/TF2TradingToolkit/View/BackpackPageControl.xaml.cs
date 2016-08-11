@@ -57,7 +57,7 @@ namespace TF2TradingToolkit.View
 			ItemsVM = new ObservableCollection<ItemSlotViewModel>();
 			foreach (ItemInstance inst in Items)
 			{
-				ItemsVM.Add(new ItemSlotViewModel(inst));
+				ItemsVM.Add(new ItemSlotViewModel(inst, backpack));
 			}
 
 			PageControl.ItemsSource = ItemsVM;

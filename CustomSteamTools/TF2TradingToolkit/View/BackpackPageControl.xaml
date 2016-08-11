@@ -48,6 +48,10 @@
                 <MenuItem Header="Statistics from stats.tf..."
                           Tag="{Binding StatsLink}"
                           Click="FollowLink_Click" />
+                <MenuItem Header="Sell Item..."
+                          Tag="{Binding SellUrl}"
+                          Visibility="{Binding ShowSellOption}"
+                          Click="FollowLink_Click" />
               </ContextMenu>
             </Grid.ContextMenu>
             

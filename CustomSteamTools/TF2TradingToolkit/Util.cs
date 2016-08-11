@@ -96,7 +96,7 @@ namespace TF2TradingToolkit
 			case ConsoleColor.DarkYellow:
 				return new Color { R = 200, G = 100, B = 0, A = 255 };
 			case ConsoleColor.Gray:
-				return new Color { R = 180, G = 180, B = 180, A = 255 };
+				return new Color { R = 150, G = 150, B = 150, A = 255 };
 			case ConsoleColor.DarkGray:
 				return new Color { R = 80, G = 80, B = 80, A = 255 };
 			case ConsoleColor.Blue:

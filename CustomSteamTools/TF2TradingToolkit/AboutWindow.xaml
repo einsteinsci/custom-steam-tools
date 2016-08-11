@@ -86,9 +86,9 @@
                        ToolTip="https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md">License</Hyperlink><Run
                          Text=")" /></TextBlock>
           <TextBlock Margin="0,0,0,5"
-                     HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.nuget.org/packages/HtmlAgilityPack"
+                     HorizontalAlignment="Center"><Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com/"
                        RequestNavigate="Hyperlink_RequestNavigate"
-                       ToolTip="https://www.nuget.org/packages/HtmlAgilityPack">The HTML Agility Pack for HTML data scraping</Hyperlink><Run 
+                       ToolTip="https://htmlagilitypack.codeplex.com/">The HTML Agility Pack for HTML data scraping</Hyperlink><Run 
                          Text=" (" /><Hyperlink NavigateUri="https://htmlagilitypack.codeplex.com/license"
                        RequestNavigate="Hyperlink_RequestNavigate"
                        ToolTip="https://htmlagilitypack.codeplex.com/license">License</Hyperlink><Run
