@@ -20,10 +20,6 @@ namespace BackpackTFConsole
 		public static readonly string logFolder = Path.Combine(Environment.GetEnvironmentVariable("TEMP"),
 			"CUSTOM-STEAM-TOOLS", "logs");
 
-		[Obsolete]
-		public static readonly string logFile = Path.Combine(logFolder, "log-" + 
-			DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss") + ".txt");
-
 		public static ConsoleVersatileHandler VersatileHandler
 		{ get; set; }
 
@@ -89,7 +85,7 @@ namespace BackpackTFConsole
 
 			CommandHandler.Initialize();
 
-			DataManager.AutoSetup(true);
+			DataManager.AutoSetup();
 			CmdDeals.DoBeepOnFinished = true;
 		}
 	}
